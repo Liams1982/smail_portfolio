@@ -4,89 +4,93 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Smail Lotmani — Portfolio</title>
-<meta name="description" content="Portfolio of Smail Lotmani.">
+<meta name="description" content="Embedded systems, electronics, and software projects by Smail Lotmani.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 <link rel="stylesheet" href="assets/css/style.css">
 </head>
-<body class="bg-gray-100 font-sans flex flex-col min-h-screen">
+<body class="flex flex-col min-h-screen">
 
 <div id="site-nav"></div>
 
 <!-- HERO -->
-<section class="bg-gray-900 text-white py-24">
-  <div class="container mx-auto max-w-4xl px-4 text-center">
-    <div class="w-28 h-28 mx-auto mb-6 rounded-full bg-gray-700 overflow-hidden flex items-center justify-center">
-      <img src="assets/images/avatar.jpg" alt="Smail Lotmani"
-           class="w-full h-full object-cover"
-           onerror="this.style.display='none';this.parentNode.innerHTML='<i class=\'fas fa-user text-5xl text-gray-400\'></i>'">
-    </div>
-    <h1 class="text-4xl md:text-5xl font-bold mb-4">Smail Lotmani</h1>
-    <p class="text-lg md:text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-      <!-- ✏️ Replace with your real tagline -->
-      Designer &amp; developer building clean, functional digital work.
+<section class="py-20 md:py-28">
+  <div class="container mx-auto max-w-4xl px-5 text-center">
+    <p class="label mb-6">Portfolio · 2009 – 2026</p>
+    <h1 class="display text-6xl md:text-8xl mb-6">Smail Lotmani</h1>
+    <p class="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto mb-10 leading-relaxed">
+      Embedded systems &amp; electronics engineer. I design control systems,
+      PCB layouts, and firmware — from a PIC microcontroller on a refrigerator
+      to autonomous robots and a programming language of my own.
     </p>
     <div class="flex flex-wrap justify-center gap-3">
-      <a href="portfolio.html" class="bg-white text-gray-900 font-semibold px-6 py-3 rounded hover:bg-gray-100">
-        <i class="fas fa-th-large mr-2"></i>View Portfolio
+      <a href="portfolio.html" class="btn btn-primary">
+        <i class="fas fa-th-large"></i> View Portfolio
       </a>
-      <a href="#contact" class="border border-white px-6 py-3 rounded hover:bg-gray-800">
-        <i class="fas fa-envelope mr-2"></i>Get in Touch
+      <a href="#contact" class="btn btn-outline">
+        <i class="fas fa-envelope"></i> Get in Touch
       </a>
     </div>
   </div>
 </section>
 
-<!-- FEATURED PROJECTS -->
-<section class="py-16">
-  <div class="container mx-auto max-w-6xl px-4">
-    <h2 class="text-3xl font-bold mb-2 text-center">Featured Work</h2>
-    <p class="text-center text-gray-600 mb-10">A selection of recent projects</p>
-    <div id="featured-mount"></div>
-    <div class="text-center mt-10">
-      <a href="portfolio.html" class="inline-block bg-gray-900 text-white px-6 py-3 rounded hover:bg-gray-800">
-        See all projects <i class="fas fa-arrow-right ml-2"></i>
+<!-- FEATURED -->
+<section class="py-16 bg-white border-y border-[#e7e5e4]">
+  <div class="container mx-auto max-w-6xl px-5">
+    <div class="flex items-end justify-between mb-10 flex-wrap gap-4">
+      <div>
+        <p class="label mb-2">Selected work</p>
+        <h2 class="section-title">Featured Projects</h2>
+      </div>
+      <a href="portfolio.html" class="link-accent text-sm font-medium">
+        See all 13 projects <i class="fas fa-arrow-right ml-1"></i>
       </a>
     </div>
+    <div id="featured-mount"></div>
   </div>
 </section>
 
 <!-- ABOUT -->
-<section id="about" class="bg-white py-16">
-  <div class="container mx-auto max-w-3xl px-4">
-    <h2 class="text-3xl font-bold mb-6 text-center">About</h2>
-    <p class="text-gray-700 leading-relaxed mb-4 text-center">
-      <!-- ✏️ Replace with your real bio -->
-      Hi, I'm Smail Lotmani. I design and build work that solves real problems —
-      whether that's a website, an application, or something in between.
-      I care about clarity, craft, and shipping things that actually get used.
-    </p>
-    <p class="text-gray-700 leading-relaxed text-center">
-      This site collects the projects I'm most proud of. Each one includes the
-      reasoning behind it, the process, and the final result.
-    </p>
+<section id="about" class="py-20">
+  <div class="container mx-auto max-w-3xl px-5">
+    <p class="label mb-3">About</p>
+    <h2 class="section-title mb-6">Background</h2>
+    <div class="text-gray-700 leading-relaxed space-y-4">
+      <p>
+        I'm Smail Lotmani, an electronics and embedded-systems engineer. Over the
+        past 15+ years I've designed control circuits, written firmware in C and
+        assembly, laid out PCBs, and shipped products that went into mass production.
+      </p>
+      <p>
+        My work spans Microchip PIC microcontrollers, automotive CAN buses, medical
+        devices, and robotics — including an autonomous robot that placed 2nd in the
+        Algerian national Eurobot competition. More recently I've been building
+        <strong>Vertex</strong>, a programming language and IDE inspired by Delphi and C++.
+      </p>
+    </div>
   </div>
 </section>
 
 <!-- CONTACT -->
-<section id="contact" class="py-16">
-  <div class="container mx-auto max-w-2xl px-4 text-center">
-    <h2 class="text-3xl font-bold mb-4">Get in Touch</h2>
-    <p class="text-gray-600 mb-8">
-      Open to collaboration, freelance work, and interesting conversations.
+<section id="contact" class="py-20 bg-white border-t border-[#e7e5e4]">
+  <div class="container mx-auto max-w-2xl px-5 text-center">
+    <p class="label mb-3">Contact</p>
+    <h2 class="section-title mb-6">Get in Touch</h2>
+    <p class="text-gray-600 mb-10">
+      Open to collaboration, freelance work, and interesting engineering problems.
     </p>
-    <div class="flex flex-wrap justify-center gap-4">
-      <a href="mailto:smail@example.com"
-         class="bg-gray-900 text-white px-6 py-3 rounded hover:bg-gray-800">
-        <i class="fas fa-envelope mr-2"></i>smail@example.com
+    <div class="flex flex-wrap justify-center gap-3">
+      <a href="mailto:your-email@example.com" class="btn btn-primary">
+        <i class="fas fa-envelope"></i> your-email@example.com
       </a>
-      <a href="https://github.com/smaillotmani" target="_blank" rel="noopener"
-         class="bg-gray-700 text-white px-6 py-3 rounded hover:bg-gray-800">
-        <i class="fab fa-github mr-2"></i>GitHub
+      <a href="https://github.com/Liams1982" target="_blank" rel="noopener" class="btn btn-outline">
+        <i class="fab fa-github"></i> GitHub
       </a>
-      <a href="https://linkedin.com/in/smaillotmani" target="_blank" rel="noopener"
-         class="bg-blue-700 text-white px-6 py-3 rounded hover:bg-blue-800">
-        <i class="fab fa-linkedin mr-2"></i>LinkedIn
+      <a href="https://linkedin.com/in/smaillotmani" target="_blank" rel="noopener" class="btn btn-outline">
+        <i class="fab fa-linkedin"></i> LinkedIn
       </a>
     </div>
   </div>

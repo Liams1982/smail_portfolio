@@ -1,5 +1,5 @@
 /* ============================================================
-   Shared UI: header, footer, dropdown, mobile menu, search
+   Shared UI — header, footer, dropdown, mobile menu, search
    ============================================================ */
 
 const SITE = {
@@ -12,16 +12,12 @@ const SITE = {
   ]
 };
 
-/* ---------- helpers ---------- */
 function escapeHtml(str) {
   return String(str ?? '').replace(/[&<>"']/g, c => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
   }[c]));
 }
 
-/* ------------------------------------------------------------
-   "Logged in" user — static site, so read from localStorage.
-   ------------------------------------------------------------ */
 function getCurrentUser() {
   try {
     const raw = localStorage.getItem('sl_user');
@@ -29,12 +25,11 @@ function getCurrentUser() {
   } catch (_) {}
   return { username: 'Guest', role: 'guest' };
 }
-
 function roleLabel(role) {
   return { admin: 'Admin', user: 'User' }[role] || 'Guest';
 }
 
-/* ---------- header ---------- */
+/* ---------- Header ---------- */
 function renderNav() {
   const mount = document.getElementById('site-nav');
   if (!mount) return;
@@ -47,39 +42,32 @@ function renderNav() {
     const target = l.href.split('#')[0].toLowerCase();
     const active = target === page;
     return `<li>
-      <a href="${l.href}"
-         class="block py-2 md:py-0 text-white hover:underline ${active ? 'font-semibold underline underline-offset-4' : ''}">
-        ${l.label}
-      </a></li>`;
+      <a href="${l.href}" class="nav-link ${active ? 'active' : ''}">${l.label}</a>
+    </li>`;
   }).join('');
 
   const userMenu = isLoggedIn
     ? `
       <li><a href="user/info.html"><i class="fas fa-user"></i> My Info</a></li>
-      <li><a href="user/progress.html"><i class="fas fa-chart-line"></i> My Progress</a></li>
-      ${user.role === 'admin' ? '<li><a href="dashboard.html"><i class="fas fa-edit"></i> Dashboard</a></li>' : ''}
       <li><a href="#" id="logout-link"><i class="fas fa-sign-out-alt"></i> Log Out</a></li>`
     : `<li><a href="login.html"><i class="fas fa-sign-in-alt"></i> Log In</a></li>`;
 
   mount.innerHTML = `
-  <header class="bg-gray-900 text-white p-4 relative z-50">
-    <div class="container mx-auto flex justify-between items-center">
-      <div class="flex items-center gap-2">
-        <a href="index.html" class="text-xl font-bold tracking-tight">${SITE.brand}</a>
-      </div>
+  <header class="site-header">
+    <div class="container mx-auto max-w-6xl px-5 py-4 flex justify-between items-center">
+      <a href="index.html" class="brand">${SITE.brand}</a>
 
       <button id="nav-toggle" class="md:hidden p-2" aria-label="Toggle menu" aria-expanded="false">
         <span class="hamburger-box"><span class="hamburger-inner"></span></span>
       </button>
 
       <nav id="nav-collapse"
-           class="hidden md:block absolute md:static top-full left-0 w-full md:w-auto bg-gray-900 md:bg-transparent p-4 md:p-0 shadow-lg md:shadow-none">
-        <ul class="flex flex-col md:flex-row md:items-center md:gap-6">
+           class="hidden md:block absolute md:static top-full left-0 w-full md:w-auto bg-white md:bg-transparent border-b md:border-0 border-[#e7e5e4] px-5 md:px-0 py-4 md:py-0 shadow-md md:shadow-none">
+        <ul class="flex flex-col md:flex-row md:items-center md:gap-7">
           ${links}
-          <li class="dropdown" id="tl-dropdown-user">
-            <a href="#" class="dropdown-toggle flex items-center gap-1 py-2 md:py-0 text-white hover:underline"
-               aria-haspopup="true" aria-expanded="false">
-              <span>${escapeHtml(user.username)}</span>
+          <li class="dropdown mt-4 md:mt-0" id="tl-dropdown-user">
+            <a href="#" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+              ${escapeHtml(user.username)}
               <i class="fas fa-caret-down text-xs"></i>
             </a>
             <ul class="dropdown-menu">${userMenu}</ul>
@@ -94,19 +82,19 @@ function renderNav() {
   </header>`;
 }
 
-/* ---------- footer ---------- */
+/* ---------- Footer ---------- */
 function renderFooter() {
   const mount = document.getElementById('site-footer');
   if (!mount) return;
   mount.innerHTML = `
-  <footer class="bg-gray-900 text-white p-5 mt-8">
-    <div class="container mx-auto text-center text-sm text-gray-300">
+  <footer class="site-footer">
+    <div class="container mx-auto max-w-6xl text-center">
       <p>&copy; ${new Date().getFullYear()} ${SITE.brand}. All rights reserved.</p>
     </div>
   </footer>`;
 }
 
-/* ---------- wire up interactions ---------- */
+/* ---------- Wire up interactions ---------- */
 function wireNav() {
   const toggle = document.getElementById('nav-toggle');
   const collapse = document.getElementById('nav-collapse');
@@ -159,27 +147,36 @@ function wireNav() {
   });
 }
 
-/* ---------- featured projects on home page ---------- */
+/* ---------- Featured projects on home page ---------- */
+function projectThumbHtml(p, imgClass) {
+  if (p.thumbnail) {
+    return `<img src="${escapeHtml(p.thumbnail)}" alt="${escapeHtml(p.title)}"
+                 class="${imgClass}" loading="lazy">`;
+  }
+  return `<div class="project-placeholder"><i class="fas fa-microchip"></i></div>`;
+}
+
 function renderFeatured() {
   const mount = document.getElementById('featured-mount');
   if (!mount || typeof PROJECTS === 'undefined') return;
 
-  const featured = PROJECTS.slice(0, 3);
+  const featured = PROJECTS.filter(p => p.featured).slice(0, 4);
 
   mount.innerHTML = `
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
       ${featured.map(p => `
-        <a href="portfolio.html?id=${p.id}" class="project-card bg-white rounded-lg shadow-md overflow-hidden">
-          <img src="${escapeHtml(p.thumbnail)}" alt="${escapeHtml(p.title)}"
-               class="project-image" loading="lazy">
-          <div class="p-4">
-            <h3 class="text-lg font-semibold text-center text-gray-900">${escapeHtml(p.title)}</h3>
+        <a href="portfolio.html?id=${p.id}" class="project-card card">
+          ${projectThumbHtml(p, 'project-image')}
+          <div class="p-5">
+            <p class="label mb-2">${escapeHtml(p.period)}</p>
+            <h3 class="project-title text-lg leading-snug mb-2">${escapeHtml(p.title)}</h3>
+            <div>${(p.skills || []).slice(0,3).map(s => `<span class="tag">${escapeHtml(s)}</span>`).join('')}</div>
           </div>
         </a>`).join('')}
     </div>`;
 }
 
-/* ---------- init ---------- */
+/* ---------- Init ---------- */
 document.addEventListener('DOMContentLoaded', () => {
   renderNav();
   renderFooter();

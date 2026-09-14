@@ -1,5 +1,5 @@
 /* ============================================================
-   Portfolio page — grid + single-project detail view
+   Portfolio page — grid view + single-project detail
    ============================================================ */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -13,29 +13,40 @@ document.addEventListener('DOMContentLoaded', () => {
   wireLightbox();
 });
 
+function projectThumbHtml(p, imgClass) {
+  if (p.thumbnail) {
+    return `<img src="${escapeHtml(p.thumbnail)}" alt="${escapeHtml(p.title)}"
+                 class="${imgClass}" loading="lazy">`;
+  }
+  return `<div class="project-placeholder"><i class="fas fa-microchip"></i></div>`;
+}
+
+/* ---------- Grid ---------- */
 function renderGrid() {
   const mount = document.getElementById('portfolio-mount');
   document.title = 'Portfolio — Smail Lotmani';
 
   if (!PROJECTS.length) {
-    mount.innerHTML = '<p class="text-center text-gray-700">No projects found.</p>';
+    mount.innerHTML = '<p class="text-center text-gray-500">No projects found.</p>';
     return;
   }
 
   mount.innerHTML = `
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
       ${PROJECTS.map(p => `
-        <a href="portfolio.html?id=${p.id}"
-           class="project-card bg-white rounded-lg shadow-md overflow-hidden">
-          <img src="${escapeHtml(p.thumbnail)}" alt="${escapeHtml(p.title)}"
-               class="project-image" loading="lazy">
-          <div class="p-4">
-            <h2 class="text-lg font-semibold text-center text-gray-900">${escapeHtml(p.title)}</h2>
+        <a href="portfolio.html?id=${p.id}" class="project-card card">
+          ${projectThumbHtml(p, 'project-image')}
+          <div class="p-5">
+            <p class="label mb-2">${escapeHtml(p.period)}</p>
+            <h2 class="project-title text-lg leading-snug mb-2">${escapeHtml(p.title)}</h2>
+            ${p.org ? `<p class="text-sm text-gray-500 mb-3">${escapeHtml(p.org)}</p>` : ''}
+            <div>${(p.skills || []).slice(0,4).map(s => `<span class="tag">${escapeHtml(s)}</span>`).join('')}</div>
           </div>
         </a>`).join('')}
     </div>`;
 }
 
+/* ---------- Detail ---------- */
 function renderDetail(id) {
   const mount = document.getElementById('portfolio-mount');
   const project = PROJECTS.find(p => p.id === id);
@@ -43,11 +54,11 @@ function renderDetail(id) {
   if (!project) {
     document.title = 'Not found — Smail Lotmani';
     mount.innerHTML = `
-      <div class="bg-white p-8 rounded-lg shadow-md text-center max-w-lg mx-auto">
+      <div class="card p-10 text-center max-w-lg mx-auto">
         <i class="fas fa-search text-4xl text-gray-300 mb-4"></i>
-        <p class="text-gray-700 mb-6">Project not found.</p>
-        <a href="portfolio.html" class="bg-gray-900 text-white px-4 py-2 rounded hover:bg-gray-800">
-          <i class="fas fa-arrow-left mr-2"></i>Back to Portfolio
+        <p class="text-gray-600 mb-6">Project not found.</p>
+        <a href="portfolio.html" class="btn btn-outline">
+          <i class="fas fa-arrow-left"></i> Back to Portfolio
         </a>
       </div>`;
     return;
@@ -57,45 +68,70 @@ function renderDetail(id) {
 
   const photos = (project.photos || []).filter(Boolean);
   const videos = (project.videos || []).filter(Boolean);
+  const skills = (project.skills || []);
+  const keywords = (project.keywords || []);
+
+  const skillsBlock = skills.length ? `
+    <div class="mb-8">
+      <p class="label mb-3">Skills</p>
+      <div>${skills.map(s => `<span class="tag tag-accent">${escapeHtml(s)}</span>`).join('')}</div>
+    </div>` : '';
+
+  const keywordsBlock = keywords.length ? `
+    <div class="mb-8">
+      <p class="label mb-3">Keywords</p>
+      <div>${keywords.map(k => `<span class="tag">${escapeHtml(k)}</span>`).join('')}</div>
+    </div>` : '';
 
   const photosBlock = photos.length ? `
-    <h2 class="text-lg font-semibold mb-3 text-gray-900">Photos</h2>
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
-      ${photos.map(src => `
-        <img src="${escapeHtml(src)}" alt="${escapeHtml(project.title)} photo"
-             class="gallery-image w-full h-48 object-cover rounded shadow-sm"
-             data-full="${escapeHtml(src)}" loading="lazy">`).join('')}
+    <div class="mb-8">
+      <p class="label mb-3">Photos</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        ${photos.map(src => `
+          <img src="${escapeHtml(src)}" alt="${escapeHtml(project.title)} photo"
+               class="gallery-image w-full h-56 object-cover"
+               data-full="${escapeHtml(src)}" loading="lazy">`).join('')}
+      </div>
     </div>` : '';
 
   const videosBlock = videos.length ? `
-    <h2 class="text-lg font-semibold mb-3 text-gray-900">Videos</h2>
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
-      ${videos.map(src => `
-        <iframe class="video-frame" src="${escapeHtml(src)}"
-                title="Project video" loading="lazy"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowfullscreen></iframe>`).join('')}
+    <div class="mb-8">
+      <p class="label mb-3">Videos</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        ${videos.map(src => `
+          <iframe class="video-frame" src="${escapeHtml(src)}"
+                  title="Project video" loading="lazy"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen></iframe>`).join('')}
+      </div>
     </div>` : '';
 
+  const linkBlock = project.link ? `
+    <a href="${escapeHtml(project.link)}" target="_blank" rel="noopener" class="btn btn-primary mb-8">
+      <i class="fas fa-external-link-alt"></i> View Project
+    </a>` : '';
+
   mount.innerHTML = `
-    <article class="bg-white p-6 md:p-8 rounded-lg shadow-md">
-      <h1 class="text-2xl md:text-3xl font-bold mb-2 text-gray-900">${escapeHtml(project.title)}</h1>
-      <p class="text-gray-500 text-sm mb-6">
-        <i class="far fa-calendar-alt mr-1"></i>${escapeHtml(project.createdAt)}
-      </p>
+    <article class="card p-7 md:p-10 max-w-3xl mx-auto">
+      <p class="label mb-3">${escapeHtml(project.period)}</p>
+      <h1 class="display text-3xl md:text-4xl mb-3">${escapeHtml(project.title)}</h1>
+      ${project.org ? `<p class="text-gray-500 mb-8">${escapeHtml(project.org)}</p>` : '<div class="mb-6"></div>'}
 
       <p class="text-gray-700 mb-8 leading-relaxed whitespace-pre-line">${escapeHtml(project.description)}</p>
 
+      ${linkBlock}
+      ${skillsBlock}
+      ${keywordsBlock}
       ${photosBlock}
       ${videosBlock}
 
-      <a href="portfolio.html"
-         class="inline-flex items-center bg-gray-900 text-white px-4 py-2 rounded hover:bg-gray-800">
-        <i class="fas fa-arrow-left mr-2"></i>Back to Portfolio
+      <a href="portfolio.html" class="btn btn-ghost">
+        <i class="fas fa-arrow-left"></i> Back to Portfolio
       </a>
     </article>`;
 }
 
+/* ---------- Lightbox ---------- */
 function wireLightbox() {
   const modal = document.getElementById('imageModal');
   const modalImg = document.getElementById('modalImage');
