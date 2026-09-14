@@ -1,14 +1,17 @@
 /* ============================================================
    Shared UI - header, footer, dropdown, mobile menu, search
+   Also renders About sections on the home page.
    ============================================================ */
 
 const SITE = {
   brand: 'Smail Lotmani',
+  tagline: 'Embedded Systems Engineer',
   nav: [
-    { label: 'Home',      href: 'index.html' },
-    { label: 'Portfolio', href: 'portfolio.html' },
-    { label: 'About',     href: 'index.html#about' },
-    { label: 'Contact',   href: 'index.html#contact' }
+    { label: 'Home',       href: 'index.html' },
+    { label: 'Portfolio',  href: 'portfolio.html' },
+    { label: 'Experience', href: 'index.html#experience' },
+    { label: 'Skills',     href: 'index.html#skills' },
+    { label: 'Contact',    href: 'index.html#contact' }
   ]
 };
 
@@ -40,22 +43,23 @@ function renderNav() {
 
   const links = SITE.nav.map(l => {
     const target = l.href.split('#')[0].toLowerCase();
-    const active = target === page;
+    const active = target === page && !l.href.includes('#');
     return `<li>
       <a href="${l.href}" class="nav-link ${active ? 'active' : ''}">${l.label}</a>
     </li>`;
   }).join('');
 
   const userMenu = isLoggedIn
-    ? `
-      <li><a href="user/info.html"><i class="fas fa-user"></i> My Info</a></li>
-      <li><a href="#" id="logout-link"><i class="fas fa-sign-out-alt"></i> Log Out</a></li>`
+    ? `<li><a href="#" id="logout-link"><i class="fas fa-sign-out-alt"></i> Log Out</a></li>`
     : `<li><a href="login.html"><i class="fas fa-sign-in-alt"></i> Log In</a></li>`;
 
   mount.innerHTML = `
   <header class="site-header">
     <div class="container mx-auto max-w-6xl px-5 py-4 flex justify-between items-center">
-      <a href="index.html" class="brand">${SITE.brand}</a>
+      <div>
+        <a href="index.html" class="brand block leading-tight">${SITE.brand}</a>
+        <span class="text-xs text-gray-500">${SITE.tagline}</span>
+      </div>
 
       <button id="nav-toggle" class="md:hidden p-2" aria-label="Toggle menu" aria-expanded="false">
         <span class="hamburger-box"><span class="hamburger-inner"></span></span>
@@ -94,7 +98,7 @@ function renderFooter() {
   </footer>`;
 }
 
-/* ---------- Wire up interactions ---------- */
+/* ---------- Nav interactions ---------- */
 function wireNav() {
   const toggle = document.getElementById('nav-toggle');
   const collapse = document.getElementById('nav-collapse');
@@ -147,11 +151,12 @@ function wireNav() {
   });
 }
 
-/* ---------- Featured projects on home page ---------- */
+/* ---------- Featured projects ---------- */
 function projectThumbHtml(p, imgClass) {
   if (p.thumbnail) {
     return `<img src="${escapeHtml(p.thumbnail)}" alt="${escapeHtml(p.title)}"
-                 class="${imgClass}" loading="lazy">`;
+                 class="${imgClass}" loading="lazy"
+                 onerror="this.outerHTML='&lt;div class=\\'project-placeholder\\'&gt;&lt;i class=\\'fas fa-microchip\\'&gt;&lt;/i&gt;&lt;/div&gt;'">`;
   }
   return `<div class="project-placeholder"><i class="fas fa-microchip"></i></div>`;
 }
@@ -174,6 +179,64 @@ function renderFeatured() {
           </div>
         </a>`).join('')}
     </div>`;
+}
+
+/* ---------- Experience ---------- */
+function renderExperience() {
+  const mount = document.getElementById('experience-mount');
+  if (!mount || typeof EXPERIENCE === 'undefined') return;
+
+  mount.innerHTML = EXPERIENCE.map(e => `
+    <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 border-b border-[#e7e5e4] pb-5">
+      <div>
+        <p class="font-semibold text-[#0c0a09]">${escapeHtml(e.role)}</p>
+        <p class="text-gray-600 text-sm">${escapeHtml(e.company)} &middot; ${escapeHtml(e.location)}</p>
+      </div>
+      <p class="label shrink-0">${escapeHtml(e.period)}</p>
+    </div>
+  `).join('');
+}
+
+/* ---------- Skills ---------- */
+function renderSkills() {
+  const mount = document.getElementById('skills-mount');
+  if (!mount || typeof SKILL_GROUPS === 'undefined') return;
+
+  mount.innerHTML = SKILL_GROUPS.map(g => `
+    <div class="card p-6">
+      <p class="label mb-4">${escapeHtml(g.title)}</p>
+      <div>${g.items.map(i => `<span class="tag">${escapeHtml(i)}</span>`).join('')}</div>
+    </div>
+  `).join('');
+}
+
+/* ---------- Education ---------- */
+function renderEducation() {
+  const mount = document.getElementById('education-mount');
+  if (!mount || typeof EDUCATION === 'undefined') return;
+
+  mount.innerHTML = EDUCATION.map(e => `
+    <div>
+      <p class="font-semibold text-[#0c0a09] text-lg">${escapeHtml(e.degree)}</p>
+      <p class="text-gray-600 text-sm mb-4">${escapeHtml(e.school)} &middot; ${escapeHtml(e.period)}</p>
+      <ul class="space-y-2 text-gray-700 text-sm list-disc pl-5">
+        ${e.notes.map(n => `<li>${escapeHtml(n)}</li>`).join('')}
+      </ul>
+    </div>
+  `).join('');
+}
+
+/* ---------- Languages ---------- */
+function renderLanguages() {
+  const mount = document.getElementById('languages-mount');
+  if (!mount || typeof LANGUAGES === 'undefined') return;
+
+  mount.innerHTML = LANGUAGES.map(l => `
+    <div class="flex justify-between items-center border-b border-[#e7e5e4] pb-2">
+      <span class="text-[#0c0a09]">${escapeHtml(l.name)}</span>
+      <span class="label">${escapeHtml(l.level)}</span>
+    </div>
+  `).join('');
 }
 
 /* ---------- Init ---------- */

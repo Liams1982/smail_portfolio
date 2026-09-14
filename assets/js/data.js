@@ -1,269 +1,432 @@
 /* ============================================================
    PROJECT DATA - Smail Lotmani
-   To add a project, copy a block and edit the fields.
    ------------------------------------------------------------
-   thumbnail : path to image, or null for a placeholder icon
-   org       : company / institution (or null)
-   period    : display string, e.g. "Aug 2023 – Apr 2024"
-   link      : external URL (or null)
-   skills    : short list shown as accent tags
-   keywords  : longer list shown as muted tags
+   Media paths per project (add files later):
+     thumbnail : assets/images/projects/{id}/thumb.jpg
+     photos    : assets/images/projects/{id}/1.jpg and /2.jpg
+     videos    : assets/videos/projects/{id}/1.mp4 and /2.mp4
+   If a path 404s, the card falls back to a placeholder icon.
    ============================================================ */
 
 const PROJECTS = [
   {
     id: 1,
     featured: true,
-    title: "Vertex - Programming Language & IDE",
+    title: "Vertex - Programming Language and IDE",
     org: null,
-    period: "Aug 2026 – Aug 2026",
-    thumbnail: null,
+    period: "2026",
+    thumbnail: "assets/images/projects/1/thumb.jpg",
     link: "https://github.com/Liams1982/Vertex_IDE",
     description:
-      "A brand new programming language inspired by Delphi and C++. " +
-      "Includes a companion IDE and a compiler/toolchain built to explore " +
-      "how classic Pascal-style syntax can meet modern C++ performance.",
-    skills: ["C++", "Python"],
-    keywords: ["Programming Language", "Compiler", "IDE", "Delphi", "C++"],
-    photos: [],
-    videos: []
+      "A brand new programming language inspired by Delphi and C++, with a companion IDE. " +
+      "Built to explore how classic Pascal-style syntax can meet modern C++ performance.",
+    skills: ["C++", "Python", "Compiler Design", "IDE"],
+    keywords: ["Programming Language", "Delphi", "C++", "Toolchain"],
+    photos: [
+      "assets/images/projects/1/1.jpg",
+      "assets/images/projects/1/2.jpg"
+    ],
+    videos: [
+      "assets/videos/projects/1/1.mp4",
+      "assets/videos/projects/1/2.mp4"
+    ]
   },
   {
     id: 2,
     featured: true,
-    title: "Electronic Control System for Crawler Pipeline Painting Robot",
-    org: null,
-    period: "Aug 2023 – Apr 2024",
-    thumbnail: null,
+    title: "Crawler Robot Control System",
+    org: "Arris Electronics and Robotics",
+    period: "2023 - 2024",
+    thumbnail: "assets/images/projects/2/thumb.jpg",
     link: null,
     description:
-      "Designed an electronic control system for a crawler pipeline painting robot, " +
-      "integrating four interconnected circuits powered by Microchip PIC microcontrollers. " +
-      "The system manages wheel motors and the paint ejection system, enabling precise operation. " +
-      "The interface includes a keyboard and LCD display, allowing users to input various settings, " +
-      "monitor performance, and initiate the robot's tasks - ensuring effective and controlled " +
-      "painting operations on pipelines.",
-    skills: ["Microchip PIC", "Microcontrollers", "Motor Control", "Embedded Systems", "PCB Design"],
+      "Designed the complete embedded control system for an industrial crawler robot used in " +
+      "pipeline inspection. Three custom PCBs: main control board, power board, and HMI board " +
+      "with keypad, LCD, and navigation buttons.\n\n" +
+      "The power board carries relays, ULN2803 drivers, voltage regulators, and a boost converter. " +
+      "Two PIC16F876A MCUs handle main control and HMI, with a PIC16F88 for sensor interface. " +
+      "A custom serial UART protocol with acknowledgment and data verification links the boards. " +
+      "Ping sensors, water sensors, and a magnetic switch enable automatic startup. A second HMI " +
+      "via Ethernet cable allows remote control.\n\n" +
+      "Firmware is bare-metal C with a custom mini-RTOS built on a switch-loop and interrupts, " +
+      "no FreeRTOS. Autonomous error recovery detects voids under the tracks and reverses the " +
+      "motors automatically after a Track Fail event.",
+    skills: ["PIC16F876A", "PIC16F88", "Bare-metal C", "PCB Design", "UART"],
     keywords: [
-      "Crawler Robot", "Pipeline Painting", "Paint Ejection", "User Interface", "LCD Display"
+      "Crawler Robot", "Pipeline Inspection", "Power Board", "HMI",
+      "Sensor Fusion", "Autonomous Recovery"
     ],
-    photos: [],
-    videos: []
+    photos: [
+      "assets/images/projects/2/1.jpg",
+      "assets/images/projects/2/2.jpg"
+    ],
+    videos: [
+      "assets/videos/projects/2/1.mp4",
+      "assets/videos/projects/2/2.mp4"
+    ]
   },
   {
     id: 3,
     featured: true,
-    title: "Electronic Control System for Wheelchairs",
-    org: "Arris Electronics and Robotics",
-    period: "Aug 2022 – Oct 2023",
-    thumbnail: null,
+    title: "Eurobot Competition Robots",
+    org: "Eurobot",
+    period: "2011 - 2013",
+    thumbnail: "assets/images/projects/3/thumb.jpg",
     link: null,
     description:
-      "Led design and development of an advanced electronic control system for wheelchairs, " +
-      "featuring a custom joystick PCB and a high-performance power board with MOSFETs and relays. " +
-      "Built around a PIC microcontroller for precise PWM motor speed control, the system integrates " +
-      "blinkers and brake controls for enhanced safety and functionality. The project demonstrates " +
-      "expertise in electronics engineering and innovative problem-solving, delivering a solution " +
-      "that improves mobility and user experience.",
-    skills: ["Power Electronics", "Motor Control", "PIC", "PCB Design", "PWM", "Embedded Systems"],
-    keywords: ["Joystick PCB", "MOSFET", "Relays", "Assistive Technology"],
-    photos: [],
-    videos: []
+      "Three fully autonomous mobile robots designed and built from scratch for the Eurobot " +
+      "international competition. Placed 2nd in the Algerian national tournament and 32nd at " +
+      "the World Cup. The 2012 robot was designed and built solo in four months.\n\n" +
+      "Custom PCBs, bare-metal C on PIC16F876A and PIC16F84. Modular libraries for SRF02 " +
+      "ultrasonic sensors using register-level I2C, L298 and L297 motor drivers for steppers, " +
+      "and servo control. The gripper used a DIY optical sensor built from an op-amp comparator, " +
+      "two LDRs, and red and blue LEDs.\n\n" +
+      "Full mechanical design, 3D modeling, drivetrain, and frame built by hand.",
+    skills: ["PIC16F876A", "PIC16F84", "Bare-metal C", "I2C", "Robotics"],
+    keywords: [
+      "Autonomous Robot", "SRF02 Ultrasonic", "Stepper Motors", "Servo Control",
+      "Custom Optic Sensor", "Mechanical Design"
+    ],
+    photos: [
+      "assets/images/projects/3/1.jpg",
+      "assets/images/projects/3/2.jpg"
+    ],
+    videos: [
+      "assets/videos/projects/3/1.mp4",
+      "assets/videos/projects/3/2.mp4"
+    ]
   },
   {
     id: 4,
     featured: true,
-    title: "Autonomous Mobile Robot - Eurobot International Competition",
-    org: "Eurobot",
-    period: "Dec 2011 – Apr 2012",
-    thumbnail: null,
+    title: "Wheelchair Electronic Control System",
+    org: "Arris Electronics and Robotics",
+    period: "2022 - 2023",
+    thumbnail: "assets/images/projects/4/thumb.jpg",
     link: null,
     description:
-      "Designed and built a fully autonomous mobile robot for the Eurobot international competition, " +
-      "achieving 2nd place in the national (Algerian) tournament. The robot integrated ultrasonic " +
-      "and optical sensors, servo and stepper motors, and DC drive systems. Developed using a " +
-      "PIC16F876A microcontroller programmed in mikroC, with custom PCB and power supply design " +
-      "to support robust, real-time operation.",
-    skills: ["PIC16F876A", "mikroC", "Embedded Systems", "PCB Design"],
-    keywords: [
-      "Autonomous Robot", "Ultrasonic Sensors", "Optical Sensor", "Servo Motors",
-      "Stepper Motors", "DC Motors", "Eurobot"
+      "Embedded firmware for a motorized wheelchair, built as a safety-critical system with " +
+      "fault detection and graceful degradation. Custom joystick PCB and a high-performance " +
+      "power board using MOSFETs and relays. Built around a PIC microcontroller for precise " +
+      "PWM motor speed control. Integrated blinkers and brake controls for enhanced safety.",
+    skills: ["PIC", "Power Electronics", "PWM", "PCB Design", "Safety"],
+    keywords: ["Wheelchair", "Joystick PCB", "MOSFET", "Relays", "Assistive Tech"],
+    photos: [
+      "assets/images/projects/4/1.jpg",
+      "assets/images/projects/4/2.jpg"
     ],
-    photos: [],
-    videos: []
+    videos: [
+      "assets/videos/projects/4/1.mp4",
+      "assets/videos/projects/4/2.mp4"
+    ]
   },
   {
     id: 5,
-    title: "Design of an Embedded Pulse Oximeter",
-    org: "University Mouloud Mammeri Tizi-Ouzou",
-    period: "Feb 2010 – Jul 2010",
-    thumbnail: null,
+    title: "Traffic Light Controllers and Garage Door Openers",
+    org: "Arris Electronics and Robotics",
+    period: "2017 - 2019",
+    thumbnail: "assets/images/projects/5/thumb.jpg",
     link: null,
     description:
-      "Designed and developed a wireless, low-cost pulse oximeter for real-time monitoring of heart " +
-      "rate and blood oxygen saturation (SpO₂). The system includes an optical sensor, analog signal " +
-      "conditioning, microcontroller-based digital processing (PIC16F877), and 433 MHz FM/FSK wireless " +
-      "transmission to a PC interface. Tested successfully on volunteers, the device demonstrated " +
-      "reliable performance for telemedicine and home healthcare applications.\n\n" +
-      "Published in Measurement Science Review, Vol. 10, No. 5, 2010.",
-    skills: ["PIC16F877", "Embedded Systems", "Analog Design", "RF"],
+      "Custom embedded control systems with timers, relays, sensors, and safety interlocks. " +
+      "Bi-color LED driving uses current reversal with relays and bidirectional buffers, which " +
+      "is more economical than H-bridges for this application.\n\n" +
+      "Traffic light controller project included three interconnected PCBs handling timing logic, " +
+      "power distribution, and LED control. Sliding door and garage door controllers use rolling " +
+      "code remote control and configurable parameters like opening time and auto-close delay, " +
+      "with a design that went into series production and nationwide distribution.",
+    skills: ["PIC16F628A", "PCB Design", "Embedded Systems", "Rolling Code"],
     keywords: [
-      "Pulse Oximeter", "SpO2", "Wireless", "Telemedicine", "Medical Devices",
-      "433 MHz", "FM/FSK"
+      "Traffic Light", "Bicolor LED", "Current Reversal", "Garage Door",
+      "Access Control", "Mass Production"
     ],
-    photos: [],
-    videos: []
+    photos: [
+      "assets/images/projects/5/1.jpg",
+      "assets/images/projects/5/2.jpg"
+    ],
+    videos: [
+      "assets/videos/projects/5/1.mp4",
+      "assets/videos/projects/5/2.mp4"
+    ]
   },
   {
     id: 6,
-    title: "Excel-Based After-Sales & Maintenance Tool for Laser Medical Devices",
-    org: null,
-    period: "Nov 2021 – May 2022",
-    thumbnail: null,
+    title: "CAN Bus and J1939 Protocol Simulator",
+    org: "LVSC Mediterranee",
+    period: "2012 - 2013",
+    thumbnail: "assets/images/projects/6/thumb.jpg",
     link: null,
     description:
-      "Designed and developed a custom Excel VBA application to streamline installation, maintenance, " +
-      "and after-sales service for laser medical machines. The tool features automated report generation, " +
-      "customer and equipment database tracking, and auto-filled intervention logs. Each maintenance " +
-      "action is recorded with automatic date handling, machine type tracking, and client-specific " +
-      "history for efficient follow-up and service traceability.",
-    skills: ["Excel VBA", "Automation"],
+      "Designed, built, and tested prototypes for GPS and telematics system validation. " +
+      "Hardware and firmware from scratch on ARM Cortex-M3 (LPC1768) using the LPCXpresso IDE. " +
+      "Low-level communication drivers for CAN and serial interfaces.\n\n" +
+      "The simulator generates and transmits CAN frames replicating vehicle parameters such as " +
+      "engine RPM, speed, and sensor outputs, allowing ECUs, diagnostic tools, and CAN-based " +
+      "systems to be validated in a lab environment without needing live vehicle data.",
+    skills: ["ARM Cortex-M3", "LPC1768", "CAN Bus", "J1939", "Firmware"],
     keywords: [
-      "After-Sales Management", "Maintenance Log", "Medical Devices",
-      "Customer Database", "Service Reporting", "Laser Equipment"
+      "Automotive Electronics", "Telematics", "GPS", "Signal Simulation",
+      "ECU Testing", "FreeRTOS"
     ],
-    photos: [],
-    videos: []
+    photos: [
+      "assets/images/projects/6/1.jpg",
+      "assets/images/projects/6/2.jpg"
+    ],
+    videos: [
+      "assets/videos/projects/6/1.mp4",
+      "assets/videos/projects/6/2.mp4"
+    ]
   },
   {
     id: 7,
-    title: "Refrigerator Control Circuit Design",
+    title: "In-House SMT Production Line",
     org: "Arris Electronics and Robotics",
-    period: "Mar 2021 – Sep 2021",
-    thumbnail: null,
+    period: "2015 - 2025",
+    thumbnail: "assets/images/projects/7/thumb.jpg",
     link: null,
     description:
-      "Developed an ultra-compact control circuit for refrigerators using the PIC16F1825 microcontroller. " +
-      "The system includes NTC thermistor-based temperature monitoring, compressor control, and various " +
-      "safety features for optimal refrigerator operation. Designed the schematic and PCB layout, " +
-      "ensuring a compact and efficient design that meets performance and space constraints.",
-    skills: ["PIC16F1825", "PCB Design", "Embedded Systems"],
-    keywords: [
-      "Refrigerator Control", "NTC Thermistor", "Compressor Control",
-      "Ultra-Compact PCB", "Schematic Design", "Temperature Monitoring"
+      "Managed the complete SMT assembly line end to end: pick-and-place programming, reflow " +
+      "profiling, stencil design, and quality control. Produced over 1,000 assembled PCBs for " +
+      "prototyping and mid-range manufacturing.\n\n" +
+      "This closed the loop between firmware, hardware, and manufacturing, letting the practice " +
+      "iterate quickly on new designs without depending on external assembly houses.",
+    skills: ["SMT Assembly", "Reflow Profiling", "Pick-and-Place", "QC", "DFM"],
+    keywords: ["Manufacturing", "Stencil Design", "Prototyping", "Mid-Range Production"],
+    photos: [
+      "assets/images/projects/7/1.jpg",
+      "assets/images/projects/7/2.jpg"
     ],
-    photos: [],
-    videos: []
+    videos: [
+      "assets/videos/projects/7/1.mp4",
+      "assets/videos/projects/7/2.mp4"
+    ]
   },
   {
     id: 8,
-    title: "Remotely Controlled Sliding Door Controller",
-    org: "Arris Electronics and Robotics",
-    period: "Mar 2018 – Feb 2019",
-    thumbnail: null,
+    title: "Medical Laser Systems - Service and Automation",
+    org: "Skin Medical System",
+    period: "2021 - 2022",
+    thumbnail: "assets/images/projects/8/thumb.jpg",
     link: null,
     description:
-      "Developed a PIC16F628A-based control box for automated sliding doors, featuring secure " +
-      "rolling-code remote control. Integrated multiple programmable parameters such as door opening " +
-      "time, auto-close delay, and user-configurable settings. Designed for mass production, the system " +
-      "was manufactured in series and distributed nationwide, contributing to the modernization of " +
-      "automated access systems across the region.",
-    skills: ["PIC16F628A", "Microcontrollers", "PCB Design", "Embedded Systems"],
+      "Maintained and repaired Class IV dermatological laser systems in the field. " +
+      "Achieved a high first-visit resolution rate through systematic diagnostics.\n\n" +
+      "Developed a custom Excel VBA application to streamline installation, maintenance, and " +
+      "after-sales service. The tool handles automated report generation, customer and equipment " +
+      "database tracking, and auto-filled intervention logs with automatic date handling and " +
+      "client-specific history.",
+    skills: ["Class IV Lasers", "Field Service", "Excel VBA", "Diagnostics"],
     keywords: [
-      "Rolling Code", "Sliding Door Automation", "Remote Control",
-      "Parameter Programming", "Mass Production", "Access Control"
+      "Medical Devices", "After-Sales", "Maintenance Log", "Laser Equipment",
+      "Service Reporting"
     ],
-    photos: [],
-    videos: []
+    photos: [
+      "assets/images/projects/8/1.jpg",
+      "assets/images/projects/8/2.jpg"
+    ],
+    videos: [
+      "assets/videos/projects/8/1.mp4",
+      "assets/videos/projects/8/2.mp4"
+    ]
   },
   {
     id: 9,
-    title: "Bi-Color LED Countdown Timer for Traffic Lights",
+    title: "Legacy Thermostat Redesign",
     org: "Arris Electronics and Robotics",
-    period: "Jun 2018 – Sep 2018",
-    thumbnail: null,
+    period: "2015 - 2020",
+    thumbnail: "assets/images/projects/9/thumb.jpg",
     link: null,
     description:
-      "Designed and implemented a bi-color (red/green) LED countdown circuit for traffic signal systems " +
-      "using a PIC microcontroller. The project included the complete hardware development of three " +
-      "interconnected PCBs, managing timing logic, power distribution, and LED control. The system " +
-      "provides a visual countdown for traffic lights, enhancing road safety and traffic flow.",
-    skills: ["PIC", "PCB Design", "Embedded Systems"],
-    keywords: [
-      "Traffic Light Countdown", "Bi-Color LED", "Timing Control", "Signal Automation"
+      "Reverse-engineered an obsolete industrial thermostat control board to bring it back into " +
+      "production. Replaced discontinued components with modern equivalents, redesigned the PCB " +
+      "layout, and improved EMC robustness.\n\n" +
+      "Delivered a drop-in replacement that extended the product life without a full redesign " +
+      "of the surrounding system.",
+    skills: ["Reverse Engineering", "PCB Redesign", "EMC", "Component Substitution"],
+    keywords: ["Legacy Support", "Industrial Control", "Thermostat"],
+    photos: [
+      "assets/images/projects/9/1.jpg",
+      "assets/images/projects/9/2.jpg"
     ],
-    photos: [],
-    videos: []
+    videos: [
+      "assets/videos/projects/9/1.mp4",
+      "assets/videos/projects/9/2.mp4"
+    ]
   },
   {
     id: 10,
-    title: "USB HID-Controlled LED Matrix Display",
-    org: null,
-    period: "Jun 2017 – Mar 2018",
-    thumbnail: null,
+    title: "Automotive Electronics - Security Systems",
+    org: "Self-Employed",
+    period: "2022 - 2025",
+    thumbnail: "assets/images/projects/10/thumb.jpg",
     link: null,
     description:
-      "Designed and developed a custom LED matrix display controlled via USB HID protocol, using a PIC " +
-      "microcontroller. The system allows users to send text or patterns from a PC directly to the LED " +
-      "matrix without needing special drivers, enabling real-time updates and interactive displays. " +
-      "Focused on low-level USB communication, firmware development in C, and efficient LED control " +
-      "for smooth visual output.",
-    skills: ["USB HID", "PIC", "Firmware", "C", "PCB Design"],
-    keywords: ["LED Matrix", "USB Communication", "Embedded Systems"],
-    photos: [],
-    videos: []
+      "Installed and diagnosed alarm, immobilizer, and GPS anti-theft systems for over 200 " +
+      "vehicles. Advanced troubleshooting and full system integration across a wide range of " +
+      "makes and models.",
+    skills: ["Automotive", "Alarm Systems", "GPS Tracking", "Diagnostics"],
+    keywords: ["Immobilizer", "Anti-Theft", "System Integration"],
+    photos: [
+      "assets/images/projects/10/1.jpg",
+      "assets/images/projects/10/2.jpg"
+    ],
+    videos: [
+      "assets/videos/projects/10/1.mp4",
+      "assets/videos/projects/10/2.mp4"
+    ]
   },
   {
     id: 11,
-    title: "CAN Bus Signal Simulator - Vehicle Communication Testing",
-    org: null,
-    period: "Feb 2013 – May 2013",
-    thumbnail: null,
+    title: "PIC Assembly Chronometer",
+    org: "University of Tizi Ouzou",
+    period: "2008",
+    thumbnail: "assets/images/projects/11/thumb.jpg",
     link: null,
     description:
-      "Developed a CAN bus signal simulator using the LPCXpresso platform paired with a custom-designed " +
-      "PCB to emulate real-time automotive communication signals. The system generates and transmits " +
-      "CAN frames replicating various vehicle parameters such as engine RPM, speed, and sensor outputs. " +
-      "This simulator is designed for testing and validating ECUs, diagnostic tools, and other CAN-based " +
-      "systems in a controlled lab environment - eliminating the need for live vehicle data.",
-    skills: ["CAN Bus", "LPCXpresso", "PCB Design", "Embedded Systems"],
-    keywords: [
-      "Automotive Electronics", "Signal Simulation", "ECU Testing", "Real-Time Communication"
+      "First microcontroller system design, completed two years before graduation. Built on a " +
+      "PIC MCU in Microchip assembly language.\n\n" +
+      "To work around the PIC's limited I/O pins, the design uses a custom two-wire serial " +
+      "protocol driving shift registers to control four seven-segment displays. Careful delay " +
+      "loops and instruction cycle counting keep the chronometer accurate.",
+    skills: ["PIC", "Assembly Language", "Shift Registers", "Seven-Segment"],
+    keywords: ["Microchip Assembly", "Custom Serial Protocol", "Student Project"],
+    photos: [
+      "assets/images/projects/11/1.jpg",
+      "assets/images/projects/11/2.jpg"
     ],
-    photos: [],
-    videos: []
+    videos: [
+      "assets/videos/projects/11/1.mp4",
+      "assets/videos/projects/11/2.mp4"
+    ]
+  }
+];
+
+/* ============================================================
+   EXPERIENCE
+   ============================================================ */
+const EXPERIENCE = [
+  {
+    role: "SMT Electronics Technician and NPI Support",
+    company: "BRP Megatech",
+    location: "Shawinigan, QC",
+    period: "Feb 2026 - Jul 2026"
   },
   {
-    id: 12,
-    title: "ChronoAsm - PIC16F84 Chronometer",
-    org: "University Mouloud Mammeri Tizi-Ouzou",
-    period: "2009",
-    thumbnail: null,
-    link: null,
-    description:
-      "A digital chronometer (stopwatch) built using the PIC16F84 microcontroller programmed in Microchip " +
-      "assembly language. It solves the PIC's limited I/O pin problem by using 74HC164 shift registers to " +
-      "control four 7-segment displays via a custom serial protocol.\n\n" +
-      "Thanks to carefully crafted delay loops and precise instruction cycle counting, the chronometer " +
-      "maintains high accuracy.",
-    skills: ["Microchip PIC", "Assembly Language", "PIC16F84"],
-    keywords: ["Shift Registers", "74HC164", "7-Segment Display", "Serial Protocol"],
-    photos: [],
-    videos: []
+    role: "Embedded Systems Engineer and Founder",
+    company: "Arris Electronics and Robotics",
+    location: "Algeria",
+    period: "Mar 2015 - Dec 2025"
   },
   {
-    id: 13,
-    title: "Design of a Robot - Eurobot Competition",
-    org: "Eurobot",
-    period: "Nov 2010 – Jun 2011",
-    thumbnail: null,
-    link: null,
-    description:
-      "Design of a robot for the Eurobot competition - mechanical structure, drive system, " +
-      "sensor integration, and embedded control.",
-    skills: ["Robotics", "Embedded Systems"],
-    keywords: ["Eurobot"],
-    photos: [],
-    videos: []
+    role: "Electronics Field Service Engineer",
+    company: "ETS Boukhalfa",
+    location: "Algeria",
+    period: "Dec 2024 - Dec 2025"
+  },
+  {
+    role: "Automotive Electronics Engineer (Self-Employed, Part-Time)",
+    company: "Custom Automotive Security",
+    location: "Algeria",
+    period: "Jul 2022 - Dec 2025"
+  },
+  {
+    role: "Medical Equipment Field Service Engineer",
+    company: "Skin Medical System",
+    location: "Algeria",
+    period: "Jun 2021 - Jul 2022"
+  },
+  {
+    role: "Production and Maintenance Engineer",
+    company: "SAEMO Sidi Rached",
+    location: "Algeria",
+    period: "May 2013 - Jul 2013"
+  },
+  {
+    role: "Electronics Engineering Designer (R&D), Embedded Firmware",
+    company: "LVSC Mediterranee",
+    location: "Algeria",
+    period: "Dec 2012 - Apr 2013"
+  }
+];
+
+/* ============================================================
+   SKILL GROUPS
+   ============================================================ */
+const SKILL_GROUPS = [
+  {
+    title: "Embedded Systems and Firmware",
+    items: [
+      "Bare-metal C", "FreeRTOS (working knowledge)", "Register-level programming",
+      "PIC (16F84, 876A, 88, 628A, 1827)", "ARM Cortex-M3 (LPC1768)",
+      "STM32 (Nucleo-F446RE)", "AVR", "Real-time applications",
+      "Firmware optimization", "Custom state machines"
+    ]
+  },
+  {
+    title: "Communication Protocols",
+    items: [
+      "I2C (register-level)", "SPI", "UART", "RS-232", "RS-485",
+      "CAN Bus", "J1939", "Modbus", "TCP/IP", "Ethernet",
+      "GSM/GPS (AT commands)"
+    ]
+  },
+  {
+    title: "Motor Control and Robotics",
+    items: [
+      "DC motor control", "Stepper motor control", "Servo control",
+      "PID", "Trajectory planning",
+      "Sensor integration (ultrasonic, optical, LDR, water)"
+    ]
+  },
+  {
+    title: "Hardware and PCB Design",
+    items: [
+      "Altium", "Eagle", "KiCad", "DesignSpark", "OrCAD",
+      "Schematic capture", "Layout", "30+ boards designed",
+      "SMT assembly", "DFM"
+    ]
+  },
+  {
+    title: "Programming Languages",
+    items: [
+      "C", "C++", "Python", "Delphi", "JavaScript",
+      "PHP", "HTML", "MySQL", "Excel VBA"
+    ]
+  },
+  {
+    title: "Tools and Software",
+    items: [
+      "STM32CubeIDE", "Keil", "mikroC", "LPCXpresso", "mbed",
+      "Arduino IDE", "SolidWorks", "Git", "CMake"
+    ]
+  },
+  {
+    title: "Testing and Diagnostics",
+    items: [
+      "Oscilloscopes", "Logic analyzers", "Power meters",
+      "JTAG/SWD", "Root cause analysis", "Field testing"
+    ]
+  }
+];
+
+const LANGUAGES = [
+  { name: "Berber", level: "Native" },
+  { name: "Arabic", level: "Fluent" },
+  { name: "French", level: "Fluent" },
+  { name: "English", level: "Fluent" }
+];
+
+const EDUCATION = [
+  {
+    degree: "Master's Degree in Electronics Engineering",
+    school: "University of Tizi Ouzou, Algeria",
+    period: "2002 - 2010",
+    notes: [
+      "Specialization in Embedded Systems, Instrumentation, and Control Systems.",
+      "One of the last graduates of the Ingenieur d'Etat program, which is no longer offered.",
+      "Two years of general engineering: quantum mechanics, atomic physics, statistical mechanics, waves, relativity, rational mechanics, linear algebra, calculus.",
+      "Instrumentation specialization: semiconductor fabrication, photolithography, wafer characterization, acoustics, magnetism, dielectrics, measurement instruments.",
+      "Mechanical fabrication training: lathes, mills, CNC, G-code."
+    ]
   }
 ];

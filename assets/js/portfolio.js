@@ -1,5 +1,6 @@
 /* ============================================================
    Portfolio page - grid view + single-project detail
+   Handles both remote video embeds (YouTube) and local MP4s.
    ============================================================ */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -16,9 +17,30 @@ document.addEventListener('DOMContentLoaded', () => {
 function projectThumbHtml(p, imgClass) {
   if (p.thumbnail) {
     return `<img src="${escapeHtml(p.thumbnail)}" alt="${escapeHtml(p.title)}"
-                 class="${imgClass}" loading="lazy">`;
+                 class="${imgClass}" loading="lazy"
+                 onerror="this.outerHTML='&lt;div class=\\'project-placeholder\\'&gt;&lt;i class=\\'fas fa-microchip\\'&gt;&lt;/i&gt;&lt;/div&gt;'">`;
   }
   return `<div class="project-placeholder"><i class="fas fa-microchip"></i></div>`;
+}
+
+function galleryImageHtml(src, alt) {
+  return `<img src="${escapeHtml(src)}" alt="${escapeHtml(alt)}"
+               class="gallery-image w-full h-56 object-cover"
+               data-full="${escapeHtml(src)}" loading="lazy"
+               onerror="this.style.display='none'">`;
+}
+
+function videoHtml(src) {
+  if (/^https?:\/\//i.test(src)) {
+    return `<iframe class="video-frame" src="${escapeHtml(src)}"
+              title="Project video" loading="lazy"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen></iframe>`;
+  }
+  return `<video class="video-frame" controls preload="metadata" playsinline>
+            <source src="${escapeHtml(src)}" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>`;
 }
 
 /* ---------- Grid ---------- */
@@ -87,10 +109,7 @@ function renderDetail(id) {
     <div class="mb-8">
       <p class="label mb-3">Photos</p>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        ${photos.map(src => `
-          <img src="${escapeHtml(src)}" alt="${escapeHtml(project.title)} photo"
-               class="gallery-image w-full h-56 object-cover"
-               data-full="${escapeHtml(src)}" loading="lazy">`).join('')}
+        ${photos.map((src, i) => galleryImageHtml(src, `${project.title} photo ${i + 1}`)).join('')}
       </div>
     </div>` : '';
 
@@ -98,11 +117,7 @@ function renderDetail(id) {
     <div class="mb-8">
       <p class="label mb-3">Videos</p>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        ${videos.map(src => `
-          <iframe class="video-frame" src="${escapeHtml(src)}"
-                  title="Project video" loading="lazy"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowfullscreen></iframe>`).join('')}
+        ${videos.map(src => videoHtml(src)).join('')}
       </div>
     </div>` : '';
 
