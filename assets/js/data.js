@@ -1,5 +1,5 @@
 /* ============================================================
-   PROJECT DATA — Smail Lotmani
+   PROJECT DATA - Smail Lotmani
    To add a project, copy a block and edit the fields.
    ------------------------------------------------------------
    thumbnail : path to image, or null for a placeholder icon
@@ -14,7 +14,7 @@ const PROJECTS = [
   {
     id: 1,
     featured: true,
-    title: "Vertex — Programming Language & IDE",
+    title: "Vertex - Programming Language & IDE",
     org: null,
     period: "Aug 2026 – Aug 2026",
     thumbnail: null,
@@ -41,7 +41,7 @@ const PROJECTS = [
       "integrating four interconnected circuits powered by Microchip PIC microcontrollers. " +
       "The system manages wheel motors and the paint ejection system, enabling precise operation. " +
       "The interface includes a keyboard and LCD display, allowing users to input various settings, " +
-      "monitor performance, and initiate the robot's tasks — ensuring effective and controlled " +
+      "monitor performance, and initiate the robot's tasks - ensuring effective and controlled " +
       "painting operations on pipelines.",
     skills: ["Microchip PIC", "Microcontrollers", "Motor Control", "Embedded Systems", "PCB Design"],
     keywords: [
@@ -73,7 +73,7 @@ const PROJECTS = [
   {
     id: 4,
     featured: true,
-    title: "Autonomous Mobile Robot — Eurobot International Competition",
+    title: "Autonomous Mobile Robot - Eurobot International Competition",
     org: "Eurobot",
     period: "Dec 2011 – Apr 2012",
     thumbnail: null,
@@ -215,7 +215,7 @@ const PROJECTS = [
   },
   {
     id: 11,
-    title: "CAN Bus Signal Simulator — Vehicle Communication Testing",
+    title: "CAN Bus Signal Simulator - Vehicle Communication Testing",
     org: null,
     period: "Feb 2013 – May 2013",
     thumbnail: null,
@@ -225,7 +225,7 @@ const PROJECTS = [
       "PCB to emulate real-time automotive communication signals. The system generates and transmits " +
       "CAN frames replicating various vehicle parameters such as engine RPM, speed, and sensor outputs. " +
       "This simulator is designed for testing and validating ECUs, diagnostic tools, and other CAN-based " +
-      "systems in a controlled lab environment — eliminating the need for live vehicle data.",
+      "systems in a controlled lab environment - eliminating the need for live vehicle data.",
     skills: ["CAN Bus", "LPCXpresso", "PCB Design", "Embedded Systems"],
     keywords: [
       "Automotive Electronics", "Signal Simulation", "ECU Testing", "Real-Time Communication"
@@ -235,7 +235,7 @@ const PROJECTS = [
   },
   {
     id: 12,
-    title: "ChronoAsm — PIC16F84 Chronometer",
+    title: "ChronoAsm - PIC16F84 Chronometer",
     org: "University Mouloud Mammeri Tizi-Ouzou",
     period: "2009",
     thumbnail: null,
@@ -253,13 +253,13 @@ const PROJECTS = [
   },
   {
     id: 13,
-    title: "Design of a Robot — Eurobot Competition",
+    title: "Design of a Robot - Eurobot Competition",
     org: "Eurobot",
     period: "Nov 2010 – Jun 2011",
     thumbnail: null,
     link: null,
     description:
-      "Design of a robot for the Eurobot competition — mechanical structure, drive system, " +
+      "Design of a robot for the Eurobot competition - mechanical structure, drive system, " +
       "sensor integration, and embedded control.",
     skills: ["Robotics", "Embedded Systems"],
     keywords: ["Eurobot"],

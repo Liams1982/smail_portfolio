@@ -1,5 +1,5 @@
 /* ============================================================
-   Shared UI — header, footer, dropdown, mobile menu, search
+   Shared UI - header, footer, dropdown, mobile menu, search
    ============================================================ */
 
 const SITE = {

@@ -1,5 +1,5 @@
 /* ============================================================
-   Portfolio page — grid view + single-project detail
+   Portfolio page - grid view + single-project detail
    ============================================================ */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -24,7 +24,7 @@ function projectThumbHtml(p, imgClass) {
 /* ---------- Grid ---------- */
 function renderGrid() {
   const mount = document.getElementById('portfolio-mount');
-  document.title = 'Portfolio — Smail Lotmani';
+  document.title = 'Portfolio - Smail Lotmani';
 
   if (!PROJECTS.length) {
     mount.innerHTML = '<p class="text-center text-gray-500">No projects found.</p>';
@@ -52,7 +52,7 @@ function renderDetail(id) {
   const project = PROJECTS.find(p => p.id === id);
 
   if (!project) {
-    document.title = 'Not found — Smail Lotmani';
+    document.title = 'Not found - Smail Lotmani';
     mount.innerHTML = `
       <div class="card p-10 text-center max-w-lg mx-auto">
         <i class="fas fa-search text-4xl text-gray-300 mb-4"></i>
@@ -64,7 +64,7 @@ function renderDetail(id) {
     return;
   }
 
-  document.title = `${project.title} — Smail Lotmani`;
+  document.title = `${project.title} - Smail Lotmani`;
 
   const photos = (project.photos || []).filter(Boolean);
   const videos = (project.videos || []).filter(Boolean);
