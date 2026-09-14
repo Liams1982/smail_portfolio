@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio — Smail Lotmani</title>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="bg-gray-100 font-sans flex flex-col min-h-screen">
+
+<div id="site-nav"></div>
+
+<section class="py-12 flex-1">
+  <div class="container mx-auto max-w-5xl px-4">
+    <h1 class="text-3xl font-bold mb-6 text-center">Portfolio</h1>
+    <div id="portfolio-mount">
+      <p class="text-center text-gray-500">Loading…</p>
+    </div>
+  </div>
+</section>
+
+<!-- Lightbox -->
+<div id="imageModal" class="modal" role="dialog" aria-modal="true" aria-label="Image viewer">
+  <button class="modal-close" aria-label="Close">&times;</button>
+  <img id="modalImage" src="" alt="">
+</div>
+
+<div id="site-footer"></div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/main.js"></script>
+<script src="assets/js/portfolio.js"></script>
+</body>
+</html>

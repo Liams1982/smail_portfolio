@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smail Lotmani — Portfolio</title>
+<meta name="description" content="Portfolio of Smail Lotmani.">
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="bg-gray-100 font-sans flex flex-col min-h-screen">
+
+<div id="site-nav"></div>
+
+<!-- HERO -->
+<section class="bg-gray-900 text-white py-24">
+  <div class="container mx-auto max-w-4xl px-4 text-center">
+    <div class="w-28 h-28 mx-auto mb-6 rounded-full bg-gray-700 overflow-hidden flex items-center justify-center">
+      <img src="assets/images/avatar.jpg" alt="Smail Lotmani"
+           class="w-full h-full object-cover"
+           onerror="this.style.display='none';this.parentNode.innerHTML='<i class=\'fas fa-user text-5xl text-gray-400\'></i>'">
+    </div>
+    <h1 class="text-4xl md:text-5xl font-bold mb-4">Smail Lotmani</h1>
+    <p class="text-lg md:text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
+      <!-- ✏️ Replace with your real tagline -->
+      Designer &amp; developer building clean, functional digital work.
+    </p>
+    <div class="flex flex-wrap justify-center gap-3">
+      <a href="portfolio.html" class="bg-white text-gray-900 font-semibold px-6 py-3 rounded hover:bg-gray-100">
+        <i class="fas fa-th-large mr-2"></i>View Portfolio
+      </a>
+      <a href="#contact" class="border border-white px-6 py-3 rounded hover:bg-gray-800">
+        <i class="fas fa-envelope mr-2"></i>Get in Touch
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURED PROJECTS -->
+<section class="py-16">
+  <div class="container mx-auto max-w-6xl px-4">
+    <h2 class="text-3xl font-bold mb-2 text-center">Featured Work</h2>
+    <p class="text-center text-gray-600 mb-10">A selection of recent projects</p>
+    <div id="featured-mount"></div>
+    <div class="text-center mt-10">
+      <a href="portfolio.html" class="inline-block bg-gray-900 text-white px-6 py-3 rounded hover:bg-gray-800">
+        See all projects <i class="fas fa-arrow-right ml-2"></i>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" class="bg-white py-16">
+  <div class="container mx-auto max-w-3xl px-4">
+    <h2 class="text-3xl font-bold mb-6 text-center">About</h2>
+    <p class="text-gray-700 leading-relaxed mb-4 text-center">
+      <!-- ✏️ Replace with your real bio -->
+      Hi, I'm Smail Lotmani. I design and build work that solves real problems —
+      whether that's a website, an application, or something in between.
+      I care about clarity, craft, and shipping things that actually get used.
+    </p>
+    <p class="text-gray-700 leading-relaxed text-center">
+      This site collects the projects I'm most proud of. Each one includes the
+      reasoning behind it, the process, and the final result.
+    </p>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="py-16">
+  <div class="container mx-auto max-w-2xl px-4 text-center">
+    <h2 class="text-3xl font-bold mb-4">Get in Touch</h2>
+    <p class="text-gray-600 mb-8">
+      Open to collaboration, freelance work, and interesting conversations.
+    </p>
+    <div class="flex flex-wrap justify-center gap-4">
+      <a href="mailto:smail@example.com"
+         class="bg-gray-900 text-white px-6 py-3 rounded hover:bg-gray-800">
+        <i class="fas fa-envelope mr-2"></i>smail@example.com
+      </a>
+      <a href="https://github.com/smaillotmani" target="_blank" rel="noopener"
+         class="bg-gray-700 text-white px-6 py-3 rounded hover:bg-gray-800">
+        <i class="fab fa-github mr-2"></i>GitHub
+      </a>
+      <a href="https://linkedin.com/in/smaillotmani" target="_blank" rel="noopener"
+         class="bg-blue-700 text-white px-6 py-3 rounded hover:bg-blue-800">
+        <i class="fab fa-linkedin mr-2"></i>LinkedIn
+      </a>
+    </div>
+  </div>
+</section>
+
+<div id="site-footer"></div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/main.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', renderFeatured);
+</script>
+</body>
+</html>
