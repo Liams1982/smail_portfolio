@@ -1,0 +1,1777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Italian Flashcards · A2 · Audio + Respelling</title>
+<style>
+  :root{
+    --ink:#151726;
+    --muted:#7b8098;
+    --accent:#e05252;
+    --line:#eceef6;
+    --it-font:'Inter','Segoe UI',system-ui,sans-serif;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+
+  body{
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    color:var(--ink);
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    padding:40px 20px 70px;
+    background:
+      radial-gradient(900px 520px at 8% -12%, #e1ffe3 0%, transparent 62%),
+      radial-gradient(820px 520px at 102% -4%, #ffe4e4 0%, transparent 58%),
+      radial-gradient(760px 520px at 50% 118%, #e0e8ff 0%, transparent 62%),
+      #f7f8fc;
+    background-attachment:fixed;
+  }
+
+  .app{width:100%;max-width:520px}
+
+  .brand{display:flex;align-items:center;gap:14px;margin-bottom:22px;padding-left:4px}
+  .logo{
+    width:52px;height:52px;border-radius:18px;flex:none;
+    display:grid;place-items:center;
+    font-size:22px;font-weight:700;color:#fff;letter-spacing:.02em;
+    background:linear-gradient(135deg,#008C45 0%,#008C45 33%,#F4F5F0 33%,#F4F5F0 66%,#CD212A 66%,#CD212A 100%);
+    box-shadow:0 12px 26px -10px rgba(205,33,42,.75);
+    text-shadow:0 1px 3px rgba(0,0,0,.45);
+  }
+  h1{font-size:19px;font-weight:700;letter-spacing:-.015em}
+  .subtitle{font-size:13px;color:var(--muted);margin-top:3px}
+  .subtitle b{color:var(--accent);font-weight:700}
+
+  .tabs{
+    position:relative;display:grid;grid-template-columns:1fr 1fr;
+    background:#e8ebf4;border-radius:999px;padding:4px;margin-bottom:18px;
+    user-select:none;
+  }
+  .tab{
+    position:relative;z-index:1;border:0;background:none;cursor:pointer;
+    font:inherit;font-size:14px;font-weight:650;color:var(--muted);
+    padding:12px 8px;border-radius:999px;
+    display:flex;align-items:center;justify-content:center;gap:7px;
+    transition:color .25s;
+  }
+  .tab.active{color:var(--ink)}
+  .indicator{
+    position:absolute;top:4px;left:4px;
+    width:calc(50% - 4px);height:calc(100% - 8px);
+    background:#fff;border-radius:999px;
+    box-shadow:0 4px 14px -3px rgba(30,35,80,.18);
+    transition:transform .35s cubic-bezier(.2,.8,.3,1);
+  }
+  .badge{
+    min-width:20px;height:20px;padding:0 6px;border-radius:999px;
+    background:var(--accent);color:#fff;font-size:11px;font-weight:700;
+    display:inline-grid;place-items:center;
+  }
+  .badge.pop{animation:badgePop .45s ease}
+
+  .panel{animation:popIn .45s cubic-bezier(.2,.8,.3,1) both}
+  .hidden{display:none !important}
+
+  .modeswitch{display:flex;gap:9px;margin-bottom:12px;padding:0 2px}
+  .mode-chip{
+    flex:1;border:1px solid var(--line);cursor:pointer;font:inherit;
+    background:rgba(255,255,255,.72);
+    border-radius:16px;padding:12px 8px;
+    font-size:13.5px;font-weight:650;color:var(--muted);
+    display:flex;align-items:center;justify-content:center;gap:7px;
+    transition:all .25s;
+  }
+  .mode-chip .n{
+    font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:999px;
+    background:#eef0f7;color:#98a0b8;transition:all .25s;
+  }
+  .mode-chip:hover{border-color:#dfe3f0}
+  .mode-chip:active{transform:scale(.98)}
+  .mode-chip.active{
+    background:linear-gradient(135deg,#1d2033,#3b4168);
+    color:#fff;border-color:transparent;
+    box-shadow:0 14px 24px -14px rgba(29,32,51,.95);
+  }
+  .mode-chip.active .n{background:rgba(255,255,255,.22);color:#fff}
+
+  .catbar{
+    display:flex;gap:7px;overflow-x:auto;
+    padding:2px 20px 14px;margin:0 -20px;
+    scrollbar-width:none;-ms-overflow-style:none;
+  }
+  .catbar::-webkit-scrollbar{display:none}
+  .cat{
+    flex:none;border:1px solid var(--line);background:rgba(255,255,255,.72);
+    border-radius:999px;padding:8px 13px;cursor:pointer;
+    font:inherit;font-size:12.5px;font-weight:650;color:var(--muted);
+    display:flex;align-items:center;gap:6px;white-space:nowrap;
+    transition:all .22s;
+  }
+  .cat:hover{border-color:#dfe3f0;color:var(--ink)}
+  .cat .catn{
+    font-size:10.5px;font-weight:700;padding:1px 6px;border-radius:999px;
+    background:#eef0f7;color:#98a0b8;transition:all .22s;
+  }
+  .cat.active{
+    background:var(--cat,var(--ink));color:#fff;border-color:transparent;
+    box-shadow:0 10px 20px -12px var(--cat,rgba(29,32,51,.9));
+  }
+  .cat.active .catn{background:rgba(255,255,255,.25);color:#fff}
+
+  .card{
+    position:relative;overflow:hidden;
+    background:rgba(255,255,255,.88);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    border:1px solid rgba(255,255,255,.95);
+    border-radius:30px;
+    padding:18px 24px 26px;
+    box-shadow:0 34px 64px -28px rgba(35,40,90,.30), 0 2px 6px rgba(35,40,90,.04);
+  }
+  .card-top{
+    display:flex;justify-content:space-between;align-items:center;
+    gap:8px;margin-bottom:6px;min-height:26px;flex-wrap:wrap;
+  }
+  .posbadge{
+    font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    padding:5px 10px;border-radius:999px;
+    color:#fff;background:var(--cat,var(--muted));
+    box-shadow:0 8px 16px -10px var(--cat,rgba(0,0,0,.4));
+    white-space:nowrap;
+  }
+  .posbadge .zh{
+    font-style:italic;font-weight:600;
+    opacity:.85;margin-left:5px;letter-spacing:0;
+    text-transform:none;font-size:11px;
+  }
+  .top-right{display:flex;align-items:center;gap:6px;flex:none}
+
+  .auto-chip{
+    border:1px solid var(--line);background:rgba(255,255,255,.72);
+    border-radius:999px;padding:5px 9px;cursor:pointer;
+    font:inherit;font-size:10.5px;font-weight:700;color:#98a0b8;
+    letter-spacing:.03em;
+    display:flex;align-items:center;gap:5px;
+    transition:all .22s;
+    white-space:nowrap;
+  }
+  .auto-chip:hover{border-color:#dfe3f0;color:var(--ink)}
+  .auto-chip .dot{
+    width:7px;height:7px;border-radius:50%;background:#cbd0e0;
+    transition:background .22s,box-shadow .22s;
+  }
+  .auto-chip.on{
+    background:linear-gradient(135deg,#e8fff4,#f0fff9);
+    border-color:#b8f0d8;color:#059669;
+  }
+  .auto-chip.on .dot{
+    background:#10b981;
+    box-shadow:0 0 0 3px rgba(16,185,129,.22);
+  }
+  .auto-chip.latin.on{
+    background:linear-gradient(135deg,#eef2ff,#f5f7ff);
+    border-color:#c7d2fe;color:#4f46e5;
+  }
+  .auto-chip.latin.on .dot{
+    background:#6366f1;
+    box-shadow:0 0 0 3px rgba(99,102,241,.22);
+  }
+  .auto-chip.latin .sym{font-weight:800;font-size:12px;line-height:1}
+
+  .counter{
+    font-size:11px;font-weight:700;letter-spacing:.14em;
+    text-transform:uppercase;color:#b3b9cd;
+    white-space:nowrap;
+  }
+
+  .word{
+    min-height:240px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;padding:6px 0 4px;
+  }
+  .hanzi{
+    font-family:var(--it-font);
+    font-weight:700;line-height:1.15;letter-spacing:-.01em;
+    word-break:break-word;
+    cursor:pointer;
+    transition:transform .18s, color .18s;
+    user-select:none;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .hanzi:hover{color:var(--accent);transform:scale(1.03)}
+  .hanzi:active{transform:scale(.97)}
+  .hanzi.size-l{font-size:clamp(52px,15vw,74px)}
+  .hanzi.size-m{font-size:clamp(34px,10vw,50px)}
+  .hanzi.size-s{font-size:clamp(22px,6.2vw,30px);line-height:1.35}
+
+  .pinyin{
+    margin-top:14px;
+    font-size:clamp(14px,4.1vw,18px);font-weight:650;letter-spacing:.02em;
+    color:var(--accent);word-break:break-word;line-height:1.45;
+    transition:opacity .3s, transform .3s;
+  }
+  .pinyin.hide{display:none}
+
+  .english{
+    margin-top:16px;font-size:clamp(14px,4vw,16.5px);
+    color:var(--muted);font-weight:500;line-height:1.5;
+  }
+  .english::before{
+    content:"";display:block;width:26px;height:2px;border-radius:2px;
+    background:var(--line);margin:0 auto 16px;
+  }
+
+  .speak-btn{
+    position:absolute;bottom:16px;right:16px;
+    width:46px;height:46px;border-radius:50%;
+    border:0;cursor:pointer;color:#fff;font-size:19px;
+    background:linear-gradient(135deg,#1d2033,#3b4168);
+    display:grid;place-items:center;
+    box-shadow:0 14px 26px -12px rgba(29,32,51,.95);
+    transition:transform .15s, box-shadow .25s, background .25s;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .speak-btn:hover{transform:scale(1.06)}
+  .speak-btn:active{transform:scale(.94)}
+  .speak-btn.speaking{
+    background:linear-gradient(135deg,#e05252,#ff8a5c);
+    animation:speakPulse 1s ease-in-out infinite;
+  }
+  @keyframes speakPulse{
+    0%,100%{box-shadow:0 14px 26px -12px rgba(224,82,82,.95), 0 0 0 0 rgba(224,82,82,.55)}
+    50%    {box-shadow:0 14px 26px -12px rgba(224,82,82,.95), 0 0 0 14px rgba(224,82,82,0)}
+  }
+
+  .actions{display:grid;grid-template-columns:58px 1fr 1.25fr;gap:10px;margin-top:16px}
+  .btn{
+    border:0;font:inherit;font-size:15px;font-weight:650;
+    padding:17px 10px;border-radius:18px;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    transition:transform .15s, box-shadow .25s, background .25s, color .25s, border-color .25s;
+  }
+  .btn:active{transform:scale(.97)}
+  .btn .ico{font-size:17px;line-height:1}
+  .btn.primary{
+    background:linear-gradient(135deg,#1d2033,#363b60);
+    color:#fff;
+    box-shadow:0 16px 30px -14px rgba(29,32,51,.95);
+  }
+  .btn.primary:hover{box-shadow:0 20px 34px -14px rgba(29,32,51,.95)}
+  .btn.ghost{
+    background:#fff;color:var(--ink);
+    border:1.5px solid var(--line);
+    box-shadow:0 6px 16px -10px rgba(35,40,90,.35);
+  }
+  .btn.ghost:hover{border-color:#dde1ee}
+  .btn.ghost.saved{
+    background:linear-gradient(135deg,#ffeded,#fff3ee);
+    border-color:#ffd2d2;color:var(--accent);
+  }
+  .btn.prev{
+    background:#fff;border:1.5px solid var(--line);color:var(--muted);
+    font-size:18px;padding:17px 0;
+    box-shadow:0 6px 16px -10px rgba(35,40,90,.35);
+  }
+  .btn.prev:hover{color:var(--ink);border-color:#dde1ee}
+
+  .saved-head{
+    display:flex;align-items:baseline;justify-content:space-between;
+    margin-bottom:12px;padding:0 6px;
+  }
+  .saved-head h2{font-size:15px;font-weight:700}
+  .saved-head .meta{font-size:13px;color:var(--muted);font-weight:600}
+
+  .filters{display:flex;gap:7px;margin-bottom:14px;padding:0 2px;flex-wrap:wrap}
+  .filter{
+    border:1px solid var(--line);background:rgba(255,255,255,.72);
+    border-radius:999px;padding:8px 14px;cursor:pointer;
+    font:inherit;font-size:12.5px;font-weight:650;color:var(--muted);
+    transition:all .22s;
+  }
+  .filter:hover{border-color:#dfe3f0}
+  .filter.active{
+    background:var(--ink);color:#fff;border-color:transparent;
+    box-shadow:0 10px 20px -12px rgba(29,32,51,.9);
+  }
+
+  .saved-list{display:flex;flex-direction:column;gap:10px}
+
+  .saved-item{
+    display:flex;align-items:center;gap:12px;cursor:pointer;
+    background:rgba(255,255,255,.88);
+    backdrop-filter:blur(10px);
+    border:1px solid rgba(255,255,255,.95);
+    border-radius:20px;padding:12px 14px;
+    box-shadow:0 12px 26px -20px rgba(35,40,90,.75);
+    animation:slideIn .4s cubic-bezier(.2,.8,.3,1) both;
+    transition:transform .18s, box-shadow .25s;
+  }
+  .saved-item:hover{transform:translateY(-2px);box-shadow:0 18px 32px -20px rgba(35,40,90,.8)}
+  .si-hanzi{
+    font-weight:700;font-size:19px;line-height:1.25;
+    min-width:56px;max-width:100px;text-align:center;
+  }
+  .si-hanzi.long{font-size:13.5px;max-width:112px}
+  .si-info{flex:1;min-width:0}
+  .si-line{display:flex;align-items:center;gap:6px;margin-bottom:3px;min-width:0}
+  .si-cat{
+    font-size:9.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+    padding:2px 7px;border-radius:6px;color:#fff;background:var(--cat,var(--muted));
+    white-space:nowrap;flex:none;
+  }
+  .si-pinyin{
+    font-size:12.5px;font-weight:700;color:var(--accent);letter-spacing:.02em;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .si-english{
+    font-size:13px;color:var(--muted);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .si-speak{
+    flex:none;width:32px;height:32px;border:0;border-radius:12px;cursor:pointer;
+    background:#f2f4fa;color:#6b7290;font-size:14px;
+    display:grid;place-items:center;
+    transition:background .2s,color .2s,transform .15s;
+  }
+  .si-speak:hover{background:#e8ebff;color:#3b4168}
+  .si-speak:active{transform:scale(.9)}
+  .si-speak.speaking{background:#ffe8e8;color:var(--accent)}
+  .remove{
+    flex:none;width:32px;height:32px;border:0;border-radius:12px;cursor:pointer;
+    background:#f2f4fa;color:#9aa0b8;font-size:13px;
+    display:grid;place-items:center;
+    transition:background .2s,color .2s,transform .15s;
+  }
+  .remove:hover{background:#ffe8e8;color:var(--accent)}
+  .remove:active{transform:scale(.9)}
+
+  .clear-btn{
+    margin-top:6px;border:0;background:transparent;cursor:pointer;
+    font:inherit;font-size:13px;font-weight:650;color:#9aa0b8;
+    padding:14px;border-radius:16px;
+    transition:background .2s,color .2s;
+  }
+  .clear-btn:hover{background:#ffe8e8;color:var(--accent)}
+
+  .empty{text-align:center;padding:54px 20px;color:var(--muted)}
+  .empty .icon{font-size:42px;margin-bottom:14px}
+  .empty p{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:7px}
+  .empty span{font-size:13.5px;line-height:1.55;display:block;max-width:260px;margin:0 auto}
+
+  @keyframes popIn{
+    from{opacity:0;transform:translateY(16px) scale(.97)}
+    to{opacity:1;transform:none}
+  }
+  @keyframes slideIn{
+    from{opacity:0;transform:translateY(12px)}
+    to{opacity:1;transform:none}
+  }
+  @keyframes badgePop{
+    0%{transform:scale(1)}
+    45%{transform:scale(1.4)}
+    100%{transform:scale(1)}
+  }
+
+  .audio-warn{
+    display:none;margin-top:12px;padding:11px 14px;border-radius:14px;
+    background:#fff7ed;border:1px solid #fed7aa;
+    font-size:12px;color:#9a3412;line-height:1.5;
+  }
+  .audio-warn.show{display:block}
+
+  @media (max-width:400px){
+    body{padding:26px 14px 50px}
+    .card{padding:16px 18px 22px;border-radius:26px}
+    .word{min-height:210px}
+    .actions{grid-template-columns:52px 1fr 1.2fr;gap:8px}
+    .btn{font-size:14px;padding:16px 8px}
+    .speak-btn{width:42px;height:42px;font-size:17px;bottom:14px;right:14px}
+    .auto-chip{padding:4px 7px;font-size:10px}
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <header class="brand">
+    <div class="logo">IT</div>
+    <div>
+      <h1>Italian Flashcards · A2</h1>
+      <p class="subtitle"><b id="totalCount">0</b> words · 100 phrases · audio + respelling</p>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <span class="indicator" id="indicator"></span>
+    <button class="tab active" data-tab="learn">Learn</button>
+    <button class="tab" data-tab="saved">My list <span class="badge" id="badge">0</span></button>
+  </nav>
+
+  <section class="panel" id="panel-learn">
+
+    <div class="modeswitch">
+      <button class="mode-chip active" data-mode="words">
+        Words <span class="n" id="nWords">0</span>
+      </button>
+      <button class="mode-chip" data-mode="expressions">
+        Expressions <span class="n" id="nExpr">0</span>
+      </button>
+    </div>
+
+    <div class="catbar" id="catbar"></div>
+
+    <div class="card" id="card">
+      <div class="card-top">
+        <span class="posbadge" id="posbadge"></span>
+        <div class="top-right">
+          <button class="auto-chip" id="autoChip" title="Toggle auto-play">
+            <span class="dot"></span>Auto
+          </button>
+          <button class="auto-chip latin" id="latinChip" title="Toggle pronunciation respelling">
+            <span class="dot"></span><span class="sym">≈</span>Respell
+          </button>
+          <span class="counter" id="counter">1 / 1</span>
+        </div>
+      </div>
+      <div class="word" id="word">
+        <div class="hanzi size-l" id="hanzi" title="Click to hear">ciao</div>
+        <div class="pinyin" id="pinyin">CHOW</div>
+        <div class="english" id="english">hi, bye</div>
+      </div>
+      <button class="speak-btn" id="speakBtn" title="Listen (Space)">🔊</button>
+    </div>
+
+    <div class="audio-warn" id="audioWarn">
+      ⚠️ No Italian voice detected on this device. Audio may sound off — try installing an Italian voice in your system settings.
+    </div>
+
+    <div class="actions">
+      <button class="btn prev" id="prevBtn" title="Previous (←)">←</button>
+      <button class="btn ghost" id="saveBtn" title="Save (S)">
+        <span class="ico">♡</span>Save
+      </button>
+      <button class="btn primary" id="nextBtn" title="Next (→)">Next →</button>
+    </div>
+  </section>
+
+  <section class="panel hidden" id="panel-saved">
+    <div class="saved-head">
+      <h2>My list</h2>
+      <span class="meta" id="savedMeta">0 saved</span>
+    </div>
+
+    <div class="filters" id="filters">
+      <button class="filter active" data-filter="all">All</button>
+      <button class="filter" data-filter="words">Words</button>
+      <button class="filter" data-filter="expressions">Expressions</button>
+    </div>
+
+    <div class="saved-list" id="savedList"></div>
+  </section>
+</div>
+
+<script>
+/* =====================================================================
+   CATEGORY META
+   ===================================================================== */
+
+const CATS = {
+  pronoun:     { label:'Pronoun',      it:'pronome',       color:'#6366f1' },
+  article:     { label:'Article',      it:'articolo',      color:'#8b5cf6' },
+  noun:        { label:'Noun',         it:'sostantivo',    color:'#0ea5e9' },
+  verb:        { label:'Verb',         it:'verbo',         color:'#ef4444' },
+  adjective:   { label:'Adjective',    it:'aggettivo',     color:'#f97316' },
+  adverb:      { label:'Adverb',       it:'avverbio',      color:'#eab308' },
+  preposition: { label:'Preposition',  it:'preposizione',  color:'#22c55e' },
+  conjunction: { label:'Conjunction',  it:'congiunzione',  color:'#14b8a6' },
+  number:      { label:'Number',       it:'numero',        color:'#a855f7' },
+  time:        { label:'Time word',    it:'tempo',         color:'#ec4899' },
+  question:    { label:'Question word',it:'interrogativo', color:'#f43f5e' },
+  particle:    { label:'Particle',     it:'particella',    color:'#94a3b8' },
+
+  greeting:    { label:'Greeting',     it:'saluti',        color:'#10b981' },
+  intro:       { label:'Introduce',    it:'presentarsi',   color:'#3b82f6' },
+  language:    { label:'Language',     it:'lingua',        color:'#6366f1' },
+  daily:       { label:'Daily life',   it:'quotidiano',    color:'#f59e0b' },
+  shopping:    { label:'Shopping',     it:'shopping',      color:'#ec4899' },
+  directions:  { label:'Directions',   it:'indicazioni',   color:'#14b8a6' },
+  social:      { label:'Social',       it:'sociale',       color:'#8b5cf6' },
+  feelings:    { label:'Feelings',     it:'sentimenti',    color:'#f43f5e' },
+  weather:     { label:'Weather',      it:'tempo',         color:'#0ea5e9' },
+  wishes:      { label:'Wishes',       it:'auguri',        color:'#d946ef' }
+};
+
+const CAT_ORDER = [
+  'pronoun','article','noun','verb','adjective','adverb',
+  'preposition','conjunction','number','time','question','particle',
+  'greeting','intro','language','daily','shopping','directions','social','feelings','weather','wishes'
+];
+
+/* =====================================================================
+   WORD DATA   [ italian, respelling, english ]
+   ===================================================================== */
+
+const RAW_WORDS = {
+
+  pronoun: [
+    ['io','EE-oh','I, me'],
+    ['tu','too','you (informal)'],
+    ['lui','LOO-ee','he, him'],
+    ['lei','lay','she, her'],
+    ['Lei','lay','you (formal)'],
+    ['noi','noy','we, us'],
+    ['voi','voy','you all'],
+    ['loro','LOH-roh','they, them'],
+    ['mi','mee','me (object)'],
+    ['ti','tee','you (object)'],
+    ['ci','chee','us, there'],
+    ['vi','vee','you all (object)'],
+    ['si','see','oneself'],
+    ['sé','seh','oneself (stressed)'],
+    ['questo','KWEH-stoh','this'],
+    ['quello','KWEHL-loh','that'],
+    ['qualcuno','kwahl-KOO-noh','someone'],
+    ['qualcosa','kwahl-KOH-zah','something'],
+    ['niente','NYEHN-teh','nothing'],
+    ['ognuno','oh-NYOO-noh','everyone']
+  ],
+
+  article: [
+    ['il','eel','the (m. sg.)'],
+    ['lo','loh','the (m. sg. before s+cons.)'],
+    ['la','lah','the (f. sg.)'],
+    ['i','ee','the (m. pl.)'],
+    ['gli','lyee','the (m. pl. before vowel)'],
+    ['le','leh','the (f. pl.)'],
+    ['un','oon','a, an (m.)'],
+    ['uno','OO-noh','a, an (m. before s+cons.)'],
+    ['una','OO-nah','a, an (f.)'],
+    ["un'","oon","a, an (f. before vowel)"]
+  ],
+
+  noun: [
+    ['padre','PAH-dreh','father'],
+    ['madre','MAH-dreh','mother'],
+    ['papà','pah-PAH','dad'],
+    ['mamma','MAHM-mah','mom'],
+    ['fratello','frah-TEHL-loh','brother'],
+    ['sorella','soh-REHL-lah','sister'],
+    ['figlio','FEEL-yoh','son'],
+    ['figlia','FEEL-yah','daughter'],
+    ['nonno','NOHN-noh','grandfather'],
+    ['nonna','NOHN-nah','grandmother'],
+    ['zio','TSEE-oh','uncle'],
+    ['zia','TSEE-ah','aunt'],
+    ['cugino','koo-JEE-noh','cousin (m.)'],
+    ['cugina','koo-JEE-nah','cousin (f.)'],
+    ['marito','mah-REE-toh','husband'],
+    ['moglie','MOHL-yeh','wife'],
+    ['bambino','bahm-BEE-noh','child (m.)'],
+    ['bambina','bahm-BEE-nah','child (f.)'],
+    ['ragazzo','rah-GAHT-tsoh','boy'],
+    ['ragazza','rah-GAHT-tsah','girl'],
+    ['uomo','WOH-moh','man'],
+    ['donna','DOHN-nah','woman'],
+    ['persona','pehr-SOH-nah','person'],
+    ['amico','ah-MEE-koh','friend (m.)'],
+    ['amica','ah-MEE-kah','friend (f.)'],
+    ['famiglia','fah-MEEL-yah','family'],
+    ['nome','NOH-meh','name'],
+    ['signore','see-NYOH-reh','sir, mister'],
+    ['signora','see-NYOH-rah','madam, missus'],
+    ['insegnante','een-seh-NYAHN-teh','teacher'],
+    ['studente','stoo-DEHN-teh','student (m.)'],
+    ['studentessa','stoo-dehn-TEHS-sah','student (f.)'],
+    ['medico','MEH-dee-koh','doctor'],
+    ['dottore','doht-TOH-reh','doctor'],
+    ['infermiere','een-fehr-MYEH-reh','nurse'],
+    ['avvocato','ahv-voh-KAH-toh','lawyer'],
+    ['ingegnere','een-jeh-NYEH-reh','engineer'],
+    ['cameriere','kah-meh-RYEH-reh','waiter'],
+    ['cuoco','KWOH-koh','cook'],
+    ['autista','ow-TEE-stah','driver'],
+    ['poliziotto','poh-lee-TSYOHT-toh','police officer'],
+    ['operaio','oh-peh-RYE-oh','worker'],
+    ['contadino','kohn-tah-DEE-noh','farmer'],
+    ['scrittore','skreet-TOH-reh','writer'],
+    ['acqua','AH-kwah','water'],
+    ['pane','PAH-neh','bread'],
+    ['pasta','PAH-stah','pasta'],
+    ['pizza','PEET-tsah','pizza'],
+    ['riso','REE-zoh','rice'],
+    ['carne','KAR-neh','meat'],
+    ['pesce','PEH-sheh','fish'],
+    ['pollo','POHL-loh','chicken'],
+    ['uovo','WOH-voh','egg'],
+    ['formaggio','fohr-MAHD-joh','cheese'],
+    ['latte','LAHT-teh','milk'],
+    ['burro','BOOR-roh','butter'],
+    ['olio','OH-lyoh','oil'],
+    ['sale','SAH-leh','salt'],
+    ['pepe','PEH-peh','pepper'],
+    ['zucchero','TSOO-keh-roh','sugar'],
+    ['frutta','FROOT-tah','fruit'],
+    ['mela','MEH-lah','apple'],
+    ['banana','bah-NAH-nah','banana'],
+    ['arancia','ah-RAHN-chah','orange'],
+    ['uva','OO-vah','grape'],
+    ['fragola','FRAH-goh-lah','strawberry'],
+    ['limone','lee-MOH-neh','lemon'],
+    ['pomodoro','poh-moh-DOH-roh','tomato'],
+    ['patata','pah-TAH-tah','potato'],
+    ['cipolla','chee-POHL-lah','onion'],
+    ['insalata','een-sah-LAH-tah','salad'],
+    ['verdura','vehr-DOO-rah','vegetable'],
+    ['vino','VEE-noh','wine'],
+    ['birra','BEER-rah','beer'],
+    ['caffè','kahf-FEH','coffee'],
+    ['tè','teh','tea'],
+    ['succo','SOOK-koh','juice'],
+    ['colazione','koh-laht-TSYOH-neh','breakfast'],
+    ['pranzo','PRAHN-tsoh','lunch'],
+    ['cena','CHEH-nah','dinner'],
+    ['ristorante','ree-stoh-RAHN-teh','restaurant'],
+    ['menù','meh-NOO','menu'],
+    ['conto','KOHN-toh','bill'],
+    ['gelato','jeh-LAH-toh','ice cream'],
+    ['cioccolato','choh-koh-LAH-toh','chocolate'],
+    ['dolce','DOHL-cheh','dessert'],
+    ['torta','TOHR-tah','cake'],
+    ['cane','KAH-neh','dog'],
+    ['gatto','GAHT-toh','cat'],
+    ['uccello','oot-CHEHL-loh','bird'],
+    ['cavallo','kah-VAHL-loh','horse'],
+    ['mucca','MOOK-kah','cow'],
+    ['pecora','PEH-koh-rah','sheep'],
+    ['maiale','mah-YAH-leh','pig'],
+    ['topo','TOH-poh','mouse'],
+    ['coniglio','koh-NEEL-yoh','rabbit'],
+    ['leone','leh-OH-neh','lion'],
+    ['tigre','TEE-greh','tiger'],
+    ['elefante','eh-leh-FAHN-teh','elephant'],
+    ['scimmia','SHEEM-myah','monkey'],
+    ['casa','KAH-zah','house, home'],
+    ['scuola','SKWOH-lah','school'],
+    ['università','oo-nee-vehr-see-TAH','university'],
+    ['ospedale','oh-speh-DAH-leh','hospital'],
+    ['negozio','neh-GOH-tsyoh','shop'],
+    ['ufficio','oof-FEE-choh','office'],
+    ['banca','BAHN-kah','bank'],
+    ['aeroporto','ah-eh-roh-POHR-toh','airport'],
+    ['stazione','staht-TSYOH-neh','station'],
+    ['parco','PAR-koh','park'],
+    ['biblioteca','bee-blee-oh-TEH-kah','library'],
+    ['museo','moo-ZEH-oh','museum'],
+    ['chiesa','KYEH-zah','church'],
+    ['piazza','PYAHT-tsah','square'],
+    ['strada','STRAH-dah','street'],
+    ['città','cheet-TAH','city'],
+    ['paese','pah-EH-zeh','village, country'],
+    ['mare','MAH-reh','sea'],
+    ['montagna','mohn-TAH-nyah','mountain'],
+    ['fiume','FYOO-meh','river'],
+    ['lago','LAH-goh','lake'],
+    ['spiaggia','SPYAHD-jah','beach'],
+    ['albergo','ahl-BEHR-goh','hotel'],
+    ['supermercato','soo-pehr-mehr-KAH-toh','supermarket'],
+    ['mercato','mehr-KAH-toh','market'],
+    ['bagno','BAH-nyoh','bathroom'],
+    ['cucina','koo-CHEE-nah','kitchen'],
+    ['camera','KAH-meh-rah','room, bedroom'],
+    ['libro','LEE-broh','book'],
+    ['penna','PEHN-nah','pen'],
+    ['matita','mah-TEE-tah','pencil'],
+    ['carta','KAR-tah','paper'],
+    ['tavolo','TAH-voh-loh','table'],
+    ['sedia','SEH-dyah','chair'],
+    ['letto','LEHT-toh','bed'],
+    ['porta','POHR-tah','door'],
+    ['finestra','fee-NEH-strah','window'],
+    ['telefono','teh-LEH-foh-noh','telephone'],
+    ['cellulare','chehl-loo-LAH-reh','mobile phone'],
+    ['computer','kohm-PYOO-tehr','computer'],
+    ['televisione','teh-leh-vee-ZYOH-neh','television'],
+    ['macchina','MAHK-kee-nah','car, machine'],
+    ['bicicletta','bee-chee-KLEHT-tah','bicycle'],
+    ['treno','TREH-noh','train'],
+    ['aereo','ah-EH-reh-oh','airplane'],
+    ['autobus','OW-toh-boos','bus'],
+    ['vestiti','veh-STEE-tee','clothes'],
+    ['camicia','kah-MEE-chah','shirt'],
+    ['pantaloni','pahn-tah-LOH-nee','trousers'],
+    ['gonna','GOHN-nah','skirt'],
+    ['scarpe','SKAR-peh','shoes'],
+    ['cappello','kahp-PEHL-loh','hat'],
+    ['borsa','BOHR-sah','bag'],
+    ['valigia','vah-LEE-jah','suitcase'],
+    ['soldi','SOHL-dee','money'],
+    ['portafoglio','pohr-tah-FOHL-yoh','wallet'],
+    ['chiave','KYAH-veh','key'],
+    ['ombrello','ohm-BREHL-loh','umbrella'],
+    ['occhiali','ohk-KYAH-lee','glasses'],
+    ['orologio','oh-roh-LOH-joh','watch, clock'],
+    ['regalo','reh-GAH-loh','gift'],
+    ['bicchiere','beek-KYEH-reh','glass'],
+    ['piatto','PYAHT-toh','plate'],
+    ['tazza','TAHT-tsah','cup'],
+    ['forchetta','fohr-KEHT-tah','fork'],
+    ['coltello','kohl-TEHL-loh','knife'],
+    ['cucchiaio','kook-KYAH-yoh','spoon'],
+    ['bottiglia','boht-TEEL-yah','bottle'],
+    ['scatola','SKAH-toh-lah','box'],
+    ['testa','TEH-stah','head'],
+    ['occhio','OH-kyoh','eye'],
+    ['occhi','OH-kee','eyes'],
+    ['naso','NAH-zoh','nose'],
+    ['bocca','BOHK-kah','mouth'],
+    ['orecchio','oh-REH-kyoh','ear'],
+    ['mano','MAH-noh','hand'],
+    ['piede','PYEH-deh','foot'],
+    ['cuore','KWOH-reh','heart'],
+    ['corpo','KOHR-poh','body'],
+    ['capelli','kah-PEHL-lee','hair'],
+    ['faccia','FAH-chah','face'],
+    ['viso','VEE-zoh','face'],
+    ['gamba','GAHM-bah','leg'],
+    ['braccio','BRAH-choh','arm'],
+    ['dente','DEHN-teh','tooth'],
+    ['stomaco','STOH-mah-koh','stomach'],
+    ['schiena','SKYEH-nah','back'],
+    ['collo','KOHL-loh','neck'],
+    ['dito','DEE-toh','finger'],
+    ['sole','SOH-leh','sun'],
+    ['luna','LOO-nah','moon'],
+    ['stella','STEHL-lah','star'],
+    ['cielo','CHEH-loh','sky'],
+    ['vento','VEHN-toh','wind'],
+    ['pioggia','PYOHD-jah','rain'],
+    ['neve','NEH-veh','snow'],
+    ['nuvola','NOO-voh-lah','cloud'],
+    ['albero','AHL-beh-roh','tree'],
+    ['fiore','FYOH-reh','flower'],
+    ['erba','EHR-bah','grass'],
+    ['fuoco','FWOH-koh','fire'],
+    ['terra','TEHR-rah','earth'],
+    ['aria','AH-ryah','air'],
+    ['tempo','TEHM-poh','weather, time'],
+    ['natura','nah-TOO-rah','nature'],
+    ['lavoro','lah-VOH-roh','work, job'],
+    ['problema','proh-BLEH-mah','problem'],
+    ['cosa','KOH-zah','thing'],
+    ['significato','see-nyee-fee-KAH-toh','meaning'],
+    ['modo','MOH-doh','way, manner'],
+    ['metodo','MEH-toh-doh','method'],
+    ['lingua','LEEN-gwah','language, tongue'],
+    ['italiano','ee-tah-LYAH-noh','Italian'],
+    ['inglese','een-GLEH-zeh','English'],
+    ['storia','STOH-ryah','history, story'],
+    ['musica','MOO-zee-kah','music'],
+    ['film','feelm','film, movie'],
+    ['canzone','kahn-TSOH-neh','song'],
+    ['hobby','OHB-bee','hobby'],
+    ['abitudine','ah-bee-TOO-dee-neh','habit'],
+    ['opportunità','ohp-pohr-too-nee-TAH','opportunity'],
+    ['mondo','MOHN-doh','world'],
+    ['vita','VEE-tah','life'],
+    ['cultura','kool-TOO-rah','culture'],
+    ['colore','koh-LOH-reh','color'],
+    ['amore','ah-MOH-reh','love'],
+    ['amicizia','ah-mee-CHEET-tsyah','friendship'],
+    ['salute','sah-LOO-teh','health'],
+    ['pace','PAH-cheh','peace'],
+    ['guerra','GWEHR-rah','war'],
+    ['verità','veh-ree-TAH','truth'],
+    ['bugia','boo-JEE-ah','lie'],
+    ['idea','ee-DEH-ah','idea'],
+    ['domanda','doh-MAHN-dah','question'],
+    ['risposta','ree-SPOHS-tah','answer']
+  ],
+
+  verb: [
+    ['essere','EHS-seh-reh','to be'],
+    ['avere','ah-VEH-reh','to have'],
+    ['fare','FAH-reh','to do, make'],
+    ['dire','DEE-reh','to say'],
+    ['stare','STAH-reh','to stay, be'],
+    ['sapere','sah-PEH-reh','to know'],
+    ['potere','poh-TEH-reh','can, to be able'],
+    ['dovere','doh-VEH-reh','must, to have to'],
+    ['volere','voh-LEH-reh','to want'],
+    ['andare','ahn-DAH-reh','to go'],
+    ['venire','veh-NEE-reh','to come'],
+    ['camminare','kahm-mee-NAH-reh','to walk'],
+    ['correre','KOHR-reh-reh','to run'],
+    ['volare','voh-LAH-reh','to fly'],
+    ['uscire','oo-SHEE-reh','to go out'],
+    ['entrare','ehn-TRAH-reh','to enter'],
+    ['salire','sah-LEE-reh','to go up'],
+    ['scendere','SHEHN-deh-reh','to go down'],
+    ['partire','par-TEE-reh','to leave, depart'],
+    ['arrivare','ar-ree-VAH-reh','to arrive'],
+    ['tornare','tohr-NAH-reh','to return'],
+    ['passare','pahs-SAH-reh','to pass'],
+    ['lasciare','lah-SHAH-reh','to leave (something)'],
+    ['girare','jee-RAH-reh','to turn'],
+    ['mangiare','mahn-JAH-reh','to eat'],
+    ['bere','BEH-reh','to drink'],
+    ['dormire','dohr-MEE-reh','to sleep'],
+    ['svegliarsi','zveh-LYAR-see','to wake up'],
+    ['alzarsi','ahl-TSAR-see','to get up'],
+    ['lavare','lah-VAH-reh','to wash'],
+    ['lavarsi','lah-VAR-see','to wash oneself'],
+    ['vestirsi','veh-STEER-see','to get dressed'],
+    ['mettersi','MEHT-tehr-see','to put on'],
+    ['togliersi','TOHL-yehr-see','to take off'],
+    ['cucinare','koo-chee-NAH-reh','to cook'],
+    ['pulire','poo-LEE-reh','to clean'],
+    ['comprare','kohm-PRAH-reh','to buy'],
+    ['vendere','VEHN-deh-reh','to sell'],
+    ['usare','oo-ZAH-reh','to use'],
+    ['parlare','par-LAH-reh','to speak'],
+    ['ascoltare','ah-skohl-TAH-reh','to listen'],
+    ['guardare','gwar-DAH-reh','to watch, look'],
+    ['vedere','veh-DEH-reh','to see'],
+    ['leggere','LEHD-jeh-reh','to read'],
+    ['scrivere','SKREE-veh-reh','to write'],
+    ['cantare','kahn-TAH-reh','to sing'],
+    ['chiedere','KYEH-deh-reh','to ask'],
+    ['rispondere','ree-SPOHN-deh-reh','to answer'],
+    ['telefonare','teh-leh-foh-NAH-reh','to phone'],
+    ['chiamare','kyah-MAH-reh','to call'],
+    ['raccontare','rahk-kohn-TAH-reh','to tell'],
+    ['salutare','sah-loo-TAH-reh','to greet'],
+    ['piacere','pyah-CHEH-reh','to please, like'],
+    ['amare','ah-MAH-reh','to love'],
+    ['odiare','oh-DYAH-reh','to hate'],
+    ['conoscere','koh-NOH-sheh-reh','to know (person)'],
+    ['capire','kah-PEE-reh','to understand'],
+    ['ricordare','ree-kohr-DAH-reh','to remember'],
+    ['dimenticare','dee-mehn-tee-KAH-reh','to forget'],
+    ['pensare','pehn-SAH-reh','to think'],
+    ['credere','KREH-deh-reh','to believe'],
+    ['sperare','speh-RAH-reh','to hope'],
+    ['preparare','preh-pah-RAH-reh','to prepare'],
+    ['decidere','deh-CHEE-deh-reh','to decide'],
+    ['preoccuparsi','preh-ohk-koo-PAR-see','to worry'],
+    ['sentire','sehn-TEE-reh','to hear, feel'],
+    ['sembrare','sehm-BRAH-reh','to seem'],
+    ['imparare','eem-pah-RAH-reh','to learn'],
+    ['studiare','stoo-DYAH-reh','to study'],
+    ['insegnare','een-seh-NYAH-reh','to teach'],
+    ['lavorare','lah-voh-RAH-reh','to work'],
+    ['aiutare','ah-yoo-TAH-reh','to help'],
+    ['cominciare','koh-meen-CHAH-reh','to begin'],
+    ['finire','fee-NEE-reh','to finish'],
+    ['aspettare','ah-speht-TAH-reh','to wait'],
+    ['cercare','chehr-KAH-reh','to look for'],
+    ['trovare','troh-VAH-reh','to find'],
+    ['provare','proh-VAH-reh','to try'],
+    ['riuscire','ryoo-SHEE-reh','to succeed, manage'],
+    ['giocare','joh-KAH-reh','to play'],
+    ['viaggiare','vyahd-JAH-reh','to travel'],
+    ['nuotare','nwoh-TAH-reh','to swim'],
+    ['ballare','bahl-LAH-reh','to dance'],
+    ['ridere','REE-deh-reh','to laugh'],
+    ['piangere','PYAHN-jeh-reh','to cry'],
+    ['divertirsi','dee-vehr-TEER-see','to have fun'],
+    ['riposare','ree-poh-ZAH-reh','to rest'],
+    ['aprire','ah-PREE-reh','to open'],
+    ['chiudere','KYOO-deh-reh','to close'],
+    ['prendere','PREHN-deh-reh','to take'],
+    ['mettere','MEHT-teh-reh','to put'],
+    ['mandare','mahn-DAH-reh','to send'],
+    ['ricevere','ree-CHEH-veh-reh','to receive'],
+    ['prestare','preh-STAH-reh','to lend'],
+    ['cambiare','kahm-BYAH-reh','to change'],
+    ['riparare','ree-pah-RAH-reh','to repair'],
+    ['incontrare','een-kohn-TRAH-reh','to meet'],
+    ['dare','DAH-reh','to give'],
+    ['tenere','teh-NEH-reh','to keep, hold'],
+    ['scegliere','SHEL-yeh-reh','to choose'],
+    ['seguire','seh-GWEE-reh','to follow'],
+    ['vincere','VEEN-cheh-reh','to win'],
+    ['perdere','PEHR-deh-reh','to lose'],
+    ['rompere','ROHM-peh-reh','to break'],
+    ['portare','pohr-TAH-reh','to bring, carry'],
+    ['pagare','pah-GAH-reh','to pay'],
+    ['costare','koh-STAH-reh','to cost'],
+    ['servire','sehr-VEE-reh','to serve, need']
+  ],
+
+  adjective: [
+    ['bello','BEHL-loh','beautiful'],
+    ['brutto','BROOT-toh','ugly'],
+    ['grande','GRAHN-deh','big'],
+    ['piccolo','PEEK-koh-loh','small'],
+    ['alto','AHL-toh','tall, high'],
+    ['basso','BAHS-soh','short, low'],
+    ['lungo','LOON-goh','long'],
+    ['corto','KOHR-toh','short'],
+    ['nuovo','NWOH-voh','new'],
+    ['vecchio','VEHK-kyoh','old'],
+    ['giovane','JOH-vah-neh','young'],
+    ['anziano','ahn-TSYAH-noh','elderly'],
+    ['veloce','veh-LOH-cheh','fast'],
+    ['lento','LEHN-toh','slow'],
+    ['caldo','KAHL-doh','hot'],
+    ['freddo','FREHD-doh','cold'],
+    ['tiepido','TYEHP-pee-doh','warm'],
+    ['fresco','FREH-skoh','cool, fresh'],
+    ['caro','KAH-roh','expensive, dear'],
+    ['economico','eh-koh-NOH-mee-koh','cheap'],
+    ['facile','FAH-chee-leh','easy'],
+    ['difficile','deef-FEE-chee-leh','difficult'],
+    ['giusto','JOOS-toh','right, correct'],
+    ['sbagliato','zbah-LYAH-toh','wrong'],
+    ['vero','VEH-roh','true'],
+    ['falso','FAHL-soh','false'],
+    ['presto','PREH-stoh','early'],
+    ['tardi','TAR-dee','late'],
+    ['lontano','lohn-TAH-noh','far'],
+    ['vicino','vee-CHEE-noh','near'],
+    ['chiaro','KYAH-roh','light, clear'],
+    ['scuro','SKOO-roh','dark'],
+    ['profondo','proh-FOHN-doh','deep'],
+    ['sottile','soht-TEE-leh','thin'],
+    ['largo','LAR-goh','wide'],
+    ['stretto','STREHT-toh','narrow'],
+    ['grasso','GRAHS-soh','fat'],
+    ['magro','MAH-groh','thin'],
+    ['sano','SAH-noh','healthy'],
+    ['malato','mah-LAH-toh','sick'],
+    ['felice','feh-LEE-cheh','happy'],
+    ['contento','kohn-TEHN-toh','glad'],
+    ['triste','TREE-steh','sad'],
+    ['stanco','STAHN-koh','tired'],
+    ['occupato','ohk-koo-PAH-toh','busy'],
+    ['libero','LEE-beh-roh','free'],
+    ['pulito','poo-LEE-toh','clean'],
+    ['sporco','SPOHR-koh','dirty'],
+    ['rumoroso','roo-moh-ROH-zoh','noisy'],
+    ['silenzioso','see-lehn-TSYOH-zoh','quiet'],
+    ['pieno','PYEH-noh','full'],
+    ['vuoto','VWOH-toh','empty'],
+    ['sicuro','see-KOO-roh','safe'],
+    ['pericoloso','peh-ree-koh-LOH-zoh','dangerous'],
+    ['interessante','een-teh-rehs-SAHN-teh','interesting'],
+    ['noioso','noh-YOH-zoh','boring'],
+    ['importante','eem-pohr-TAHN-teh','important'],
+    ['semplice','SEHM-plee-cheh','simple'],
+    ['complicato','kohm-plee-KAH-toh','complicated'],
+    ['strano','STRAH-noh','strange'],
+    ['speciale','speh-CHAH-leh','special'],
+    ['intelligente','een-tehl-lee-JEHN-teh','intelligent'],
+    ['pigro','PEE-groh','lazy'],
+    ['coraggioso','koh-rahd-JOH-zoh','brave'],
+    ['nervoso','nehr-VOH-zoh','nervous'],
+    ['soddisfatto','sohd-dee-SFAHT-toh','satisfied'],
+    ['gentile','jehn-TEE-leh','kind'],
+    ['simpatico','seem-PAH-tee-koh','nice, likeable'],
+    ['antipatico','ahn-tee-PAH-tee-koh','unpleasant'],
+    ['ricco','REEK-koh','rich'],
+    ['povero','POH-veh-roh','poor'],
+    ['forte','FOHR-teh','strong'],
+    ['debole','DEH-boh-leh','weak'],
+    ['sposato','spoh-ZAH-toh','married'],
+    ['dolce','DOHL-cheh','sweet'],
+    ['salato','sah-LAH-toh','salty'],
+    ['amaro','ah-MAH-roh','bitter'],
+    ['aspro','AH-sproh','sour'],
+    ['pronto','PROHN-toh','ready'],
+    ['matto','MAHT-toh','crazy']
+  ],
+
+  adverb: [
+    ['molto','MOHL-toh','very'],
+    ['troppo','TROHP-poh','too much'],
+    ['estremamente','eh-streh-mah-MEHN-teh','extremely'],
+    ['davvero','dahv-VEH-roh','really'],
+    ['più','pyoo','more'],
+    ['meno','MEH-noh','less'],
+    ['anche','AHN-keh','also'],
+    ['tutto','TOOT-toh','everything, all'],
+    ['solo','SOH-loh','only'],
+    ['già','jah','already'],
+    ['ancora','ahn-KOH-rah','still, again'],
+    ['appena','ahp-PEH-nah','just'],
+    ['spesso','SPEHS-soh','often'],
+    ['sempre','SEHM-preh','always'],
+    ['mai','my','never'],
+    ['raramente','rah-rah-MEHN-teh','rarely'],
+    ['insieme','een-SYEH-meh','together'],
+    ['probabilmente','proh-bah-beel-MEHN-teh','probably'],
+    ['forse','FOHR-seh','maybe'],
+    ['sicuramente','see-koo-rah-MEHN-teh','surely'],
+    ['certo','CHEHR-toh','certainly'],
+    ['quasi','KWAH-zee','almost'],
+    ['non','nohn','not'],
+    ['poi','poy','then'],
+    ['prima','PREE-mah','before'],
+    ['dopo','DOH-poh','after'],
+    ['adesso','ah-DEHS-soh','now'],
+    ['ora','OH-rah','now'],
+    ['subito','SOO-bee-toh','immediately'],
+    ['qui','kwee','here'],
+    ['lì','lee','there'],
+    ['là','lah','there'],
+    ['bene','BEH-neh','well'],
+    ['male','MAH-leh','badly'],
+    ['anche se','AHN-keh seh','even if']
+  ],
+
+  preposition: [
+    ['di','dee','of'],
+    ['a','ah','to, at'],
+    ['da','dah','from'],
+    ['in','een','in'],
+    ['con','kohn','with'],
+    ['su','soo','on'],
+    ['per','pehr','for'],
+    ['tra','trah','between'],
+    ['fra','frah','between'],
+    ['verso','VEHR-soh','towards'],
+    ['contro','KOHN-troh','against'],
+    ['senza','SEHN-tsah','without'],
+    ['sotto','SOHT-toh','under'],
+    ['sopra','SOH-prah','over'],
+    ['dentro','DEHN-troh','inside'],
+    ['fuori','FWOH-ree','outside'],
+    ['davanti','dah-VAHN-tee','in front of'],
+    ['dietro','DYEH-troh','behind'],
+    ['accanto','ahk-KAHN-toh','next to'],
+    ['durante','doo-RAHN-teh','during']
+  ],
+
+  conjunction: [
+    ['e','eh','and'],
+    ['o','oh','or'],
+    ['ma','mah','but'],
+    ['però','peh-ROH','but, however'],
+    ['perché','pehr-KEH','because, why'],
+    ['se','seh','if'],
+    ['quando','KWAHN-doh','when'],
+    ['mentre','MEHN-treh','while'],
+    ['siccome','seek-KOH-meh','since'],
+    ['quindi','KWEEN-dee','therefore'],
+    ['allora','ahl-LOH-rah','then'],
+    ['nonostante','noh-noh-STAHN-teh','despite'],
+    ['benché','behn-KEH','although'],
+    ['affinché','ahf-feen-KEH','so that'],
+    ['oppure','ohp-POO-reh','or else']
+  ],
+
+  number: [
+    ['zero','TSEH-roh','zero'],
+    ['uno','OO-noh','one'],
+    ['due','DOO-eh','two'],
+    ['tre','treh','three'],
+    ['quattro','KWAHT-troh','four'],
+    ['cinque','CHEEN-kweh','five'],
+    ['sei','say','six'],
+    ['sette','SEHT-teh','seven'],
+    ['otto','OHT-toh','eight'],
+    ['nove','NOH-veh','nine'],
+    ['dieci','DYEH-chee','ten'],
+    ['undici','OON-dee-chee','eleven'],
+    ['dodici','DOH-dee-chee','twelve'],
+    ['venti','VEHN-tee','twenty'],
+    ['cento','CHEHN-toh','hundred'],
+    ['mille','MEEL-leh','thousand'],
+    ['milione','mee-LYOH-neh','million'],
+    ['primo','PREE-moh','first'],
+    ['secondo','seh-KOHN-doh','second'],
+    ['terzo','TEHR-tsoh','third']
+  ],
+
+  time: [
+    ['oggi','OHD-jee','today'],
+    ['domani','doh-MAH-nee','tomorrow'],
+    ['ieri','YEH-ree','yesterday'],
+    ['dopodomani','doh-poh-doh-MAH-nee','day after tomorrow'],
+    ['mattina','maht-TEE-nah','morning'],
+    ['pomeriggio','poh-meh-REED-joh','afternoon'],
+    ['sera','SEH-rah','evening'],
+    ['notte','NOHT-teh','night'],
+    ['mezzogiorno','mehd-dzoh-JOHR-noh','noon'],
+    ['mezzanotte','mehd-dzah-NOHT-teh','midnight'],
+    ['anno','AHN-noh','year'],
+    ['mese','MEH-zeh','month'],
+    ['settimana','seht-tee-MAH-nah','week'],
+    ['giorno','JOHR-noh','day'],
+    ['lunedì','loo-neh-DEE','Monday'],
+    ['martedì','mar-teh-DEE','Tuesday'],
+    ['mercoledì','mehr-koh-leh-DEE','Wednesday'],
+    ['giovedì','joh-veh-DEE','Thursday'],
+    ['venerdì','veh-nehr-DEE','Friday'],
+    ['sabato','SAH-bah-toh','Saturday'],
+    ['domenica','doh-MEH-nee-kah','Sunday'],
+    ['fine settimana','FEE-neh seht-tee-MAH-nah','weekend'],
+    ['ora','OH-rah','hour, now'],
+    ['minuto','mee-NOO-toh','minute'],
+    ['momento','moh-MEHN-toh','moment'],
+    ['recentemente','reh-chehn-teh-MEHN-teh','recently'],
+    ['oggi stesso','OHD-jee STEHS-soh','this very day'],
+    ['stasera','stah-SEH-rah','this evening'],
+    ['stanotte','stah-NOHT-teh','tonight'],
+    ['quest\'anno','kwehs-TAHN-noh','this year'],
+    ['l\'anno prossimo','LAHN-noh PROHS-see-moh','next year'],
+    ['l\'anno scorso','LAHN-noh SKOHR-soh','last year'],
+    ['fra poco','frah POH-koh','in a bit'],
+    ['fa','fah','ago']
+  ],
+
+  question: [
+    ['chi','kee','who'],
+    ['cosa','KOH-zah','what'],
+    ['che','keh','what, which'],
+    ['dove','DOH-veh','where'],
+    ['quando','KWAHN-doh','when'],
+    ['come','KOH-meh','how'],
+    ['perché','pehr-KEH','why'],
+    ['quanto','KWAHN-toh','how much'],
+    ['quale','KWAH-leh','which'],
+    ['che cosa','keh KOH-zah','what'],
+    ['quanti','KWAHN-tee','how many'],
+    ['quale dei due','KWAH-leh day DOO-eh','which of the two']
+  ],
+
+  particle: [
+    ['ci','chee','there, us'],
+    ['ne','neh','of it, of them'],
+    ['sì','see','yes'],
+    ['no','noh','no'],
+    ['ecco','EHK-koh','here is'],
+    ['pure','POO-reh','also'],
+    ['anzi','AHN-tsee','rather'],
+    ['beh','beh','well'],
+    ['dai','dy','come on'],
+    ['mah','mah','who knows']
+  ]
+};
+
+/* =====================================================================
+   EXPRESSION DATA   [ italian, respelling, english ]
+   ===================================================================== */
+
+const RAW_EXPR = {
+
+  greeting: [
+    ['Ciao!','CHOW','Hi! / Bye! (informal)'],
+    ['Buongiorno!','bwon-JOHR-noh','Good morning!'],
+    ['Buonasera!','bwoh-nah-SEH-rah','Good evening!'],
+    ['Buonanotte','bwoh-nah-NOHT-teh','Good night'],
+    ['Salve!','SAHL-veh','Hello! (formal)'],
+    ['Come stai?','KOH-meh sty','How are you? (informal)'],
+    ['Come sta?','KOH-meh stah','How are you? (formal)'],
+    ['Sto bene, grazie.','stoh BEH-neh, GRAH-tsyeh','I am fine, thanks.'],
+    ['Piacere di conoscerti.','pyah-CHEH-reh dee koh-noh-SHEHR-tee','Nice to meet you.'],
+    ['Arrivederci!','ar-ree-veh-DEHR-chee','Goodbye! (formal)'],
+    ['Ci vediamo!','chee veh-DYAH-moh','See you!'],
+    ['A presto!','ah PREH-stoh','See you soon!'],
+    ['A domani!','ah doh-MAH-nee','See you tomorrow!'],
+    ['Buona giornata!','BWOH-nah johr-NAH-tah','Have a good day!'],
+    ['Benvenuto!','behn-veh-NOO-toh','Welcome!']
+  ],
+
+  intro: [
+    ['Come ti chiami?','KOH-meh tee KYAH-mee','What is your name?'],
+    ['Mi chiamo Marco.','mee KYAH-moh MAR-koh','My name is Marco.'],
+    ['Di dove sei?','dee DOH-veh say','Where are you from?'],
+    ['Sono americano.','SOH-noh ah-meh-ree-KAH-noh','I am American.'],
+    ['Quanti anni hai?','KWAHN-tee AHN-nee eye','How old are you?'],
+    ['Ho venticinque anni.','oh vehn-tee-CHEEN-kweh AHN-nee','I am 25 years old.'],
+    ['Che lavoro fai?','keh lah-VOH-roh fy','What do you do for work?'],
+    ['Sono insegnante.','SOH-noh een-seh-NYAHN-teh','I am a teacher.'],
+    ['Dove abiti?','DOH-veh AH-bee-tee','Where do you live?'],
+    ['Abito a Roma.','AH-bee-toh ah ROH-mah','I live in Rome.'],
+    ['Piacere!','pyah-CHEH-reh','Pleased to meet you!'],
+    ['Il piacere è mio.','eel pyah-CHEH-reh eh MEE-oh','The pleasure is mine.'],
+    ['Parla inglese?','PAR-lah een-GLEH-zeh','Do you speak English? (formal)'],
+    ['Non capisco.','nohn kah-PEE-skoh','I do not understand.'],
+    ['Puoi ripetere?','pwoy ree-PEH-teh-reh','Can you repeat?']
+  ],
+
+  language: [
+    ['Parli italiano?','PAR-lee ee-tah-LYAH-noh','Do you speak Italian?'],
+    ["Parlo un po' d'italiano.",'PAR-loh oon poh dee-tah-LYAH-noh','I speak a little Italian.'],
+    ['Come si dice...?','KOH-meh see DEE-cheh','How do you say...?'],
+    ['Cosa significa?','KOH-zah see-NYEE-fee-kah','What does it mean?'],
+    ['Capisco.','kah-PEE-skoh','I understand.'],
+    ['Non capisco.','nohn kah-PEE-skoh','I do not understand.'],
+    ['Parla più lentamente, per favore.','PAR-lah pyoo lehn-tah-MEHN-teh, pehr fah-VOH-reh','Please speak more slowly.'],
+    ["Sto imparando l'italiano.",'stoh eem-pah-RAHN-doh lee-tah-LYAH-noh','I am learning Italian.'],
+    ["L'italiano è difficile.",'lee-tah-LYAH-noh eh deef-FEE-chee-leh','Italian is difficult.']
+  ],
+
+  daily: [
+    ['Ho fame.','oh FAH-meh','I am hungry.'],
+    ['Ho sete.','oh SEH-teh','I am thirsty.'],
+    ['Che ora è?','keh OH-rah eh','What time is it?'],
+    ['Sono le tre.','SOH-noh leh treh','It is three o\'clock.'],
+    ['Sono in ritardo.','SOH-noh een ree-TAR-doh','I am late.'],
+    ['Arrivo subito.','ar-REE-voh SOO-bee-toh','I am coming right away.'],
+    ['Aspetta un momento.','ah-SPEHT-tah oon moh-MEHN-toh','Wait a moment.'],
+    ['Che giorno è oggi?','keh JOHR-noh eh OHD-jee','What day is it today?'],
+    ['Oggi è lunedì.','OHD-jee eh loo-neh-DEE','Today is Monday.'],
+    ['Sei libero questo weekend?','say LEE-beh-roh KWEHS-toh wee-KEHND','Are you free this weekend?'],
+    ['Sono libero.','SOH-noh LEE-beh-roh','I am free.'],
+    ['Non sono libero.','nohn SOH-noh LEE-beh-roh','I am not free.'],
+    ['Andiamo a mangiare.','ahn-DYAH-moh ah mahn-JAH-reh','Let us go eat.'],
+    ['È delizioso.','eh deh-lee-TSYOH-zoh','It is delicious.'],
+    ['Sono sazio.','SOH-noh SAH-tsyoh','I am full.']
+  ],
+
+  shopping: [
+    ['Quanto costa?','KWAHN-toh KOH-stah','How much does it cost?'],
+    ['È troppo caro.','eh TROHP-poh KAH-roh','It is too expensive.'],
+    ['Puoi farmi uno sconto?','pwoy FAR-mee OO-noh SKOHN-toh','Can you give me a discount?'],
+    ['Vorrei questo.','vohr-RAY KWEHS-toh','I would like this one.'],
+    ['Non voglio quello.','nohn VOHL-yoh KWEHL-loh','I do not want that one.'],
+    ['Posso pagare con la carta?','POHS-soh pah-GAH-reh kohn lah KAR-tah','Can I pay by card?'],
+    ['Pago in contanti.','PAH-goh een kohn-TAHN-tee','I will pay in cash.'],
+    ['Il conto, per favore.','eel KOHN-toh, pehr fah-VOH-reh','The bill, please.'],
+    ['Il menu, per favore.','eel meh-NOO, pehr fah-VOH-reh','The menu, please.'],
+    ["Dov'è il bagno?",'doh-VEH eel BAH-nyoh','Where is the bathroom?'],
+    ['A che ora chiudete?','ah keh OH-rah KYOO-deh-teh','What time do you close?']
+  ],
+
+  directions: [
+    ["Dov'è la stazione?",'doh-VEH lah staht-TSYOH-neh','Where is the station?'],
+    ['È lontano?','eh lohn-TAH-noh','Is it far?'],
+    ['È vicino.','eh vee-CHEE-noh','It is close.'],
+    ['Vada dritto.','VAH-dah DREET-toh','Go straight. (formal)'],
+    ['Gira a sinistra.','JEE-rah ah see-NEE-strah','Turn left.'],
+    ['Gira a destra.','JEE-rah ah DEH-strah','Turn right.'],
+    ['Mi sono perso.','mee SOH-noh PEHR-soh','I am lost.'],
+    ['Puoi aiutarmi?','pwoy ah-yoo-TAR-mee','Can you help me?'],
+    ['Grazie mille!','GRAH-tsyeh MEEL-leh','Thanks a lot!']
+  ],
+
+  social: [
+    ['Andiamo al cinema.','ahn-DYAH-moh ahl CHEE-neh-mah','Let us go to the cinema.'],
+    ['Che bel film!','keh behl feelm','What a great film!'],
+    ['Ti piace la musica?','tee PYAH-cheh lah MOO-zee-kah','Do you like music?'],
+    ['Che musica ti piace?','keh MOO-zee-kah tee PYAH-cheh','What music do you like?'],
+    ['Suoni il pianoforte?','SWOH-nee eel pyah-noh-FOHR-teh','Do you play the piano?'],
+    ['Non so suonare.','nohn soh swoh-NAH-reh','I cannot play.'],
+    ['Che peccato!','keh pehk-KAH-toh','What a pity!'],
+    ['Forza!','FOHR-tsah','Come on!'],
+    ['Divertiti!','dee-vehr-TEE-tee','Have fun!'],
+    ['Buon divertimento!','bwon dee-vehr-tee-MEHN-toh','Have a good time!']
+  ],
+
+  feelings: [
+    ['Come stai?','KOH-meh sty','How are you?'],
+    ['Sto bene.','stoh BEH-neh','I am well.'],
+    ["Sono un po' stanco.",'SOH-noh oon poh STAHN-koh','I am a bit tired.'],
+    ['Sono molto occupato.','SOH-noh MOHL-toh ohk-koo-PAH-toh','I am very busy.'],
+    ['Sono felice.','SOH-noh feh-LEE-cheh','I am happy.'],
+    ['Sono triste.','SOH-noh TREE-steh','I am sad.'],
+    ['Non ti preoccupare.','nohn tee preh-ohk-koo-PAH-reh','Do not worry.'],
+    ['Come ti senti?','KOH-meh tee SEHN-tee','How do you feel?'],
+    ['Non mi sento bene.','nohn mee SEHN-toh BEH-neh','I do not feel well.'],
+    ['Ho il raffreddore.','oh eel rahf-frehd-DOH-reh','I have a cold.']
+  ],
+
+  weather: [
+    ['Che tempo fa?','keh TEHM-poh fah','What is the weather like?'],
+    ['Fa bel tempo oggi.','fah behl TEHM-poh OHD-jee','The weather is nice today.'],
+    ['Sta piovendo.','stah pyoh-VEHN-doh','It is raining.'],
+    ['Fa freddo oggi.','fah FREHD-doh OHD-jee','It is cold today.'],
+    ['Fa caldo oggi.','fah KAHL-doh OHD-jee','It is hot today.'],
+    ['Copriti bene.','koh-PREE-tee BEH-neh','Dress warmly.'],
+    ['Stai attento.','sty aht-TEHN-toh','Be careful.']
+  ],
+
+  wishes: [
+    ['Buon compleanno!','bwon kohm-pleh-AHN-noh','Happy birthday!'],
+    ['Buona fortuna!','BWOH-nah fohr-TOO-nah','Good luck!'],
+    ['Auguri!','ow-GOO-ree','Best wishes!'],
+    ['Buon appetito!','bwon ahp-peh-TEE-toh','Enjoy your meal!'],
+    ['Buon viaggio!','bwon VYAHD-joh','Have a good trip!']
+  ]
+};
+
+/* =====================================================================
+   FLATTEN DATA
+   ===================================================================== */
+
+const seenW = new Set();
+const WORDS = Object.entries(RAW_WORDS).flatMap(([pos, arr]) =>
+  arr.map(([h, p, e]) => ({ h, p, e, cat: pos }))
+).filter(w => { if (seenW.has(w.h)) return false; seenW.add(w.h); return true; });
+
+const EXPR = Object.entries(RAW_EXPR).flatMap(([cat, arr]) =>
+  arr.map(([h, p, e]) => ({ h, p, e, cat }))
+);
+
+const DATA = { words: WORDS, expressions: EXPR };
+
+/* =====================================================================
+   TEXT-TO-SPEECH MODULE  (Italian)
+   ===================================================================== */
+
+const TTS = (() => {
+  const supported = 'speechSynthesis' in window;
+  let itVoice = null;
+  let autoPlay = false;
+
+  try { autoPlay = localStorage.getItem('it-flashcards-autoplay') === '1'; } catch(e){}
+
+  function pickVoice(){
+    if (!supported) return;
+    const voices = speechSynthesis.getVoices();
+    if (!voices.length) return;
+    itVoice =
+      voices.find(v => v.lang === 'it-IT') ||
+      voices.find(v => v.lang.replace('_','-').startsWith('it-IT')) ||
+      voices.find(v => v.lang.toLowerCase().startsWith('it')) ||
+      null;
+    updateWarn();
+  }
+
+  function updateWarn(){
+    const warn = document.getElementById('audioWarn');
+    if (!warn) return;
+    if (!supported || !itVoice) warn.classList.add('show');
+    else warn.classList.remove('show');
+  }
+
+  if (supported){
+    speechSynthesis.onvoiceschanged = pickVoice;
+    pickVoice();
+    setTimeout(pickVoice, 300);
+    setTimeout(pickVoice, 1200);
+  }
+
+  // Strip punctuation for cleaner speech
+  function clean(text){
+    return text
+      .replace(/[«»""''…]/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  function speak(text, btnEl){
+    if (!supported) return;
+    const clean_text = clean(text);
+    if (!clean_text) return;
+
+    speechSynthesis.cancel();
+
+    const u = new SpeechSynthesisUtterance(clean_text);
+    u.lang  = 'it-IT';
+    u.rate  = 0.9;
+    u.pitch = 1;
+    if (itVoice) u.voice = itVoice;
+
+    const targets = [];
+    if (btnEl) targets.push(btnEl);
+    const mainBtn = document.getElementById('speakBtn');
+    if (mainBtn && btnEl !== mainBtn && !document.getElementById('panel-learn').classList.contains('hidden')) {
+      const cur = currentItem();
+      if (cur && cur.h === text) targets.push(mainBtn);
+    }
+
+    const setOn  = () => targets.forEach(t => t.classList.add('speaking'));
+    const setOff = () => targets.forEach(t => t.classList.remove('speaking'));
+
+    u.onstart = setOn;
+    u.onend   = setOff;
+    u.onerror = setOff;
+    setTimeout(setOn, 60);
+
+    speechSynthesis.speak(u);
+  }
+
+  function stop(){
+    if (!supported) return;
+    speechSynthesis.cancel();
+    document.querySelectorAll('.speaking').forEach(el => el.classList.remove('speaking'));
+  }
+
+  function setAuto(on){
+    autoPlay = on;
+    try { localStorage.setItem('it-flashcards-autoplay', on ? '1' : '0'); } catch(e){}
+    const chip = document.getElementById('autoChip');
+    if (chip) chip.classList.toggle('on', on);
+  }
+
+  function isAuto(){ return autoPlay; }
+
+  return { speak, stop, setAuto, isAuto, pickVoice, supported };
+})();
+
+/* =====================================================================
+   STATE
+   ===================================================================== */
+
+const el  = id => document.getElementById(id);
+const KEY = 'it-flashcards-learned-v1';
+const RESP_KEY = 'it-flashcards-respell-v1';
+
+let mode        = 'words';
+let catFilter   = 'all';
+let poolIdx     = { words: 0, expressions: 0 };
+let savedFilter = 'all';
+let showRespell = true;
+
+try {
+  const v = localStorage.getItem(RESP_KEY);
+  if (v === '0') showRespell = false;
+} catch(e){}
+
+const keyOf    = (m, h) => m + '::' + h;
+const splitKey = k => { const i = k.indexOf('::'); return { mode: k.slice(0,i), h: k.slice(i+2) }; };
+
+let learned = [];
+try {
+  const raw = JSON.parse(localStorage.getItem(KEY));
+  if (Array.isArray(raw)) learned = raw.filter(k => typeof k === 'string');
+} catch(e) { learned = []; }
+
+learned = learned.filter(k => {
+  const { mode:m, h } = splitKey(k);
+  return DATA[m] && DATA[m].some(w => w.h === h);
+});
+
+const persist = () => { try { localStorage.setItem(KEY, JSON.stringify(learned)); } catch(e){} };
+
+/* =====================================================================
+   LEARN PANEL
+   ===================================================================== */
+
+function getPool(){
+  const base = DATA[mode];
+  if (catFilter === 'all') return base;
+  return base.filter(w => w.cat === catFilter);
+}
+
+function currentItem(){
+  const pool = getPool();
+  return pool[poolIdx[mode] % pool.length];
+}
+
+function animateWord(){
+  const w = el('word');
+  w.style.animation = 'none';
+  void w.offsetWidth;
+  w.style.animation = 'popIn .45s cubic-bezier(.2,.8,.3,1)';
+}
+
+function sizeClassFor(text){
+  const len = [...text].length;
+  if (len <= 6)  return 'size-l';
+  if (len <= 12) return 'size-m';
+  return 'size-s';
+}
+
+function syncSaveBtn(){
+  const saved = learned.includes(keyOf(mode, currentItem().h));
+  const b = el('saveBtn');
+  b.classList.toggle('saved', saved);
+  b.innerHTML = saved ? '<span class="ico">♥</span>Saved'
+                      : '<span class="ico">♡</span>Save';
+}
+
+function syncRespellChip(){
+  el('latinChip').classList.toggle('on', showRespell);
+  el('pinyin').classList.toggle('hide', !showRespell);
+}
+
+function renderCard(animate = true){
+  const pool = getPool();
+  const i    = poolIdx[mode] % pool.length;
+  const w    = pool[i];
+  const meta = CATS[w.cat] || { label:w.cat, it:'', color:'#7b8098' };
+
+  const badge = el('posbadge');
+  badge.style.setProperty('--cat', meta.color || '#7b8098');
+  badge.innerHTML = `${meta.label}${meta.it ? `<span class="zh">${meta.it}</span>` : ''}`;
+
+  const hz = el('hanzi');
+  hz.textContent = w.h;
+  hz.className   = 'hanzi ' + sizeClassFor(w.h);
+
+  el('pinyin').textContent  = w.p;
+  el('english').textContent = w.e;
+  el('counter').textContent = (i + 1) + ' / ' + pool.length;
+
+  syncSaveBtn();
+  syncRespellChip();
+  if (animate) animateWord();
+
+  TTS.stop();
+  if (TTS.isAuto()) {
+    setTimeout(() => TTS.speak(w.h, el('speakBtn')), 220);
+  }
+}
+
+function renderCatBar(){
+  const bar   = el('catbar');
+  const items = DATA[mode];
+  const counts = {};
+  items.forEach(w => counts[w.cat] = (counts[w.cat] || 0) + 1);
+
+  const cats = Object.keys(counts).sort(
+    (a,b) => CAT_ORDER.indexOf(a) - CAT_ORDER.indexOf(b)
+  );
+
+  let html = `<button class="cat${catFilter==='all'?' active':''}" data-cat="all">
+    All <span class="catn">${items.length}</span>
+  </button>`;
+
+  cats.forEach(c => {
+    const meta = CATS[c] || { label:c, color:'#7b8098' };
+    html += `<button class="cat${catFilter===c?' active':''}" data-cat="${c}" style="--cat:${meta.color}">
+      ${meta.label} <span class="catn">${counts[c]}</span>
+    </button>`;
+  });
+
+  bar.innerHTML = html;
+
+  bar.querySelectorAll('.cat').forEach(btn => {
+    btn.addEventListener('click', () => {
+      catFilter = btn.dataset.cat;
+      poolIdx[mode] = 0;
+      renderCatBar();
+      renderCard();
+    });
+  });
+}
+
+function nextWord(){
+  const pool = getPool();
+  poolIdx[mode] = (poolIdx[mode] + 1) % pool.length;
+  renderCard();
+}
+
+function prevWord(){
+  const pool = getPool();
+  poolIdx[mode] = (poolIdx[mode] - 1 + pool.length) % pool.length;
+  renderCard();
+}
+
+function toggleSave(){
+  const k = keyOf(mode, currentItem().h);
+  const i = learned.indexOf(k);
+
+  if (i === -1){
+    learned.push(k);
+    const badge = el('badge');
+    badge.classList.remove('pop');
+    void badge.offsetWidth;
+    badge.classList.add('pop');
+  } else {
+    learned.splice(i, 1);
+  }
+
+  persist();
+  syncSaveBtn();
+  renderSaved();
+}
+
+function setMode(m){
+  mode = m;
+  catFilter = 'all';
+  poolIdx[m] = 0;
+  document.querySelectorAll('.mode-chip').forEach(c =>
+    c.classList.toggle('active', c.dataset.mode === m)
+  );
+  renderCatBar();
+  renderCard();
+}
+
+/* =====================================================================
+   SAVED PANEL
+   ===================================================================== */
+
+function renderSaved(){
+  const list = el('savedList');
+
+  const entries = learned.slice().reverse().map(k => {
+    const { mode:m, h } = splitKey(k);
+    const w = (DATA[m] || []).find(x => x.h === h);
+    return w ? { ...w, mode:m, key:k } : null;
+  }).filter(Boolean);
+
+  const countWords = entries.filter(e => e.mode === 'words').length;
+  const countExpr  = entries.filter(e => e.mode === 'expressions').length;
+
+  el('badge').textContent     = entries.length;
+  el('savedMeta').textContent = entries.length
+    ? `${countWords} words · ${countExpr} phrases`
+    : '0 saved';
+
+  const filters = el('filters');
+  filters.querySelector('[data-filter="all"]').textContent         = `All ${entries.length}`;
+  filters.querySelector('[data-filter="words"]').textContent       = `Words ${countWords}`;
+  filters.querySelector('[data-filter="expressions"]').textContent = `Expressions ${countExpr}`;
+  filters.querySelectorAll('.filter').forEach(f =>
+    f.classList.toggle('active', f.dataset.filter === savedFilter)
+  );
+
+  const shown = savedFilter === 'all'
+    ? entries
+    : entries.filter(e => e.mode === savedFilter);
+
+  if (!shown.length){
+    list.innerHTML = `
+      <div class="empty">
+        <div class="icon">📖</div>
+        <p>${entries.length ? 'Nothing here' : 'Your list is empty'}</p>
+        <span>${entries.length
+          ? 'No saved items match this filter.'
+          : 'Tap "Save" on a word or phrase you want to remember, and it will appear here.'}</span>
+      </div>`;
+    return;
+  }
+
+  list.innerHTML = shown.map((w, i) => {
+    const meta = CATS[w.cat] || { label:w.cat, color:'#94a3b8' };
+    const respell = showRespell
+      ? `<span class="si-pinyin" style="margin-left:auto">${w.p}</span>`
+      : '';
+    return `
+      <div class="saved-item" data-key="${w.key}" style="animation-delay:${Math.min(i,12)*40}ms">
+        <div class="si-hanzi${[...w.h].length > 7 ? ' long' : ''}">${w.h}</div>
+        <div class="si-info">
+          <div class="si-line">
+            <span class="si-cat" style="--cat:${meta.color}">${meta.label}</span>
+            ${respell}
+          </div>
+          <div class="si-english">${w.e}</div>
+        </div>
+        <button class="si-speak" data-speak="${w.h}" title="Listen">🔊</button>
+        <button class="remove" data-remove="${w.key}" title="Remove">✕</button>
+      </div>`;
+  }).join('')
+    + `<button class="clear-btn" id="clearBtn">Remove all ${entries.length} saved items</button>`;
+
+  list.querySelectorAll('.saved-item').forEach(item => {
+    item.addEventListener('click', ev => {
+      if (ev.target.closest('.remove') || ev.target.closest('.si-speak')) return;
+      const { mode:m, h } = splitKey(item.dataset.key);
+      const i = DATA[m].findIndex(x => x.h === h);
+      if (i < 0) return;
+      mode = m;
+      catFilter = 'all';
+      poolIdx[m] = i;
+      document.querySelectorAll('.mode-chip').forEach(c =>
+        c.classList.toggle('active', c.dataset.mode === m)
+      );
+      renderCatBar();
+      renderCard();
+      switchTab('learn');
+    });
+  });
+
+  list.querySelectorAll('.si-speak').forEach(btn => {
+    btn.addEventListener('click', ev => {
+      ev.stopPropagation();
+      TTS.speak(btn.dataset.speak, btn);
+    });
+  });
+
+  list.querySelectorAll('.remove').forEach(btn => {
+    btn.addEventListener('click', ev => {
+      ev.stopPropagation();
+      learned = learned.filter(k => k !== btn.dataset.remove);
+      persist();
+      syncSaveBtn();
+      renderSaved();
+    });
+  });
+
+  el('clearBtn').addEventListener('click', () => {
+    if (!confirm(`Remove all ${entries.length} saved items?`)) return;
+    learned = [];
+    persist();
+    syncSaveBtn();
+    renderSaved();
+  });
+}
+
+/* =====================================================================
+   TABS
+   ===================================================================== */
+
+function switchTab(name){
+  document.querySelectorAll('.tab').forEach(t =>
+    t.classList.toggle('active', t.dataset.tab === name)
+  );
+  el('indicator').style.transform = name === 'learn' ? 'translateX(0)' : 'translateX(100%)';
+  el('panel-learn').classList.toggle('hidden', name !== 'learn');
+  el('panel-saved').classList.toggle('hidden', name !== 'saved');
+  if (name !== 'learn') TTS.stop();
+}
+
+/* =====================================================================
+   EVENTS
+   ===================================================================== */
+
+el('nextBtn').addEventListener('click', nextWord);
+el('prevBtn').addEventListener('click', prevWord);
+el('saveBtn').addEventListener('click', toggleSave);
+el('speakBtn').addEventListener('click', () => TTS.speak(currentItem().h, el('speakBtn')));
+el('hanzi').addEventListener('click', () => TTS.speak(currentItem().h, el('speakBtn')));
+
+el('autoChip').addEventListener('click', () => {
+  TTS.setAuto(!TTS.isAuto());
+  if (TTS.isAuto()) TTS.speak(currentItem().h, el('speakBtn'));
+});
+
+el('latinChip').addEventListener('click', () => {
+  showRespell = !showRespell;
+  try { localStorage.setItem(RESP_KEY, showRespell ? '1' : '0'); } catch(e){}
+  syncRespellChip();
+  renderSaved();
+});
+
+document.querySelectorAll('.tab').forEach(t =>
+  t.addEventListener('click', () => switchTab(t.dataset.tab))
+);
+
+document.querySelectorAll('.mode-chip').forEach(c =>
+  c.addEventListener('click', () => setMode(c.dataset.mode))
+);
+
+document.querySelectorAll('.filter').forEach(f =>
+  f.addEventListener('click', () => { savedFilter = f.dataset.filter; renderSaved(); })
+);
+
+document.addEventListener('keydown', e => {
+  if (e.target.matches('input, textarea')) return;
+  if (el('panel-learn').classList.contains('hidden')) return;
+
+  if (e.key === 'ArrowRight'){ e.preventDefault(); nextWord(); }
+  if (e.key === 'ArrowLeft'){  e.preventDefault(); prevWord(); }
+  if (e.key.toLowerCase() === 's'){ e.preventDefault(); toggleSave(); }
+  if (e.key === ' '){ e.preventDefault(); TTS.speak(currentItem().h, el('speakBtn')); }
+  if (e.key.toLowerCase() === 'l'){ e.preventDefault(); el('latinChip').click(); }
+});
+
+window.addEventListener('beforeunload', () => TTS.stop());
+
+/* =====================================================================
+   INIT
+   ===================================================================== */
+
+el('nWords').textContent = DATA.words.length;
+el('nExpr').textContent  = DATA.expressions.length;
+el('totalCount').textContent = DATA.words.length;
+
+el('autoChip').classList.toggle('on', TTS.isAuto());
+
+renderCatBar();
+renderCard(false);
+renderSaved();
+
+if (TTS.isAuto()) setTimeout(() => TTS.speak(currentItem().h, el('speakBtn')), 400);
+</script>
+</body>
+</html>
