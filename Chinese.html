@@ -1,0 +1,1481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chinese Flashcards · A2 · Audio + Latin</title>
+<style>
+  :root{
+    --ink:#151726;
+    --muted:#7b8098;
+    --accent:#e05252;
+    --line:#eceef6;
+    --cn-font:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC","Source Han Sans SC",sans-serif;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+
+  body{
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    color:var(--ink);
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    padding:40px 20px 70px;
+    background:
+      radial-gradient(900px 520px at 8% -12%, #ffe1e1 0%, transparent 62%),
+      radial-gradient(820px 520px at 102% -4%, #dfe6ff 0%, transparent 58%),
+      radial-gradient(760px 520px at 50% 118%, #d8f6ee 0%, transparent 62%),
+      #f7f8fc;
+    background-attachment:fixed;
+  }
+
+  .app{width:100%;max-width:520px}
+
+  .brand{display:flex;align-items:center;gap:14px;margin-bottom:22px;padding-left:4px}
+  .logo{
+    width:52px;height:52px;border-radius:18px;flex:none;
+    display:grid;place-items:center;
+    font-family:var(--cn-font);font-size:26px;font-weight:600;color:#fff;
+    background:linear-gradient(135deg,#e05252,#ff8a5c);
+    box-shadow:0 12px 26px -10px rgba(224,82,82,.85);
+  }
+  h1{font-size:19px;font-weight:700;letter-spacing:-.015em}
+  .subtitle{font-size:13px;color:var(--muted);margin-top:3px}
+  .subtitle b{color:var(--accent);font-weight:700}
+
+  .tabs{
+    position:relative;display:grid;grid-template-columns:1fr 1fr;
+    background:#e8ebf4;border-radius:999px;padding:4px;margin-bottom:18px;
+    user-select:none;
+  }
+  .tab{
+    position:relative;z-index:1;border:0;background:none;cursor:pointer;
+    font:inherit;font-size:14px;font-weight:650;color:var(--muted);
+    padding:12px 8px;border-radius:999px;
+    display:flex;align-items:center;justify-content:center;gap:7px;
+    transition:color .25s;
+  }
+  .tab.active{color:var(--ink)}
+  .indicator{
+    position:absolute;top:4px;left:4px;
+    width:calc(50% - 4px);height:calc(100% - 8px);
+    background:#fff;border-radius:999px;
+    box-shadow:0 4px 14px -3px rgba(30,35,80,.18);
+    transition:transform .35s cubic-bezier(.2,.8,.3,1);
+  }
+  .badge{
+    min-width:20px;height:20px;padding:0 6px;border-radius:999px;
+    background:var(--accent);color:#fff;font-size:11px;font-weight:700;
+    display:inline-grid;place-items:center;
+  }
+  .badge.pop{animation:badgePop .45s ease}
+
+  .panel{animation:popIn .45s cubic-bezier(.2,.8,.3,1) both}
+  .hidden{display:none !important}
+
+  .modeswitch{display:flex;gap:9px;margin-bottom:12px;padding:0 2px}
+  .mode-chip{
+    flex:1;border:1px solid var(--line);cursor:pointer;font:inherit;
+    background:rgba(255,255,255,.72);
+    border-radius:16px;padding:12px 8px;
+    font-size:13.5px;font-weight:650;color:var(--muted);
+    display:flex;align-items:center;justify-content:center;gap:7px;
+    transition:all .25s;
+  }
+  .mode-chip .n{
+    font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:999px;
+    background:#eef0f7;color:#98a0b8;transition:all .25s;
+  }
+  .mode-chip:hover{border-color:#dfe3f0}
+  .mode-chip:active{transform:scale(.98)}
+  .mode-chip.active{
+    background:linear-gradient(135deg,#1d2033,#3b4168);
+    color:#fff;border-color:transparent;
+    box-shadow:0 14px 24px -14px rgba(29,32,51,.95);
+  }
+  .mode-chip.active .n{background:rgba(255,255,255,.22);color:#fff}
+
+  .catbar{
+    display:flex;gap:7px;overflow-x:auto;
+    padding:2px 20px 14px;margin:0 -20px;
+    scrollbar-width:none;-ms-overflow-style:none;
+  }
+  .catbar::-webkit-scrollbar{display:none}
+  .cat{
+    flex:none;border:1px solid var(--line);background:rgba(255,255,255,.72);
+    border-radius:999px;padding:8px 13px;cursor:pointer;
+    font:inherit;font-size:12.5px;font-weight:650;color:var(--muted);
+    display:flex;align-items:center;gap:6px;white-space:nowrap;
+    transition:all .22s;
+  }
+  .cat:hover{border-color:#dfe3f0;color:var(--ink)}
+  .cat .catn{
+    font-size:10.5px;font-weight:700;padding:1px 6px;border-radius:999px;
+    background:#eef0f7;color:#98a0b8;transition:all .22s;
+  }
+  .cat.active{
+    background:var(--cat,var(--ink));color:#fff;border-color:transparent;
+    box-shadow:0 10px 20px -12px var(--cat,rgba(29,32,51,.9));
+  }
+  .cat.active .catn{background:rgba(255,255,255,.25);color:#fff}
+
+  .card{
+    position:relative;overflow:hidden;
+    background:rgba(255,255,255,.88);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    border:1px solid rgba(255,255,255,.95);
+    border-radius:30px;
+    padding:18px 24px 26px;
+    box-shadow:0 34px 64px -28px rgba(35,40,90,.30), 0 2px 6px rgba(35,40,90,.04);
+  }
+  .card-top{
+    display:flex;justify-content:space-between;align-items:center;
+    gap:8px;margin-bottom:6px;min-height:26px;flex-wrap:wrap;
+  }
+  .posbadge{
+    font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    padding:5px 10px;border-radius:999px;
+    color:#fff;background:var(--cat,var(--muted));
+    box-shadow:0 8px 16px -10px var(--cat,rgba(0,0,0,.4));
+    white-space:nowrap;
+  }
+  .posbadge .zh{
+    font-family:var(--cn-font);font-weight:600;
+    opacity:.85;margin-left:5px;letter-spacing:0;
+    text-transform:none;font-size:11px;
+  }
+  .top-right{display:flex;align-items:center;gap:6px;flex:none}
+
+  .auto-chip{
+    border:1px solid var(--line);background:rgba(255,255,255,.72);
+    border-radius:999px;padding:5px 9px;cursor:pointer;
+    font:inherit;font-size:10.5px;font-weight:700;color:#98a0b8;
+    letter-spacing:.03em;
+    display:flex;align-items:center;gap:5px;
+    transition:all .22s;
+    white-space:nowrap;
+  }
+  .auto-chip:hover{border-color:#dfe3f0;color:var(--ink)}
+  .auto-chip .dot{
+    width:7px;height:7px;border-radius:50%;background:#cbd0e0;
+    transition:background .22s,box-shadow .22s;
+  }
+  .auto-chip.on{
+    background:linear-gradient(135deg,#e8fff4,#f0fff9);
+    border-color:#b8f0d8;color:#059669;
+  }
+  .auto-chip.on .dot{
+    background:#10b981;
+    box-shadow:0 0 0 3px rgba(16,185,129,.22);
+  }
+
+  .auto-chip.latin.on{
+    background:linear-gradient(135deg,#eef2ff,#f5f7ff);
+    border-color:#c7d2fe;color:#4f46e5;
+  }
+  .auto-chip.latin.on .dot{
+    background:#6366f1;
+    box-shadow:0 0 0 3px rgba(99,102,241,.22);
+  }
+  .auto-chip.latin .sym{font-weight:800;font-size:12px;line-height:1}
+
+  .counter{
+    font-size:11px;font-weight:700;letter-spacing:.14em;
+    text-transform:uppercase;color:#b3b9cd;
+    white-space:nowrap;
+  }
+
+  .word{
+    min-height:250px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;padding:6px 0 4px;
+  }
+  .hanzi{
+    font-family:var(--cn-font);
+    font-weight:600;line-height:1.2;letter-spacing:.04em;
+    word-break:break-word;
+    cursor:pointer;
+    transition:transform .18s, color .18s;
+    user-select:none;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .hanzi:hover{color:var(--accent);transform:scale(1.03)}
+  .hanzi:active{transform:scale(.97)}
+  .hanzi.size-l{font-size:clamp(58px,17vw,86px)}
+  .hanzi.size-m{font-size:clamp(38px,10.5vw,56px)}
+  .hanzi.size-s{font-size:clamp(24px,6.5vw,32px);line-height:1.4;letter-spacing:.02em}
+
+  .pinyin{
+    margin-top:13px;
+    font-size:clamp(14px,4.1vw,19px);font-weight:650;letter-spacing:.05em;
+    color:var(--accent);word-break:break-word;line-height:1.45;
+  }
+
+  /* ---------- LATIN TRANSCRIPTION ---------- */
+  .latin{
+    margin-top:8px;
+    display:inline-flex;align-items:center;gap:7px;
+    padding:5px 13px;border-radius:999px;
+    background:#f3f4ff;border:1px solid #e4e7ff;
+    font-size:clamp(12px,3.4vw,14px);font-weight:600;
+    color:#5b62a8;letter-spacing:.04em;
+    max-width:100%;
+    word-break:break-word;
+    transition:opacity .3s, transform .3s;
+  }
+  .latin .sym{
+    font-size:12px;color:#8a91d4;flex:none;font-weight:700;
+  }
+  .latin.hide{display:none}
+
+  .english{
+    margin-top:16px;font-size:clamp(14px,4vw,16.5px);
+    color:var(--muted);font-weight:500;line-height:1.5;
+  }
+  .english::before{
+    content:"";display:block;width:26px;height:2px;border-radius:2px;
+    background:var(--line);margin:0 auto 16px;
+  }
+
+  .speak-btn{
+    position:absolute;bottom:16px;right:16px;
+    width:46px;height:46px;border-radius:50%;
+    border:0;cursor:pointer;color:#fff;font-size:19px;
+    background:linear-gradient(135deg,#1d2033,#3b4168);
+    display:grid;place-items:center;
+    box-shadow:0 14px 26px -12px rgba(29,32,51,.95);
+    transition:transform .15s, box-shadow .25s, background .25s;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .speak-btn:hover{transform:scale(1.06)}
+  .speak-btn:active{transform:scale(.94)}
+  .speak-btn.speaking{
+    background:linear-gradient(135deg,#e05252,#ff8a5c);
+    animation:speakPulse 1s ease-in-out infinite;
+  }
+  @keyframes speakPulse{
+    0%,100%{box-shadow:0 14px 26px -12px rgba(224,82,82,.95), 0 0 0 0 rgba(224,82,82,.55)}
+    50%    {box-shadow:0 14px 26px -12px rgba(224,82,82,.95), 0 0 0 14px rgba(224,82,82,0)}
+  }
+
+  .actions{display:grid;grid-template-columns:58px 1fr 1.25fr;gap:10px;margin-top:16px}
+  .btn{
+    border:0;font:inherit;font-size:15px;font-weight:650;
+    padding:17px 10px;border-radius:18px;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    transition:transform .15s, box-shadow .25s, background .25s, color .25s, border-color .25s;
+  }
+  .btn:active{transform:scale(.97)}
+  .btn .ico{font-size:17px;line-height:1}
+  .btn.primary{
+    background:linear-gradient(135deg,#1d2033,#363b60);
+    color:#fff;
+    box-shadow:0 16px 30px -14px rgba(29,32,51,.95);
+  }
+  .btn.primary:hover{box-shadow:0 20px 34px -14px rgba(29,32,51,.95)}
+  .btn.ghost{
+    background:#fff;color:var(--ink);
+    border:1.5px solid var(--line);
+    box-shadow:0 6px 16px -10px rgba(35,40,90,.35);
+  }
+  .btn.ghost:hover{border-color:#dde1ee}
+  .btn.ghost.saved{
+    background:linear-gradient(135deg,#ffeded,#fff3ee);
+    border-color:#ffd2d2;color:var(--accent);
+  }
+  .btn.prev{
+    background:#fff;border:1.5px solid var(--line);color:var(--muted);
+    font-size:18px;padding:17px 0;
+    box-shadow:0 6px 16px -10px rgba(35,40,90,.35);
+  }
+  .btn.prev:hover{color:var(--ink);border-color:#dde1ee}
+
+  .saved-head{
+    display:flex;align-items:baseline;justify-content:space-between;
+    margin-bottom:12px;padding:0 6px;
+  }
+  .saved-head h2{font-size:15px;font-weight:700}
+  .saved-head .meta{font-size:13px;color:var(--muted);font-weight:600}
+
+  .filters{display:flex;gap:7px;margin-bottom:14px;padding:0 2px;flex-wrap:wrap}
+  .filter{
+    border:1px solid var(--line);background:rgba(255,255,255,.72);
+    border-radius:999px;padding:8px 14px;cursor:pointer;
+    font:inherit;font-size:12.5px;font-weight:650;color:var(--muted);
+    transition:all .22s;
+  }
+  .filter:hover{border-color:#dfe3f0}
+  .filter.active{
+    background:var(--ink);color:#fff;border-color:transparent;
+    box-shadow:0 10px 20px -12px rgba(29,32,51,.9);
+  }
+
+  .saved-list{display:flex;flex-direction:column;gap:10px}
+
+  .saved-item{
+    display:flex;align-items:center;gap:12px;cursor:pointer;
+    background:rgba(255,255,255,.88);
+    backdrop-filter:blur(10px);
+    border:1px solid rgba(255,255,255,.95);
+    border-radius:20px;padding:12px 14px;
+    box-shadow:0 12px 26px -20px rgba(35,40,90,.75);
+    animation:slideIn .4s cubic-bezier(.2,.8,.3,1) both;
+    transition:transform .18s, box-shadow .25s;
+  }
+  .saved-item:hover{transform:translateY(-2px);box-shadow:0 18px 32px -20px rgba(35,40,90,.8)}
+  .si-hanzi{
+    font-family:var(--cn-font);font-weight:600;
+    font-size:21px;line-height:1.25;
+    min-width:52px;max-width:96px;text-align:center;
+  }
+  .si-hanzi.long{font-size:14px;max-width:110px}
+  .si-info{flex:1;min-width:0}
+  .si-line{display:flex;align-items:center;gap:6px;margin-bottom:3px;min-width:0}
+  .si-cat{
+    font-size:9.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+    padding:2px 7px;border-radius:6px;color:#fff;background:var(--cat,var(--muted));
+    white-space:nowrap;flex:none;
+  }
+  .si-pinyin{
+    font-size:12.5px;font-weight:700;color:var(--accent);letter-spacing:.03em;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .si-latin{
+    font-size:11px;font-weight:600;color:#7c84c9;letter-spacing:.03em;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    margin-top:2px;
+  }
+  .si-english{
+    font-size:13px;color:var(--muted);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    margin-top:2px;
+  }
+  .si-speak{
+    flex:none;width:32px;height:32px;border:0;border-radius:12px;cursor:pointer;
+    background:#f2f4fa;color:#6b7290;font-size:14px;
+    display:grid;place-items:center;
+    transition:background .2s,color .2s,transform .15s;
+  }
+  .si-speak:hover{background:#e8ebff;color:#3b4168}
+  .si-speak:active{transform:scale(.9)}
+  .si-speak.speaking{background:#ffe8e8;color:var(--accent)}
+  .remove{
+    flex:none;width:32px;height:32px;border:0;border-radius:12px;cursor:pointer;
+    background:#f2f4fa;color:#9aa0b8;font-size:13px;
+    display:grid;place-items:center;
+    transition:background .2s,color .2s,transform .15s;
+  }
+  .remove:hover{background:#ffe8e8;color:var(--accent)}
+  .remove:active{transform:scale(.9)}
+
+  .clear-btn{
+    margin-top:6px;border:0;background:transparent;cursor:pointer;
+    font:inherit;font-size:13px;font-weight:650;color:#9aa0b8;
+    padding:14px;border-radius:16px;
+    transition:background .2s,color .2s;
+  }
+  .clear-btn:hover{background:#ffe8e8;color:var(--accent)}
+
+  .empty{text-align:center;padding:54px 20px;color:var(--muted)}
+  .empty .icon{font-size:42px;margin-bottom:14px}
+  .empty p{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:7px}
+  .empty span{font-size:13.5px;line-height:1.55;display:block;max-width:260px;margin:0 auto}
+
+  @keyframes popIn{
+    from{opacity:0;transform:translateY(16px) scale(.97)}
+    to{opacity:1;transform:none}
+  }
+  @keyframes slideIn{
+    from{opacity:0;transform:translateY(12px)}
+    to{opacity:1;transform:none}
+  }
+  @keyframes badgePop{
+    0%{transform:scale(1)}
+    45%{transform:scale(1.4)}
+    100%{transform:scale(1)}
+  }
+
+  .audio-warn{
+    display:none;margin-top:12px;padding:11px 14px;border-radius:14px;
+    background:#fff7ed;border:1px solid #fed7aa;
+    font-size:12px;color:#9a3412;line-height:1.5;
+  }
+  .audio-warn.show{display:block}
+
+  @media (max-width:400px){
+    body{padding:26px 14px 50px}
+    .card{padding:16px 18px 22px;border-radius:26px}
+    .word{min-height:220px}
+    .actions{grid-template-columns:52px 1fr 1.2fr;gap:8px}
+    .btn{font-size:14px;padding:16px 8px}
+    .speak-btn{width:42px;height:42px;font-size:17px;bottom:14px;right:14px}
+    .auto-chip{padding:4px 7px;font-size:10px}
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <header class="brand">
+    <div class="logo">中</div>
+    <div>
+      <h1>Chinese Flashcards · A2</h1>
+      <p class="subtitle"><b id="totalCount">0</b> words · 100 phrases · audio + Latin</p>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <span class="indicator" id="indicator"></span>
+    <button class="tab active" data-tab="learn">Learn</button>
+    <button class="tab" data-tab="saved">My list <span class="badge" id="badge">0</span></button>
+  </nav>
+
+  <section class="panel" id="panel-learn">
+
+    <div class="modeswitch">
+      <button class="mode-chip active" data-mode="words">
+        Words <span class="n" id="nWords">0</span>
+      </button>
+      <button class="mode-chip" data-mode="expressions">
+        Expressions <span class="n" id="nExpr">0</span>
+      </button>
+    </div>
+
+    <div class="catbar" id="catbar"></div>
+
+    <div class="card" id="card">
+      <div class="card-top">
+        <span class="posbadge" id="posbadge"></span>
+        <div class="top-right">
+          <button class="auto-chip" id="autoChip" title="Toggle auto-play">
+            <span class="dot"></span>Auto
+          </button>
+          <button class="auto-chip latin" id="latinChip" title="Toggle Latin transcription">
+            <span class="dot"></span><span class="sym">≈</span>Latin
+          </button>
+          <span class="counter" id="counter">1 / 1</span>
+        </div>
+      </div>
+      <div class="word" id="word">
+        <div class="hanzi size-l" id="hanzi" title="Click to hear">你好</div>
+        <div class="pinyin" id="pinyin">nǐ hǎo</div>
+        <div class="latin" id="latin"><span class="sym">≈</span><span id="latinText">nee·how</span></div>
+        <div class="english" id="english">hello</div>
+      </div>
+      <button class="speak-btn" id="speakBtn" title="Listen (Space)">🔊</button>
+    </div>
+
+    <div class="audio-warn" id="audioWarn">
+      ⚠️ No Chinese voice detected on this device. Audio may sound off — try installing a Chinese voice in your system settings.
+    </div>
+
+    <div class="actions">
+      <button class="btn prev" id="prevBtn" title="Previous (←)">←</button>
+      <button class="btn ghost" id="saveBtn" title="Save (S)">
+        <span class="ico">♡</span>Save
+      </button>
+      <button class="btn primary" id="nextBtn" title="Next (→)">Next →</button>
+    </div>
+  </section>
+
+  <section class="panel hidden" id="panel-saved">
+    <div class="saved-head">
+      <h2>My list</h2>
+      <span class="meta" id="savedMeta">0 saved</span>
+    </div>
+
+    <div class="filters" id="filters">
+      <button class="filter active" data-filter="all">All</button>
+      <button class="filter" data-filter="words">Words</button>
+      <button class="filter" data-filter="expressions">Expressions</button>
+    </div>
+
+    <div class="saved-list" id="savedList"></div>
+  </section>
+</div>
+
+<script>
+/* =====================================================================
+   CATEGORY META
+   ===================================================================== */
+
+const CATS = {
+  pronoun:     { label:'Pronoun',      zh:'代词',   color:'#6366f1' },
+  noun:        { label:'Noun',         zh:'名词',   color:'#0ea5e9' },
+  verb:        { label:'Verb',         zh:'动词',   color:'#ef4444' },
+  adjective:   { label:'Adjective',    zh:'形容词', color:'#f97316' },
+  adverb:      { label:'Adverb',       zh:'副词',   color:'#eab308' },
+  preposition: { label:'Preposition',  zh:'介词',   color:'#22c55e' },
+  conjunction: { label:'Conjunction',  zh:'连词',   color:'#14b8a6' },
+  measure:     { label:'Measure word', zh:'量词',   color:'#a855f7' },
+  number:      { label:'Number',       zh:'数词',   color:'#8b5cf6' },
+  time:        { label:'Time word',    zh:'时间词', color:'#ec4899' },
+  question:    { label:'Question',     zh:'疑问词', color:'#f43f5e' },
+  particle:    { label:'Particle',     zh:'助词',   color:'#94a3b8' },
+  modal:       { label:'Modal verb',   zh:'能愿动词', color:'#06b6d4' },
+  greeting:    { label:'Greeting',     zh:'问候',   color:'#10b981' },
+  intro:       { label:'Introduce',    zh:'介绍',   color:'#3b82f6' },
+  language:    { label:'Language',     zh:'语言',   color:'#6366f1' },
+  daily:       { label:'Daily life',   zh:'日常',   color:'#f59e0b' },
+  shopping:    { label:'Shopping',     zh:'购物',   color:'#ec4899' },
+  directions:  { label:'Directions',   zh:'问路',   color:'#14b8a6' },
+  social:      { label:'Social',       zh:'社交',   color:'#8b5cf6' },
+  feelings:    { label:'Feelings',     zh:'感受',   color:'#f43f5e' },
+  weather:     { label:'Weather',      zh:'天气',   color:'#0ea5e9' },
+  wishes:      { label:'Wishes',       zh:'祝福',   color:'#d946ef' }
+};
+
+const CAT_ORDER = [
+  'pronoun','noun','verb','adjective','adverb',
+  'preposition','conjunction','measure','number','time','question','particle','modal',
+  'greeting','intro','language','daily','shopping','directions','social','feelings','weather','wishes'
+];
+
+/* =====================================================================
+   WORD DATA
+   ===================================================================== */
+
+const RAW_WORDS = {
+
+  pronoun: [
+    ['我','wǒ','I, me'],['你','nǐ','you'],['您','nín','you (polite)'],
+    ['他','tā','he, him'],['她','tā','she, her'],['它','tā','it'],
+    ['我们','wǒ men','we, us'],['你们','nǐ men','you (plural)'],
+    ['他们','tā men','they (m./mixed)'],['她们','tā men','they (female)'],
+    ['咱们','zán men','we (inclusive)'],['自己','zì jǐ','oneself'],
+    ['大家','dà jiā','everyone'],['别人','bié rén','others'],
+    ['这','zhè','this'],['那','nà','that'],
+    ['这里','zhè lǐ','here'],['那里','nà lǐ','there'],
+    ['每','měi','every, each'],['各','gè','each, various']
+  ],
+
+  number: [
+    ['零','líng','zero'],['一','yī','one'],['二','èr','two'],
+    ['两','liǎng','two (with measure)'],['三','sān','three'],['四','sì','four'],
+    ['五','wǔ','five'],['六','liù','six'],['七','qī','seven'],['八','bā','eight'],
+    ['九','jiǔ','nine'],['十','shí','ten'],['百','bǎi','hundred'],
+    ['千','qiān','thousand'],['万','wàn','ten thousand']
+  ],
+
+  measure: [
+    ['个','gè','(general measure)'],['只','zhī','(animals)'],['本','běn','(books)'],
+    ['张','zhāng','(flat objects)'],['条','tiáo','(long objects)'],['件','jiàn','(clothes)'],
+    ['杯','bēi','cup of'],['瓶','píng','bottle of'],['双','shuāng','pair of'],
+    ['对','duì','pair of'],['位','wèi','(polite, people)'],['名','míng','(people)'],
+    ['次','cì','time (occurrence)'],['遍','biàn','time (complete)'],['些','xiē','some'],
+    ['点儿','diǎnr','a little'],['公斤','gōng jīn','kilogram'],['岁','suì','years old']
+  ],
+
+  time: [
+    ['今天','jīn tiān','today'],['明天','míng tiān','tomorrow'],['昨天','zuó tiān','yesterday'],
+    ['前天','qián tiān','day before yesterday'],['后天','hòu tiān','day after tomorrow'],
+    ['现在','xiàn zài','now'],['早上','zǎo shang','morning'],['上午','shàng wǔ','forenoon'],
+    ['中午','zhōng wǔ','noon'],['下午','xià wǔ','afternoon'],['晚上','wǎn shang','evening'],
+    ['夜里','yè lǐ','at night'],['今年','jīn nián','this year'],['明年','míng nián','next year'],
+    ['去年','qù nián','last year'],['星期','xīng qī','week'],
+    ['星期一','xīng qī yī','Monday'],['星期二','xīng qī èr','Tuesday'],
+    ['星期三','xīng qī sān','Wednesday'],['星期四','xīng qī sì','Thursday'],
+    ['星期五','xīng qī wǔ','Friday'],['星期六','xīng qī liù','Saturday'],
+    ['星期天','xīng qī tiān','Sunday'],['周末','zhōu mò','weekend'],
+    ['点','diǎn',"o'clock"],['分','fēn','minute'],['分钟','fēn zhōng','minute (duration)'],
+    ['小时','xiǎo shí','hour'],['天','tiān','day'],['年','nián','year'],
+    ['月','yuè','month'],['日','rì','day (date)'],['号','hào','date number'],
+    ['周','zhōu','week'],['时候','shí hou','moment, time'],
+    ['以前','yǐ qián','before'],['以后','yǐ hòu','after'],['后来','hòu lái','later'],
+    ['最近','zuì jìn','recently'],['刚才','gāng cái','just now'],['马上','mǎ shàng','immediately']
+  ],
+
+  noun: [
+    ['爸爸','bà ba','dad'],['妈妈','mā ma','mom'],['哥哥','gē ge','older brother'],
+    ['姐姐','jiě jie','older sister'],['弟弟','dì di','younger brother'],['妹妹','mèi mei','younger sister'],
+    ['儿子','ér zi','son'],['女儿','nǚ ér','daughter'],['父亲','fù qīn','father (formal)'],
+    ['母亲','mǔ qīn','mother (formal)'],['爷爷','yé ye','grandpa (paternal)'],
+    ['奶奶','nǎi nai','grandma (paternal)'],['叔叔','shū shu','uncle'],
+    ['阿姨','ā yí','aunt'],['丈夫','zhàng fu','husband'],['妻子','qī zi','wife'],
+    ['孩子','hái zi','child'],['家人','jiā rén','family members'],
+    ['朋友','péng you','friend'],['老师','lǎo shī','teacher'],['学生','xué sheng','student'],
+    ['医生','yī shēng','doctor'],['护士','hù shi','nurse'],['司机','sī jī','driver'],
+    ['服务员','fú wù yuán','waiter'],['经理','jīng lǐ','manager'],
+    ['同事','tóng shì','colleague'],['邻居','lín jū','neighbor'],['客人','kè rén','guest'],
+    ['男人','nán rén','man'],['女人','nǚ rén','woman'],['男孩','nán hái','boy'],
+    ['女孩','nǚ hái','girl'],['人','rén','person'],['名字','míng zi','name'],
+    ['头','tóu','head'],['眼睛','yǎn jing','eye'],['鼻子','bí zi','nose'],
+    ['嘴','zuǐ','mouth'],['耳朵','ěr duo','ear'],['手','shǒu','hand'],
+    ['脚','jiǎo','foot'],['心','xīn','heart'],['身体','shēn tǐ','body'],
+    ['头发','tóu fa','hair'],['脸','liǎn','face'],['腿','tuǐ','leg'],['牙','yá','tooth'],
+    ['米饭','mǐ fàn','cooked rice'],['面条','miàn tiáo','noodles'],['面包','miàn bāo','bread'],
+    ['肉','ròu','meat'],['鱼','yú','fish'],['鸡蛋','jī dàn','egg'],['菜','cài','dish, vegetable'],
+    ['水果','shuǐ guǒ','fruit'],['苹果','píng guǒ','apple'],['香蕉','xiāng jiāo','banana'],
+    ['西瓜','xī guā','watermelon'],['葡萄','pú tao','grape'],['橘子','jú zi','orange'],
+    ['茶','chá','tea'],['咖啡','kā fēi','coffee'],['水','shuǐ','water'],['牛奶','niú nǎi','milk'],
+    ['啤酒','pí jiǔ','beer'],['汤','tāng','soup'],['饭','fàn','meal, rice'],
+    ['早饭','zǎo fàn','breakfast'],['午饭','wǔ fàn','lunch'],['晚饭','wǎn fàn','dinner'],
+    ['蛋糕','dàn gāo','cake'],['糖','táng','sugar'],['巧克力','qiǎo kè lì','chocolate'],
+    ['猫','māo','cat'],['狗','gǒu','dog'],['鸟','niǎo','bird'],['马','mǎ','horse'],
+    ['牛','niú','cow'],['羊','yáng','sheep'],['猪','zhū','pig'],['老虎','lǎo hǔ','tiger'],
+    ['熊猫','xióng māo','panda'],['兔子','tù zi','rabbit'],
+    ['家','jiā','home'],['学校','xué xiào','school'],['医院','yī yuàn','hospital'],
+    ['商店','shāng diàn','shop'],['饭馆','fàn guǎn','restaurant'],['公司','gōng sī','company'],
+    ['银行','yín háng','bank'],['机场','jī chǎng','airport'],['车站','chē zhàn','station'],
+    ['公园','gōng yuán','park'],['图书馆','tú shū guǎn','library'],['房间','fáng jiān','room'],
+    ['厨房','chú fáng','kitchen'],['厕所','cè suǒ','toilet'],['办公室','bàn gōng shì','office'],
+    ['教室','jiào shì','classroom'],['超市','chāo shì','supermarket'],['市场','shì chǎng','market'],
+    ['宾馆','bīn guǎn','hotel'],['中国','Zhōng guó','China'],['美国','Měi guó','America'],
+    ['英国','Yīng guó','Britain'],['北京','Běi jīng','Beijing'],['上海','Shàng hǎi','Shanghai'],
+    ['书','shū','book'],['笔','bǐ','pen'],['纸','zhǐ','paper'],['桌子','zhuō zi','table'],
+    ['椅子','yǐ zi','chair'],['床','chuáng','bed'],['门','mén','door'],
+    ['窗户','chuāng hu','window'],['手机','shǒu jī','mobile phone'],['电脑','diàn nǎo','computer'],
+    ['电视','diàn shì','television'],['车','chē','car'],['飞机','fēi jī','airplane'],
+    ['火车','huǒ chē','train'],['自行车','zì xíng chē','bicycle'],['衣服','yī fu','clothes'],
+    ['鞋子','xié zi','shoes'],['帽子','mào zi','hat'],['包','bāo','bag'],['钱','qián','money'],
+    ['钱包','qián bāo','wallet'],['钥匙','yào shi','key'],['伞','sǎn','umbrella'],
+    ['眼镜','yǎn jìng','glasses'],['手表','shǒu biǎo','watch'],['相机','xiàng jī','camera'],
+    ['地图','dì tú','map'],['票','piào','ticket'],['药','yào','medicine'],
+    ['报纸','bào zhǐ','newspaper'],['杂志','zá zhì','magazine'],['照片','zhào piàn','photo'],
+    ['礼物','lǐ wù','gift'],['杯子','bēi zi','cup'],['盘子','pán zi','plate'],
+    ['碗','wǎn','bowl'],['筷子','kuài zi','chopsticks'],['瓶子','píng zi','bottle'],
+    ['盒子','hé zi','box'],
+    ['山','shān','mountain'],['河','hé','river'],['海','hǎi','sea'],['花','huā','flower'],
+    ['树','shù','tree'],['草','cǎo','grass'],['地','dì','ground'],['太阳','tài yáng','sun'],
+    ['月亮','yuè liang','moon'],['星','xīng','star'],['风','fēng','wind'],['雨','yǔ','rain'],
+    ['雪','xuě','snow'],['云','yún','cloud'],['天气','tiān qì','weather'],['空气','kōng qì','air'],
+    ['时间','shí jiān','time'],['工作','gōng zuò','work, job'],['问题','wèn tí','question'],
+    ['事情','shì qing','matter, thing'],['意思','yì si','meaning'],['办法','bàn fǎ','way, method'],
+    ['方法','fāng fǎ','method'],['东西','dōng xi','thing'],['地方','dì fang','place'],
+    ['语言','yǔ yán','language'],['中文','Zhōng wén','Chinese language'],
+    ['英文','Yīng wén','English'],['汉语','Hàn yǔ','Chinese language'],
+    ['故事','gù shi','story'],['音乐','yīn yuè','music'],['电影','diàn yǐng','movie'],
+    ['歌','gē','song'],['爱好','ài hào','hobby'],['习惯','xí guàn','habit'],
+    ['机会','jī huì','opportunity'],['世界','shì jiè','world'],['生活','shēng huó','life'],
+    ['文化','wén huà','culture'],['历史','lì shǐ','history'],['颜色','yán sè','color']
+  ],
+
+  verb: [
+    ['是','shì','to be'],['有','yǒu','to have'],['在','zài','to be at'],
+    ['去','qù','to go'],['来','lái','to come'],['回','huí','to return'],
+    ['到','dào','to arrive'],['走','zǒu','to walk'],['跑','pǎo','to run'],
+    ['飞','fēi','to fly'],['出','chū','to go out'],['进','jìn','to enter'],
+    ['上','shàng','to go up'],['下','xià','to go down'],['过','guò','to pass'],
+    ['经过','jīng guò','to pass by'],['离开','lí kāi','to leave'],
+    ['坐','zuò','to sit'],['站','zhàn','to stand'],['躺','tǎng','to lie'],
+    ['住','zhù','to live'],
+    ['吃','chī','to eat'],['喝','hē','to drink'],['睡','shuì','to sleep'],
+    ['睡觉','shuì jiào','to sleep'],['起床','qǐ chuáng','to get up'],
+    ['洗','xǐ','to wash'],['洗澡','xǐ zǎo','to bathe'],['穿','chuān','to wear'],
+    ['戴','dài','to wear (accessory)'],['脱','tuō','to take off'],
+    ['做饭','zuò fàn','to cook'],['打扫','dǎ sǎo','to clean'],
+    ['买','mǎi','to buy'],['卖','mài','to sell'],['用','yòng','to use'],
+    ['花','huā','to spend'],['付','fù','to pay'],['还','huán','to return'],
+    ['说','shuō','to speak'],['讲','jiǎng','to speak'],['听','tīng','to listen'],
+    ['看','kàn','to look, watch'],['见','jiàn','to see'],['读','dú','to read'],
+    ['写','xiě','to write'],['唱','chàng','to sing'],['问','wèn','to ask'],
+    ['回答','huí dá','to answer'],['告诉','gào su','to tell'],['打','dǎ','to hit, to call'],
+    ['打电话','dǎ diàn huà','to phone'],['聊天','liáo tiān','to chat'],
+    ['想','xiǎng','to want, think'],['要','yào','to want'],['喜欢','xǐ huan','to like'],
+    ['爱','ài','to love'],['恨','hèn','to hate'],['知道','zhī dào','to know'],
+    ['认识','rèn shi','to know (person)'],['懂','dǒng','to understand'],
+    ['明白','míng bai','to understand'],['记得','jì de','to remember'],
+    ['忘记','wàng jì','to forget'],['觉得','jué de','to feel'],
+    ['认为','rèn wéi','to think'],['希望','xī wàng','to hope'],
+    ['打算','dǎ suàn','to plan'],['准备','zhǔn bèi','to prepare'],
+    ['决定','jué dìng','to decide'],['相信','xiāng xìn','to believe'],
+    ['担心','dān xīn','to worry'],['关心','guān xīn','to care'],
+    ['会','huì','can, to know how'],['能','néng','can, to be able'],
+    ['可以','kě yǐ','can, may'],['应该','yīng gāi','should'],['需要','xū yào','to need'],
+    ['学','xué','to learn'],['学习','xué xí','to study'],['教','jiāo','to teach'],
+    ['练习','liàn xí','to practice'],['工作','gōng zuò','to work'],
+    ['开会','kāi huì','to have a meeting'],['帮忙','bāng máng','to help'],
+    ['帮助','bāng zhù','to help'],
+    ['玩','wán','to play'],['旅游','lǚ yóu','to travel'],['运动','yùn dòng','to exercise'],
+    ['跑步','pǎo bù','to jog'],['游泳','yóu yǒng','to swim'],['打球','dǎ qiú','to play ball'],
+    ['跳舞','tiào wǔ','to dance'],['笑','xiào','to laugh'],['哭','kū','to cry'],
+    ['开始','kāi shǐ','to begin'],['结束','jié shù','to end'],['完成','wán chéng','to finish'],
+    ['等','děng','to wait'],['找','zhǎo','to look for'],['给','gěi','to give'],
+    ['拿','ná','to take'],['放','fàng','to put'],['开','kāi','to open, drive'],
+    ['关','guān','to close'],['送','sòng','to give, see off'],['接','jiē','to pick up'],
+    ['借','jiè','to borrow, lend'],['换','huàn','to exchange'],['修','xiū','to repair'],
+    ['试','shì','to try'],['见面','jiàn miàn','to meet'],['上网','shàng wǎng','to go online']
+  ],
+
+  adjective: [
+    ['好','hǎo','good'],['坏','huài','bad'],['大','dà','big'],['小','xiǎo','small'],
+    ['多','duō','many'],['少','shǎo','few'],['高','gāo','tall, high'],['矮','ǎi','short'],
+    ['长','cháng','long'],['短','duǎn','short'],['新','xīn','new'],['旧','jiù','old'],
+    ['快','kuài','fast'],['慢','màn','slow'],['热','rè','hot'],['冷','lěng','cold'],
+    ['温','wēn','warm'],['凉','liáng','cool'],['贵','guì','expensive'],
+    ['便宜','pián yi','cheap'],['漂亮','piào liang','pretty'],['美丽','měi lì','beautiful'],
+    ['帅','shuài','handsome'],['可爱','kě ài','cute'],['开心','kāi xīn','happy'],
+    ['高兴','gāo xìng','happy'],['快乐','kuài lè','happy'],['累','lèi','tired'],
+    ['忙','máng','busy'],['闲','xián','free, idle'],['干净','gān jìng','clean'],
+    ['脏','zāng','dirty'],['容易','róng yì','easy'],['难','nán','difficult'],
+    ['对','duì','correct'],['错','cuò','wrong'],['真','zhēn','true'],
+    ['假','jiǎ','fake'],['早','zǎo','early'],['晚','wǎn','late'],
+    ['远','yuǎn','far'],['近','jìn','near'],['亮','liàng','bright'],['暗','àn','dark'],
+    ['深','shēn','deep'],['浅','qiǎn','shallow'],['厚','hòu','thick'],['薄','báo','thin'],
+    ['宽','kuān','wide'],['窄','zhǎi','narrow'],['胖','pàng','fat'],['瘦','shòu','thin'],
+    ['健康','jiàn kāng','healthy'],['饿','è','hungry'],['渴','kě','thirsty'],
+    ['饱','bǎo','full'],['困','kùn','sleepy'],['舒服','shū fu','comfortable'],
+    ['难受','nán shòu','uncomfortable'],['安静','ān jìng','quiet'],['吵','chǎo','noisy'],
+    ['热闹','rè nao','lively'],['空','kōng','empty'],['满','mǎn','full'],
+    ['安全','ān quán','safe'],['危险','wēi xiǎn','dangerous'],['有趣','yǒu qù','interesting'],
+    ['无聊','wú liáo','boring'],['重要','zhòng yào','important'],['简单','jiǎn dān','simple'],
+    ['复杂','fù zá','complex'],['清楚','qīng chu','clear'],['奇怪','qí guài','strange'],
+    ['特别','tè bié','special'],['聪明','cōng ming','clever'],['懒','lǎn','lazy'],
+    ['勇敢','yǒng gǎn','brave'],['紧张','jǐn zhāng','nervous'],['满意','mǎn yì','satisfied']
+  ],
+
+  adverb: [
+    ['很','hěn','very'],['太','tài','too'],['非常','fēi cháng','extremely'],
+    ['真','zhēn','really'],['最','zuì','most'],['更','gèng','more'],
+    ['也','yě','also'],['都','dōu','all'],['只','zhǐ','only'],
+    ['就','jiù','just, then'],['才','cái','only then'],['再','zài','again'],
+    ['又','yòu','again'],['还','hái','still'],['已经','yǐ jīng','already'],
+    ['正在','zhèng zài','in process of'],['刚','gāng','just'],['常常','cháng cháng','often'],
+    ['经常','jīng cháng','often'],['总是','zǒng shì','always'],['有时','yǒu shí','sometimes'],
+    ['偶尔','ǒu ěr','occasionally'],['一直','yì zhí','always'],['一起','yì qǐ','together'],
+    ['一共','yí gòng','in total'],['大概','dà gài','probably'],['也许','yě xǔ','perhaps'],
+    ['可能','kě néng','possibly'],['一定','yí dìng','definitely'],['当然','dāng rán','of course'],
+    ['其实','qí shí','actually'],['差不多','chà bu duō','almost'],['有点儿','yǒu diǎnr','a bit'],
+    ['别','bié','don’t'],['不','bù','not'],['没','méi','not']
+  ],
+
+  preposition: [
+    ['从','cóng','from'],['往','wǎng','towards'],['向','xiàng','towards'],
+    ['对','duì','to, towards'],['跟','gēn','with'],['和','hé','with'],
+    ['比','bǐ','compared to'],['被','bèi','by (passive)'],['让','ràng','by, let'],
+    ['把','bǎ','(object marker)'],['离','lí','from'],['为了','wèi le','for'],
+    ['关于','guān yú','about'],['除了','chú le','except']
+  ],
+
+  conjunction: [
+    ['与','yǔ','and'],['或者','huò zhě','or'],['还是','hái shi','or (question)'],
+    ['但是','dàn shì','but'],['可是','kě shì','but'],['因为','yīn wèi','because'],
+    ['所以','suǒ yǐ','so'],['如果','rú guǒ','if'],['要是','yào shi','if'],
+    ['虽然','suī rán','although'],['不但','bú dàn','not only'],['而且','ér qiě','but also'],
+    ['然后','rán hòu','then'],['于是','yú shì','therefore'],['因此','yīn cǐ','therefore']
+  ],
+
+  question: [
+    ['谁','shuí','who'],['什么','shén me','what'],['哪','nǎ','which'],
+    ['哪儿','nǎr','where'],['哪里','nǎ lǐ','where'],['怎么','zěn me','how'],
+    ['怎么样','zěn me yàng','how about'],['为什么','wèi shén me','why'],
+    ['多少','duō shao','how many'],['几','jǐ','how many'],
+    ['什么时候','shén me shí hou','when'],['多久','duō jiǔ','how long']
+  ],
+
+  particle: [
+    ['的','de','(possessive)'],['了','le','(perfective)'],['着','zhe','(progressive)'],
+    ['过','guò','(experiential)'],['吗','ma','(question)'],['呢','ne','(question)'],
+    ['吧','ba','(suggestion)'],['啊','a','(exclamation)']
+  ],
+
+  modal: [
+    ['必须','bì xū','must'],['愿意','yuàn yì','willing to'],['敢','gǎn','dare to']
+  ]
+};
+
+/* =====================================================================
+   EXPRESSION DATA
+   ===================================================================== */
+
+const RAW_EXPR = {
+
+  greeting: [
+    ['你好吗？','nǐ hǎo ma?','How are you?'],
+    ['我很好，谢谢。','wǒ hěn hǎo, xiè xie.','I am fine, thank you.'],
+    ['很高兴认识你。','hěn gāo xìng rèn shi nǐ.','Nice to meet you.'],
+    ['早上好！','zǎo shang hǎo!','Good morning!'],
+    ['下午好！','xià wǔ hǎo!','Good afternoon!'],
+    ['晚上好！','wǎn shang hǎo!','Good evening!'],
+    ['晚安。','wǎn ān.','Good night.'],
+    ['对不起，我不懂。','duì bu qǐ, wǒ bù dǒng.','Sorry, I do not understand.'],
+    ['请再说一遍。','qǐng zài shuō yí biàn.','Please say that again.'],
+    ['请说慢一点。','qǐng shuō màn yì diǎn.','Please speak more slowly.'],
+    ['谢谢你的帮助。','xiè xie nǐ de bāng zhù.','Thank you for your help.'],
+    ['别着急。','bié zháo jí.','Do not worry.'],
+    ['别难过。','bié nán guò.','Do not be sad.'],
+    ['没问题。','méi wèn tí.','No problem.'],
+    ['当然可以。','dāng rán kě yǐ.','Of course.']
+  ],
+
+  intro: [
+    ['你叫什么名字？','nǐ jiào shén me míng zi?','What is your name?'],
+    ['我叫小明。','wǒ jiào Xiǎo Míng.','My name is Xiaoming.'],
+    ['你是哪国人？','nǐ shì nǎ guó rén?','Where are you from?'],
+    ['我是美国人。','wǒ shì Měi guó rén.','I am American.'],
+    ['你多大了？','nǐ duō dà le?','How old are you?'],
+    ['我二十五岁。','wǒ èr shí wǔ suì.','I am 25 years old.'],
+    ['你做什么工作？','nǐ zuò shén me gōng zuò?','What do you do for work?'],
+    ['我是老师。','wǒ shì lǎo shī.','I am a teacher.'],
+    ['你住在哪里？','nǐ zhù zài nǎ lǐ?','Where do you live?'],
+    ['我住在北京。','wǒ zhù zài Běi jīng.','I live in Beijing.'],
+    ['你家有几口人？','nǐ jiā yǒu jǐ kǒu rén?','How many people are in your family?'],
+    ['我家有四口人。','wǒ jiā yǒu sì kǒu rén.','There are four people in my family.'],
+    ['你有兄弟姐妹吗？','nǐ yǒu xiōng dì jiě mèi ma?','Do you have siblings?'],
+    ['我有一个哥哥。','wǒ yǒu yí gè gē ge.','I have an older brother.']
+  ],
+
+  language: [
+    ['你会说中文吗？','nǐ huì shuō Zhōng wén ma?','Can you speak Chinese?'],
+    ['我会说一点儿。','wǒ huì shuō yì diǎnr.','I can speak a little.'],
+    ['这个怎么说？','zhè ge zěn me shuō?','How do you say this?'],
+    ['那是什么意思？','nà shì shén me yì si?','What does that mean?'],
+    ['我明白了。','wǒ míng bai le.','I understand.'],
+    ['我不明白。','wǒ bù míng bai.','I do not understand.'],
+    ['我在学习中文。','wǒ zài xué xí Zhōng wén.','I am learning Chinese.'],
+    ['中文很难。','Zhōng wén hěn nán.','Chinese is hard.']
+  ],
+
+  daily: [
+    ['你吃了吗？','nǐ chī le ma?','Have you eaten?'],
+    ['我饿了。','wǒ è le.','I am hungry.'],
+    ['我渴了。','wǒ kě le.','I am thirsty.'],
+    ['我想喝水。','wǒ xiǎng hē shuǐ.','I want to drink water.'],
+    ['我们吃饭吧。','wǒ men chī fàn ba.','Let us eat.'],
+    ['这个很好吃。','zhè ge hěn hǎo chī.','This is delicious.'],
+    ['我吃饱了。','wǒ chī bǎo le.','I am full.'],
+    ['现在几点了？','xiàn zài jǐ diǎn le?','What time is it now?'],
+    ['三点半。','sān diǎn bàn.','Half past three.'],
+    ['我快迟到了。','wǒ kuài chí dào le.','I am going to be late.'],
+    ['我马上来。','wǒ mǎ shàng lái.','I am coming right away.'],
+    ['等一下。','děng yí xià.','Wait a moment.'],
+    ['今天星期几？','jīn tiān xīng qī jǐ?','What day is it today?'],
+    ['今天星期一。','jīn tiān xīng qī yī.','Today is Monday.'],
+    ['明天见。','míng tiān jiàn.','See you tomorrow.'],
+    ['周末你有空吗？','zhōu mò nǐ yǒu kòng ma?','Are you free this weekend?'],
+    ['我有空。','wǒ yǒu kòng.','I am free.'],
+    ['我没空。','wǒ méi kòng.','I am not free.']
+  ],
+
+  shopping: [
+    ['请给我菜单。','qǐng gěi wǒ cài dān.','Please give me the menu.'],
+    ['买单，谢谢。','mǎi dān, xiè xie.','The bill, please.'],
+    ['多少钱？','duō shao qián?','How much is it?'],
+    ['太贵了。','tài guì le.','Too expensive.'],
+    ['可以便宜一点吗？','kě yǐ pián yi yì diǎn ma?','Can it be a bit cheaper?'],
+    ['我要这个。','wǒ yào zhè ge.','I want this one.'],
+    ['我不要那个。','wǒ bú yào nà ge.','I do not want that one.'],
+    ['可以刷卡吗？','kě yǐ shuā kǎ ma?','Can I pay by card?'],
+    ['我用现金。','wǒ yòng xiàn jīn.','I will pay in cash.']
+  ],
+
+  directions: [
+    ['洗手间在哪里？','xǐ shǒu jiān zài nǎ lǐ?','Where is the restroom?'],
+    ['在那边。','zài nà biān.','It is over there.'],
+    ['一直走。','yì zhí zǒu.','Go straight.'],
+    ['向左转。','xiàng zuǒ zhuǎn.','Turn left.'],
+    ['向右转。','xiàng yòu zhuǎn.','Turn right.'],
+    ['远不远？','yuǎn bu yuǎn?','Is it far?'],
+    ['很近。','hěn jìn.','It is very close.'],
+    ['我迷路了。','wǒ mí lù le.','I am lost.'],
+    ['请帮我一下。','qǐng bāng wǒ yí xià.','Please help me.']
+  ],
+
+  social: [
+    ['我们去看电影吧。','wǒ men qù kàn diàn yǐng ba.','Let us go see a movie.'],
+    ['这个电影很好看。','zhè ge diàn yǐng hěn hǎo kàn.','This movie is great.'],
+    ['你喜欢什么音乐？','nǐ xǐ huan shén me yīn yuè?','What music do you like?'],
+    ['我喜欢听音乐。','wǒ xǐ huan tīng yīn yuè.','I like listening to music.'],
+    ['你会弹钢琴吗？','nǐ huì tán gāng qín ma?','Can you play the piano?'],
+    ['我不会。','wǒ bú huì.','I cannot.'],
+    ['太可惜了。','tài kě xī le.','What a pity.'],
+    ['加油！','jiā yóu!','Come on!']
+  ],
+
+  feelings: [
+    ['你怎么样？','nǐ zěn me yàng?','How are you doing?'],
+    ['我很好。','wǒ hěn hǎo.','I am doing well.'],
+    ['我有点累。','wǒ yǒu diǎn lèi.','I am a bit tired.'],
+    ['我很忙。','wǒ hěn máng.','I am very busy.'],
+    ['我很开心。','wǒ hěn kāi xīn.','I am very happy.'],
+    ['我很难过。','wǒ hěn nán guò.','I am very sad.'],
+    ['身体怎么样？','shēn tǐ zěn me yàng?','How is your health?'],
+    ['我身体很好。','wǒ shēn tǐ hěn hǎo.','I am in good health.'],
+    ['我感冒了。','wǒ gǎn mào le.','I caught a cold.']
+  ],
+
+  weather: [
+    ['天气怎么样？','tiān qì zěn me yàng?','How is the weather?'],
+    ['今天天气很好。','jīn tiān tiān qì hěn hǎo.','The weather is nice today.'],
+    ['外面在下雨。','wài miàn zài xià yǔ.','It is raining outside.'],
+    ['今天很冷。','jīn tiān hěn lěng.','It is cold today.'],
+    ['今天很热。','jīn tiān hěn rè.','It is hot today.'],
+    ['请多穿一点。','qǐng duō chuān yì diǎn.','Please wear more clothes.'],
+    ['路上小心。','lù shang xiǎo xīn.','Take care on the way.'],
+    ['注意安全。','zhù yì ān quán.','Stay safe.']
+  ],
+
+  wishes: [
+    ['祝你生日快乐！','zhù nǐ shēng rì kuài lè!','Happy birthday!'],
+    ['祝你好运！','zhù nǐ hǎo yùn!','Good luck!']
+  ]
+};
+
+/* =====================================================================
+   FLATTEN DATA
+   ===================================================================== */
+
+const seenW = new Set();
+const WORDS = Object.entries(RAW_WORDS).flatMap(([pos, arr]) =>
+  arr.map(([h, p, e]) => ({ h, p, e, cat: pos }))
+).filter(w => { if (seenW.has(w.h)) return false; seenW.add(w.h); return true; });
+
+const EXPR = Object.entries(RAW_EXPR).flatMap(([cat, arr]) =>
+  arr.map(([h, p, e]) => ({ h, p, e, cat }))
+);
+
+const DATA = { words: WORDS, expressions: EXPR };
+
+/* =====================================================================
+   LATIN TRANSCRIPTION  (pinyin → English-friendly respelling)
+   ===================================================================== */
+
+const TONE_MAP = {
+  'ā':'a','á':'a','ǎ':'a','à':'a',
+  'ē':'e','é':'e','ě':'e','è':'e',
+  'ī':'i','í':'i','ǐ':'i','ì':'i',
+  'ō':'o','ó':'o','ǒ':'o','ò':'o',
+  'ū':'u','ú':'u','ǔ':'u','ù':'u',
+  'ǖ':'ü','ǘ':'ü','ǚ':'ü','ǜ':'ü','ü':'ü'
+};
+
+function stripTones(p){
+  return p.replace(/[āáǎàēéěèīíǐìōóǒòūúǔùǖǘǚǜü]/g, c => TONE_MAP[c] || c);
+}
+
+const INITIALS = [
+  'zh','ch','sh',
+  'b','p','m','f','d','t','n','l','g','k','h',
+  'j','q','x','z','c','s','r','y','w'
+];
+
+const INITIAL_MAP = {
+  zh:'j', ch:'ch', sh:'sh',
+  j:'j', q:'ch', x:'sh',
+  c:'ts', z:'dz', r:'r',
+  b:'b', p:'p', m:'m', f:'f',
+  d:'d', t:'t', n:'n', l:'l',
+  g:'g', k:'k', h:'h',
+  s:'s', y:'y', w:'w'
+};
+
+const FINAL_MAP = {
+  'a':'ah','o':'aw','e':'uh','er':'ar','ar':'ar',
+  'ai':'eye','ei':'ay','ao':'ow','ou':'oh',
+  'an':'ahn','en':'un','ang':'ahng','eng':'ung',
+  'ong':'ong','ongr':'ongr',
+  'i':'ee','ia':'yah','ie':'yeh','iao':'yow','iu':'yo',
+  'ian':'yen','in':'een','iang':'yahng','ing':'ing','iong':'yong',
+  'u':'oo','ua':'wah','uo':'waw','uai':'why','ui':'way',
+  'uan':'wahn','un':'wun','uang':'wahng','ueng':'wung',
+  'ü':'ew','üe':'yweh','üan':'ywen','ün':'ewn'
+};
+
+function respellSyllable(s){
+  let initial = '';
+  let final = s;
+
+  for (const ini of INITIALS){
+    if (s.startsWith(ini)){ initial = ini; final = s.slice(ini.length); break; }
+  }
+
+  // Handle erhua (r-suffix)
+  let erhua = '';
+  if (final.length > 1 && final.endsWith('r') && final !== 'er'){
+    erhua = 'r';
+    final = final.slice(0, -1);
+  }
+
+  // Special buzzing "i" after zh/ch/sh/r/z/c/s
+  if (final === 'i' && ['zh','ch','sh','r','z','c','s'].includes(initial)){
+    final = 'ur';
+  }
+
+  const ini = INITIAL_MAP[initial] !== undefined ? INITIAL_MAP[initial] : initial;
+  const fin = FINAL_MAP[final] !== undefined ? FINAL_MAP[final] : final;
+
+  return ini + fin + erhua;
+}
+
+function toLatin(pinyin){
+  if (!pinyin) return '';
+  // Replace Chinese punctuation with space, lowercase, collapse whitespace
+  const clean = pinyin
+    .replace(/[，。！？、；：""''（）《》〈〉【】…—·]/g, ' ')
+    .replace(/[?.,!;:'"()\-]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toLowerCase();
+  if (!clean) return '';
+  return clean.split(' ')
+    .map(syl => respellSyllable(stripTones(syl)))
+    .filter(Boolean)
+    .join('·');
+}
+
+/* =====================================================================
+   TEXT-TO-SPEECH MODULE
+   ===================================================================== */
+
+const TTS = (() => {
+  const supported = 'speechSynthesis' in window;
+  let zhVoice = null;
+  let autoPlay = false;
+
+  try { autoPlay = localStorage.getItem('cn-flashcards-autoplay') === '1'; } catch(e){}
+
+  function pickVoice(){
+    if (!supported) return;
+    const voices = speechSynthesis.getVoices();
+    if (!voices.length) return;
+    zhVoice =
+      voices.find(v => v.lang === 'zh-CN') ||
+      voices.find(v => v.lang.replace('_','-').startsWith('zh-CN')) ||
+      voices.find(v => v.lang.toLowerCase().startsWith('zh')) ||
+      null;
+    updateWarn();
+  }
+
+  function updateWarn(){
+    const warn = document.getElementById('audioWarn');
+    if (!warn) return;
+    if (!supported || !zhVoice) warn.classList.add('show');
+    else warn.classList.remove('show');
+  }
+
+  if (supported){
+    speechSynthesis.onvoiceschanged = pickVoice;
+    pickVoice();
+    setTimeout(pickVoice, 300);
+    setTimeout(pickVoice, 1200);
+  }
+
+  function clean(text){
+    return text
+      .replace(/[，。！？、；：""''（）《》〈〉【】…—\s]/g, '')
+      .replace(/[?.,!;:'"()\-]/g, '')
+      .trim();
+  }
+
+  function speak(text, btnEl){
+    if (!supported) return;
+    const clean_text = clean(text);
+    if (!clean_text) return;
+
+    speechSynthesis.cancel();
+
+    const u = new SpeechSynthesisUtterance(clean_text);
+    u.lang  = 'zh-CN';
+    u.rate  = 0.85;
+    u.pitch = 1;
+    if (zhVoice) u.voice = zhVoice;
+
+    const targets = [];
+    if (btnEl) targets.push(btnEl);
+    const mainBtn = document.getElementById('speakBtn');
+    if (mainBtn && btnEl !== mainBtn && !document.getElementById('panel-learn').classList.contains('hidden')) {
+      const cur = currentItem();
+      if (cur && cur.h === text) targets.push(mainBtn);
+    }
+
+    const setOn  = () => targets.forEach(t => t.classList.add('speaking'));
+    const setOff = () => targets.forEach(t => t.classList.remove('speaking'));
+
+    u.onstart = setOn;
+    u.onend   = setOff;
+    u.onerror = setOff;
+    setTimeout(setOn, 60);
+
+    speechSynthesis.speak(u);
+  }
+
+  function stop(){
+    if (!supported) return;
+    speechSynthesis.cancel();
+    document.querySelectorAll('.speaking').forEach(el => el.classList.remove('speaking'));
+  }
+
+  function setAuto(on){
+    autoPlay = on;
+    try { localStorage.setItem('cn-flashcards-autoplay', on ? '1' : '0'); } catch(e){}
+    const chip = document.getElementById('autoChip');
+    if (chip) chip.classList.toggle('on', on);
+  }
+
+  function isAuto(){ return autoPlay; }
+
+  return { speak, stop, setAuto, isAuto, pickVoice, supported };
+})();
+
+/* =====================================================================
+   STATE
+   ===================================================================== */
+
+const el  = id => document.getElementById(id);
+const KEY = 'cn-flashcards-learned-v3';
+const LATIN_KEY = 'cn-flashcards-latin-v1';
+
+let mode        = 'words';
+let catFilter   = 'all';
+let poolIdx     = { words: 0, expressions: 0 };
+let savedFilter = 'all';
+let showLatin   = true;
+
+try {
+  const v = localStorage.getItem(LATIN_KEY);
+  if (v === '0') showLatin = false;
+} catch(e){}
+
+const keyOf    = (m, h) => m + '::' + h;
+const splitKey = k => { const i = k.indexOf('::'); return { mode: k.slice(0,i), h: k.slice(i+2) }; };
+
+let learned = [];
+try {
+  const raw = JSON.parse(localStorage.getItem(KEY));
+  if (Array.isArray(raw)) learned = raw.filter(k => typeof k === 'string');
+} catch(e) { learned = []; }
+
+learned = learned.filter(k => {
+  const { mode:m, h } = splitKey(k);
+  return DATA[m] && DATA[m].some(w => w.h === h);
+});
+
+const persist = () => { try { localStorage.setItem(KEY, JSON.stringify(learned)); } catch(e){} };
+
+/* =====================================================================
+   LEARN PANEL
+   ===================================================================== */
+
+function getPool(){
+  const base = DATA[mode];
+  if (catFilter === 'all') return base;
+  return base.filter(w => w.cat === catFilter);
+}
+
+function currentItem(){
+  const pool = getPool();
+  return pool[poolIdx[mode] % pool.length];
+}
+
+function animateWord(){
+  const w = el('word');
+  w.style.animation = 'none';
+  void w.offsetWidth;
+  w.style.animation = 'popIn .45s cubic-bezier(.2,.8,.3,1)';
+}
+
+function sizeClassFor(text){
+  const len = [...text].length;
+  if (len <= 4)  return 'size-l';
+  if (len <= 9)  return 'size-m';
+  return 'size-s';
+}
+
+function syncSaveBtn(){
+  const saved = learned.includes(keyOf(mode, currentItem().h));
+  const b = el('saveBtn');
+  b.classList.toggle('saved', saved);
+  b.innerHTML = saved ? '<span class="ico">♥</span>Saved'
+                      : '<span class="ico">♡</span>Save';
+}
+
+function syncLatinChip(){
+  el('latinChip').classList.toggle('on', showLatin);
+  el('latin').classList.toggle('hide', !showLatin);
+}
+
+function renderCard(animate = true){
+  const pool = getPool();
+  const i    = poolIdx[mode] % pool.length;
+  const w    = pool[i];
+  const meta = CATS[w.cat] || { label:w.cat, zh:'', color:'#7b8098' };
+
+  const badge = el('posbadge');
+  badge.style.setProperty('--cat', meta.color || '#7b8098');
+  badge.innerHTML = `${meta.label}${meta.zh ? `<span class="zh">${meta.zh}</span>` : ''}`;
+
+  const hz = el('hanzi');
+  hz.textContent = w.h;
+  hz.className   = 'hanzi ' + sizeClassFor(w.h);
+
+  el('pinyin').textContent  = w.p;
+  el('latinText').textContent = toLatin(w.p);
+  el('english').textContent = w.e;
+  el('counter').textContent = (i + 1) + ' / ' + pool.length;
+
+  syncSaveBtn();
+  syncLatinChip();
+  if (animate) animateWord();
+
+  TTS.stop();
+  if (TTS.isAuto()) {
+    setTimeout(() => TTS.speak(w.h, el('speakBtn')), 220);
+  }
+}
+
+function renderCatBar(){
+  const bar   = el('catbar');
+  const items = DATA[mode];
+  const counts = {};
+  items.forEach(w => counts[w.cat] = (counts[w.cat] || 0) + 1);
+
+  const cats = Object.keys(counts).sort(
+    (a,b) => CAT_ORDER.indexOf(a) - CAT_ORDER.indexOf(b)
+  );
+
+  let html = `<button class="cat${catFilter==='all'?' active':''}" data-cat="all">
+    All <span class="catn">${items.length}</span>
+  </button>`;
+
+  cats.forEach(c => {
+    const meta = CATS[c] || { label:c, color:'#7b8098' };
+    html += `<button class="cat${catFilter===c?' active':''}" data-cat="${c}" style="--cat:${meta.color}">
+      ${meta.label} <span class="catn">${counts[c]}</span>
+    </button>`;
+  });
+
+  bar.innerHTML = html;
+
+  bar.querySelectorAll('.cat').forEach(btn => {
+    btn.addEventListener('click', () => {
+      catFilter = btn.dataset.cat;
+      poolIdx[mode] = 0;
+      renderCatBar();
+      renderCard();
+    });
+  });
+}
+
+function nextWord(){
+  const pool = getPool();
+  poolIdx[mode] = (poolIdx[mode] + 1) % pool.length;
+  renderCard();
+}
+
+function prevWord(){
+  const pool = getPool();
+  poolIdx[mode] = (poolIdx[mode] - 1 + pool.length) % pool.length;
+  renderCard();
+}
+
+function toggleSave(){
+  const k = keyOf(mode, currentItem().h);
+  const i = learned.indexOf(k);
+
+  if (i === -1){
+    learned.push(k);
+    const badge = el('badge');
+    badge.classList.remove('pop');
+    void badge.offsetWidth;
+    badge.classList.add('pop');
+  } else {
+    learned.splice(i, 1);
+  }
+
+  persist();
+  syncSaveBtn();
+  renderSaved();
+}
+
+function setMode(m){
+  mode = m;
+  catFilter = 'all';
+  poolIdx[m] = 0;
+  document.querySelectorAll('.mode-chip').forEach(c =>
+    c.classList.toggle('active', c.dataset.mode === m)
+  );
+  renderCatBar();
+  renderCard();
+}
+
+/* =====================================================================
+   SAVED PANEL
+   ===================================================================== */
+
+function renderSaved(){
+  const list = el('savedList');
+
+  const entries = learned.slice().reverse().map(k => {
+    const { mode:m, h } = splitKey(k);
+    const w = (DATA[m] || []).find(x => x.h === h);
+    return w ? { ...w, mode:m, key:k } : null;
+  }).filter(Boolean);
+
+  const countWords = entries.filter(e => e.mode === 'words').length;
+  const countExpr  = entries.filter(e => e.mode === 'expressions').length;
+
+  el('badge').textContent     = entries.length;
+  el('savedMeta').textContent = entries.length
+    ? `${countWords} words · ${countExpr} phrases`
+    : '0 saved';
+
+  const filters = el('filters');
+  filters.querySelector('[data-filter="all"]').textContent         = `All ${entries.length}`;
+  filters.querySelector('[data-filter="words"]').textContent       = `Words ${countWords}`;
+  filters.querySelector('[data-filter="expressions"]').textContent = `Expressions ${countExpr}`;
+  filters.querySelectorAll('.filter').forEach(f =>
+    f.classList.toggle('active', f.dataset.filter === savedFilter)
+  );
+
+  const shown = savedFilter === 'all'
+    ? entries
+    : entries.filter(e => e.mode === savedFilter);
+
+  if (!shown.length){
+    list.innerHTML = `
+      <div class="empty">
+        <div class="icon">📖</div>
+        <p>${entries.length ? 'Nothing here' : 'Your list is empty'}</p>
+        <span>${entries.length
+          ? 'No saved items match this filter.'
+          : 'Tap “Save” on a word or phrase you want to remember, and it will appear here.'}</span>
+      </div>`;
+    return;
+  }
+
+  list.innerHTML = shown.map((w, i) => {
+    const meta = CATS[w.cat] || { label:w.cat, color:'#94a3b8' };
+    const latin = showLatin ? `<div class="si-latin">≈ ${toLatin(w.p)}</div>` : '';
+    return `
+      <div class="saved-item" data-key="${w.key}" style="animation-delay:${Math.min(i,12)*40}ms">
+        <div class="si-hanzi${[...w.h].length > 5 ? ' long' : ''}">${w.h}</div>
+        <div class="si-info">
+          <div class="si-line">
+            <span class="si-cat" style="--cat:${meta.color}">${meta.label}</span>
+            <span class="si-pinyin">${w.p}</span>
+          </div>
+          ${latin}
+          <div class="si-english">${w.e}</div>
+        </div>
+        <button class="si-speak" data-speak="${w.h}" title="Listen">🔊</button>
+        <button class="remove" data-remove="${w.key}" title="Remove">✕</button>
+      </div>`;
+  }).join('')
+    + `<button class="clear-btn" id="clearBtn">Remove all ${entries.length} saved items</button>`;
+
+  list.querySelectorAll('.saved-item').forEach(item => {
+    item.addEventListener('click', ev => {
+      if (ev.target.closest('.remove') || ev.target.closest('.si-speak')) return;
+      const { mode:m, h } = splitKey(item.dataset.key);
+      const i = DATA[m].findIndex(x => x.h === h);
+      if (i < 0) return;
+      mode = m;
+      catFilter = 'all';
+      poolIdx[m] = i;
+      document.querySelectorAll('.mode-chip').forEach(c =>
+        c.classList.toggle('active', c.dataset.mode === m)
+      );
+      renderCatBar();
+      renderCard();
+      switchTab('learn');
+    });
+  });
+
+  list.querySelectorAll('.si-speak').forEach(btn => {
+    btn.addEventListener('click', ev => {
+      ev.stopPropagation();
+      TTS.speak(btn.dataset.speak, btn);
+    });
+  });
+
+  list.querySelectorAll('.remove').forEach(btn => {
+    btn.addEventListener('click', ev => {
+      ev.stopPropagation();
+      learned = learned.filter(k => k !== btn.dataset.remove);
+      persist();
+      syncSaveBtn();
+      renderSaved();
+    });
+  });
+
+  el('clearBtn').addEventListener('click', () => {
+    if (!confirm(`Remove all ${entries.length} saved items?`)) return;
+    learned = [];
+    persist();
+    syncSaveBtn();
+    renderSaved();
+  });
+}
+
+/* =====================================================================
+   TABS
+   ===================================================================== */
+
+function switchTab(name){
+  document.querySelectorAll('.tab').forEach(t =>
+    t.classList.toggle('active', t.dataset.tab === name)
+  );
+  el('indicator').style.transform = name === 'learn' ? 'translateX(0)' : 'translateX(100%)';
+  el('panel-learn').classList.toggle('hidden', name !== 'learn');
+  el('panel-saved').classList.toggle('hidden', name !== 'saved');
+  if (name !== 'learn') TTS.stop();
+}
+
+/* =====================================================================
+   EVENTS
+   ===================================================================== */
+
+el('nextBtn').addEventListener('click', nextWord);
+el('prevBtn').addEventListener('click', prevWord);
+el('saveBtn').addEventListener('click', toggleSave);
+el('speakBtn').addEventListener('click', () => TTS.speak(currentItem().h, el('speakBtn')));
+el('hanzi').addEventListener('click', () => TTS.speak(currentItem().h, el('speakBtn')));
+
+el('autoChip').addEventListener('click', () => {
+  TTS.setAuto(!TTS.isAuto());
+  if (TTS.isAuto()) TTS.speak(currentItem().h, el('speakBtn'));
+});
+
+el('latinChip').addEventListener('click', () => {
+  showLatin = !showLatin;
+  try { localStorage.setItem(LATIN_KEY, showLatin ? '1' : '0'); } catch(e){}
+  syncLatinChip();
+  renderSaved();
+});
+
+document.querySelectorAll('.tab').forEach(t =>
+  t.addEventListener('click', () => switchTab(t.dataset.tab))
+);
+
+document.querySelectorAll('.mode-chip').forEach(c =>
+  c.addEventListener('click', () => setMode(c.dataset.mode))
+);
+
+document.querySelectorAll('.filter').forEach(f =>
+  f.addEventListener('click', () => { savedFilter = f.dataset.filter; renderSaved(); })
+);
+
+document.addEventListener('keydown', e => {
+  if (e.target.matches('input, textarea')) return;
+  if (el('panel-learn').classList.contains('hidden')) return;
+
+  if (e.key === 'ArrowRight'){ e.preventDefault(); nextWord(); }
+  if (e.key === 'ArrowLeft'){  e.preventDefault(); prevWord(); }
+  if (e.key.toLowerCase() === 's'){ e.preventDefault(); toggleSave(); }
+  if (e.key === ' '){ e.preventDefault(); TTS.speak(currentItem().h, el('speakBtn')); }
+  if (e.key.toLowerCase() === 'l'){ e.preventDefault(); el('latinChip').click(); }
+});
+
+window.addEventListener('beforeunload', () => TTS.stop());
+
+/* =====================================================================
+   INIT
+   ===================================================================== */
+
+el('nWords').textContent = DATA.words.length;
+el('nExpr').textContent  = DATA.expressions.length;
+el('totalCount').textContent = DATA.words.length;
+
+el('autoChip').classList.toggle('on', TTS.isAuto());
+
+renderCatBar();
+renderCard(false);
+renderSaved();
+
+if (TTS.isAuto()) setTimeout(() => TTS.speak(currentItem().h, el('speakBtn')), 400);
+</script>
+</body>
+</html>
