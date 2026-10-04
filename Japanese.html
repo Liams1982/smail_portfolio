@@ -1,0 +1,1879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Japanese Flashcards · A2 · Audio + Romaji</title>
+<style>
+  :root{
+    --ink:#151726;
+    --muted:#7b8098;
+    --accent:#bc002d;
+    --line:#eceef6;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+
+  body{
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    color:var(--ink);
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    padding:40px 20px 70px;
+    background:
+      radial-gradient(900px 520px at 8% -12%, #ffe1e4 0%, transparent 62%),
+      radial-gradient(820px 520px at 102% -4%, #f0f0f5 0%, transparent 58%),
+      radial-gradient(760px 520px at 50% 118%, #ffe9ec 0%, transparent 62%),
+      #f7f8fc;
+    background-attachment:fixed;
+  }
+
+  .app{width:100%;max-width:520px}
+
+  .brand{display:flex;align-items:center;gap:14px;margin-bottom:22px;padding-left:4px}
+  .logo{
+    width:52px;height:52px;border-radius:18px;flex:none;
+    display:grid;place-items:center;
+    font-size:22px;font-weight:700;color:#fff;letter-spacing:.02em;
+    background:linear-gradient(180deg,#ffffff 0%,#ffffff 100%);
+    border:2px solid #bc002d;
+    box-shadow:0 12px 26px -10px rgba(188,0,45,.55);
+  }
+  .logo-inner{
+    width:34px;height:34px;border-radius:50%;
+    background:linear-gradient(135deg,#bc002d,#e2264d);
+    display:grid;place-items:center;
+    color:#fff;font-size:17px;font-weight:800;
+    box-shadow:inset 0 -2px 6px rgba(0,0,0,.15);
+  }
+  h1{font-size:19px;font-weight:700;letter-spacing:-.015em}
+  .subtitle{font-size:13px;color:var(--muted);margin-top:3px}
+  .subtitle b{color:var(--accent);font-weight:700}
+
+  .tabs{
+    position:relative;display:grid;grid-template-columns:1fr 1fr;
+    background:#e8ebf4;border-radius:999px;padding:4px;margin-bottom:18px;
+    user-select:none;
+  }
+  .tab{
+    position:relative;z-index:1;border:0;background:none;cursor:pointer;
+    font:inherit;font-size:14px;font-weight:650;color:var(--muted);
+    padding:12px 8px;border-radius:999px;
+    display:flex;align-items:center;justify-content:center;gap:7px;
+    transition:color .25s;
+  }
+  .tab.active{color:var(--ink)}
+  .indicator{
+    position:absolute;top:4px;left:4px;
+    width:calc(50% - 4px);height:calc(100% - 8px);
+    background:#fff;border-radius:999px;
+    box-shadow:0 4px 14px -3px rgba(30,35,80,.18);
+    transition:transform .35s cubic-bezier(.2,.8,.3,1);
+  }
+  .badge{
+    min-width:20px;height:20px;padding:0 6px;border-radius:999px;
+    background:var(--accent);color:#fff;font-size:11px;font-weight:700;
+    display:inline-grid;place-items:center;
+  }
+  .badge.pop{animation:badgePop .45s ease}
+
+  .panel{animation:popIn .45s cubic-bezier(.2,.8,.3,1) both}
+  .hidden{display:none !important}
+
+  .modeswitch{display:flex;gap:9px;margin-bottom:12px;padding:0 2px}
+  .mode-chip{
+    flex:1;border:1px solid var(--line);cursor:pointer;font:inherit;
+    background:rgba(255,255,255,.72);
+    border-radius:16px;padding:12px 8px;
+    font-size:13.5px;font-weight:650;color:var(--muted);
+    display:flex;align-items:center;justify-content:center;gap:7px;
+    transition:all .25s;
+  }
+  .mode-chip .n{
+    font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:999px;
+    background:#eef0f7;color:#98a0b8;transition:all .25s;
+  }
+  .mode-chip:hover{border-color:#dfe3f0}
+  .mode-chip:active{transform:scale(.98)}
+  .mode-chip.active{
+    background:linear-gradient(135deg,#1d2033,#3b4168);
+    color:#fff;border-color:transparent;
+    box-shadow:0 14px 24px -14px rgba(29,32,51,.95);
+  }
+  .mode-chip.active .n{background:rgba(255,255,255,.22);color:#fff}
+
+  .catbar{
+    display:flex;gap:7px;overflow-x:auto;
+    padding:2px 20px 14px;margin:0 -20px;
+    scrollbar-width:none;-ms-overflow-style:none;
+  }
+  .catbar::-webkit-scrollbar{display:none}
+  .cat{
+    flex:none;border:1px solid var(--line);background:rgba(255,255,255,.72);
+    border-radius:999px;padding:8px 13px;cursor:pointer;
+    font:inherit;font-size:12.5px;font-weight:650;color:var(--muted);
+    display:flex;align-items:center;gap:6px;white-space:nowrap;
+    transition:all .22s;
+  }
+  .cat:hover{border-color:#dfe3f0;color:var(--ink)}
+  .cat .catn{
+    font-size:10.5px;font-weight:700;padding:1px 6px;border-radius:999px;
+    background:#eef0f7;color:#98a0b8;transition:all .22s;
+  }
+  .cat.active{
+    background:var(--cat,var(--ink));color:#fff;border-color:transparent;
+    box-shadow:0 10px 20px -12px var(--cat,rgba(29,32,51,.9));
+  }
+  .cat.active .catn{background:rgba(255,255,255,.25);color:#fff}
+
+  .card{
+    position:relative;overflow:hidden;
+    background:rgba(255,255,255,.88);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    border:1px solid rgba(255,255,255,.95);
+    border-radius:30px;
+    padding:18px 24px 26px;
+    box-shadow:0 34px 64px -28px rgba(35,40,90,.30), 0 2px 6px rgba(35,40,90,.04);
+  }
+  .card-top{
+    display:flex;justify-content:space-between;align-items:center;
+    gap:8px;margin-bottom:6px;min-height:26px;flex-wrap:wrap;
+  }
+  .posbadge{
+    font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    padding:5px 10px;border-radius:999px;
+    color:#fff;background:var(--cat,var(--muted));
+    box-shadow:0 8px 16px -10px var(--cat,rgba(0,0,0,.4));
+    white-space:nowrap;
+  }
+  .posbadge .ja{
+    font-weight:600;
+    opacity:.85;margin-left:5px;letter-spacing:0;
+    text-transform:none;font-size:11px;
+  }
+  .top-right{display:flex;align-items:center;gap:6px;flex:none}
+
+  .auto-chip{
+    border:1px solid var(--line);background:rgba(255,255,255,.72);
+    border-radius:999px;padding:5px 9px;cursor:pointer;
+    font:inherit;font-size:10.5px;font-weight:700;color:#98a0b8;
+    letter-spacing:.03em;
+    display:flex;align-items:center;gap:5px;
+    transition:all .22s;
+    white-space:nowrap;
+  }
+  .auto-chip:hover{border-color:#dfe3f0;color:var(--ink)}
+  .auto-chip .dot{
+    width:7px;height:7px;border-radius:50%;background:#cbd0e0;
+    transition:background .22s,box-shadow .22s;
+  }
+  .auto-chip.on{
+    background:linear-gradient(135deg,#e8fff4,#f0fff9);
+    border-color:#b8f0d8;color:#059669;
+  }
+  .auto-chip.on .dot{
+    background:#10b981;
+    box-shadow:0 0 0 3px rgba(16,185,129,.22);
+  }
+  .auto-chip.romaji.on{
+    background:linear-gradient(135deg,#eef2ff,#f5f7ff);
+    border-color:#c7d2fe;color:#4f46e5;
+  }
+  .auto-chip.romaji.on .dot{
+    background:#6366f1;
+    box-shadow:0 0 0 3px rgba(99,102,241,.22);
+  }
+  .auto-chip.romaji .sym{font-weight:800;font-size:12px;line-height:1}
+
+  .counter{
+    font-size:11px;font-weight:700;letter-spacing:.14em;
+    text-transform:uppercase;color:#b3b9cd;
+    white-space:nowrap;
+  }
+
+  .word{
+    min-height:250px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;padding:6px 0 4px;
+  }
+  .hanzi{
+    font-family:"Hiragino Sans","Yu Gothic","Meiryo","Noto Sans JP",sans-serif;
+    font-weight:600;line-height:1.25;letter-spacing:.02em;
+    word-break:break-word;
+    cursor:pointer;
+    transition:transform .18s, color .18s;
+    user-select:none;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .hanzi:hover{color:var(--accent);transform:scale(1.03)}
+  .hanzi:active{transform:scale(.97)}
+  .hanzi.size-l{font-size:clamp(54px,16vw,80px)}
+  .hanzi.size-m{font-size:clamp(34px,10vw,50px)}
+  .hanzi.size-s{font-size:clamp(22px,6.4vw,30px);line-height:1.4}
+
+  .pinyin{
+    margin-top:14px;
+    font-size:clamp(14px,4.1vw,18px);font-weight:650;letter-spacing:.02em;
+    color:var(--accent);word-break:break-word;line-height:1.45;
+  }
+
+  .latin{
+    margin-top:8px;
+    display:inline-flex;align-items:center;gap:7px;
+    padding:5px 13px;border-radius:999px;
+    background:#f3f4ff;border:1px solid #e4e7ff;
+    font-size:clamp(12px,3.4vw,14px);font-weight:600;
+    color:#5b62a8;letter-spacing:.04em;
+    max-width:100%;
+    word-break:break-word;
+  }
+  .latin .sym{
+    font-size:12px;color:#8a91d4;flex:none;font-weight:700;
+  }
+  .latin.hide{display:none}
+
+  .english{
+    margin-top:16px;font-size:clamp(14px,4vw,16.5px);
+    color:var(--muted);font-weight:500;line-height:1.5;
+  }
+  .english::before{
+    content:"";display:block;width:26px;height:2px;border-radius:2px;
+    background:var(--line);margin:0 auto 16px;
+  }
+
+  .speak-btn{
+    position:absolute;bottom:16px;right:16px;
+    width:46px;height:46px;border-radius:50%;
+    border:0;cursor:pointer;color:#fff;font-size:19px;
+    background:linear-gradient(135deg,#1d2033,#3b4168);
+    display:grid;place-items:center;
+    box-shadow:0 14px 26px -12px rgba(29,32,51,.95);
+    transition:transform .15s, box-shadow .25s, background .25s;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .speak-btn:hover{transform:scale(1.06)}
+  .speak-btn:active{transform:scale(.94)}
+  .speak-btn.speaking{
+    background:linear-gradient(135deg,#bc002d,#e2264d);
+    animation:speakPulse 1s ease-in-out infinite;
+  }
+  @keyframes speakPulse{
+    0%,100%{box-shadow:0 14px 26px -12px rgba(188,0,45,.95), 0 0 0 0 rgba(188,0,45,.55)}
+    50%    {box-shadow:0 14px 26px -12px rgba(188,0,45,.95), 0 0 0 14px rgba(188,0,45,0)}
+  }
+
+  .actions{display:grid;grid-template-columns:58px 1fr 1.25fr;gap:10px;margin-top:16px}
+  .btn{
+    border:0;font:inherit;font-size:15px;font-weight:650;
+    padding:17px 10px;border-radius:18px;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    transition:transform .15s, box-shadow .25s, background .25s, color .25s, border-color .25s;
+  }
+  .btn:active{transform:scale(.97)}
+  .btn .ico{font-size:17px;line-height:1}
+  .btn.primary{
+    background:linear-gradient(135deg,#1d2033,#363b60);
+    color:#fff;
+    box-shadow:0 16px 30px -14px rgba(29,32,51,.95);
+  }
+  .btn.primary:hover{box-shadow:0 20px 34px -14px rgba(29,32,51,.95)}
+  .btn.ghost{
+    background:#fff;color:var(--ink);
+    border:1.5px solid var(--line);
+    box-shadow:0 6px 16px -10px rgba(35,40,90,.35);
+  }
+  .btn.ghost:hover{border-color:#dde1ee}
+  .btn.ghost.saved{
+    background:linear-gradient(135deg,#ffe9ec,#fff3f5);
+    border-color:#ffd2d2;color:var(--accent);
+  }
+  .btn.prev{
+    background:#fff;border:1.5px solid var(--line);color:var(--muted);
+    font-size:18px;padding:17px 0;
+    box-shadow:0 6px 16px -10px rgba(35,40,90,.35);
+  }
+  .btn.prev:hover{color:var(--ink);border-color:#dde1ee}
+
+  .saved-head{
+    display:flex;align-items:baseline;justify-content:space-between;
+    margin-bottom:12px;padding:0 6px;
+  }
+  .saved-head h2{font-size:15px;font-weight:700}
+  .saved-head .meta{font-size:13px;color:var(--muted);font-weight:600}
+
+  .filters{display:flex;gap:7px;margin-bottom:14px;padding:0 2px;flex-wrap:wrap}
+  .filter{
+    border:1px solid var(--line);background:rgba(255,255,255,.72);
+    border-radius:999px;padding:8px 14px;cursor:pointer;
+    font:inherit;font-size:12.5px;font-weight:650;color:var(--muted);
+    transition:all .22s;
+  }
+  .filter:hover{border-color:#dfe3f0}
+  .filter.active{
+    background:var(--ink);color:#fff;border-color:transparent;
+    box-shadow:0 10px 20px -12px rgba(29,32,51,.9);
+  }
+
+  .saved-list{display:flex;flex-direction:column;gap:10px}
+
+  .saved-item{
+    display:flex;align-items:center;gap:12px;cursor:pointer;
+    background:rgba(255,255,255,.88);
+    backdrop-filter:blur(10px);
+    border:1px solid rgba(255,255,255,.95);
+    border-radius:20px;padding:12px 14px;
+    box-shadow:0 12px 26px -20px rgba(35,40,90,.75);
+    animation:slideIn .4s cubic-bezier(.2,.8,.3,1) both;
+    transition:transform .18s, box-shadow .25s;
+  }
+  .saved-item:hover{transform:translateY(-2px);box-shadow:0 18px 32px -20px rgba(35,40,90,.8)}
+  .si-hanzi{
+    font-family:"Hiragino Sans","Yu Gothic","Meiryo","Noto Sans JP",sans-serif;
+    font-weight:600;font-size:18px;line-height:1.25;
+    min-width:58px;max-width:110px;text-align:center;
+  }
+  .si-hanzi.long{font-size:13px;max-width:118px}
+  .si-info{flex:1;min-width:0}
+  .si-line{display:flex;align-items:center;gap:6px;margin-bottom:3px;min-width:0}
+  .si-cat{
+    font-size:9.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+    padding:2px 7px;border-radius:6px;color:#fff;background:var(--cat,var(--muted));
+    white-space:nowrap;flex:none;
+  }
+  .si-pinyin{
+    font-size:12px;font-weight:700;color:var(--accent);letter-spacing:.02em;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .si-latin{
+    font-size:11px;font-weight:600;color:#7c84c9;letter-spacing:.03em;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    margin-top:2px;
+  }
+  .si-english{
+    font-size:13px;color:var(--muted);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    margin-top:2px;
+  }
+  .si-speak{
+    flex:none;width:32px;height:32px;border:0;border-radius:12px;cursor:pointer;
+    background:#f2f4fa;color:#6b7290;font-size:14px;
+    display:grid;place-items:center;
+    transition:background .2s,color .2s,transform .15s;
+  }
+  .si-speak:hover{background:#e8ebff;color:#3b4168}
+  .si-speak:active{transform:scale(.9)}
+  .si-speak.speaking{background:#ffe8e8;color:var(--accent)}
+  .remove{
+    flex:none;width:32px;height:32px;border:0;border-radius:12px;cursor:pointer;
+    background:#f2f4fa;color:#9aa0b8;font-size:13px;
+    display:grid;place-items:center;
+    transition:background .2s,color .2s,transform .15s;
+  }
+  .remove:hover{background:#ffe8e8;color:var(--accent)}
+  .remove:active{transform:scale(.9)}
+
+  .clear-btn{
+    margin-top:6px;border:0;background:transparent;cursor:pointer;
+    font:inherit;font-size:13px;font-weight:650;color:#9aa0b8;
+    padding:14px;border-radius:16px;
+    transition:background .2s,color .2s;
+  }
+  .clear-btn:hover{background:#ffe8e8;color:var(--accent)}
+
+  .empty{text-align:center;padding:54px 20px;color:var(--muted)}
+  .empty .icon{font-size:42px;margin-bottom:14px}
+  .empty p{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:7px}
+  .empty span{font-size:13.5px;line-height:1.55;display:block;max-width:260px;margin:0 auto}
+
+  @keyframes popIn{
+    from{opacity:0;transform:translateY(16px) scale(.97)}
+    to{opacity:1;transform:none}
+  }
+  @keyframes slideIn{
+    from{opacity:0;transform:translateY(12px)}
+    to{opacity:1;transform:none}
+  }
+  @keyframes badgePop{
+    0%{transform:scale(1)}
+    45%{transform:scale(1.4)}
+    100%{transform:scale(1)}
+  }
+
+  .audio-warn{
+    display:none;margin-top:12px;padding:11px 14px;border-radius:14px;
+    background:#fff7ed;border:1px solid #fed7aa;
+    font-size:12px;color:#9a3412;line-height:1.5;
+  }
+  .audio-warn.show{display:block}
+
+  @media (max-width:400px){
+    body{padding:26px 14px 50px}
+    .card{padding:16px 18px 22px;border-radius:26px}
+    .word{min-height:215px}
+    .actions{grid-template-columns:52px 1fr 1.2fr;gap:8px}
+    .btn{font-size:14px;padding:16px 8px}
+    .speak-btn{width:42px;height:42px;font-size:17px;bottom:14px;right:14px}
+    .auto-chip{padding:4px 7px;font-size:10px}
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <header class="brand">
+    <div class="logo"><div class="logo-inner">日</div></div>
+    <div>
+      <h1>Japanese Flashcards · A2</h1>
+      <p class="subtitle"><b id="totalCount">0</b> words · 100 phrases · audio + romaji</p>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <span class="indicator" id="indicator"></span>
+    <button class="tab active" data-tab="learn">Learn</button>
+    <button class="tab" data-tab="saved">My list <span class="badge" id="badge">0</span></button>
+  </nav>
+
+  <section class="panel" id="panel-learn">
+
+    <div class="modeswitch">
+      <button class="mode-chip active" data-mode="words">
+        Words <span class="n" id="nWords">0</span>
+      </button>
+      <button class="mode-chip" data-mode="expressions">
+        Expressions <span class="n" id="nExpr">0</span>
+      </button>
+    </div>
+
+    <div class="catbar" id="catbar"></div>
+
+    <div class="card" id="card">
+      <div class="card-top">
+        <span class="posbadge" id="posbadge"></span>
+        <div class="top-right">
+          <button class="auto-chip" id="autoChip" title="Toggle auto-play">
+            <span class="dot"></span>Auto
+          </button>
+          <button class="auto-chip romaji" id="romajiChip" title="Toggle romaji">
+            <span class="dot"></span><span class="sym">≈</span>Romaji
+          </button>
+          <span class="counter" id="counter">1 / 1</span>
+        </div>
+      </div>
+      <div class="word" id="word">
+        <div class="hanzi size-l" id="hanzi" title="Click to hear">こんにちは</div>
+        <div class="pinyin" id="pinyin">konnichiwa</div>
+        <div class="latin" id="latin"><span class="sym">≈</span><span id="latinText">kohn-nee-chee-wah</span></div>
+        <div class="english" id="english">hello</div>
+      </div>
+      <button class="speak-btn" id="speakBtn" title="Listen (Space)">🔊</button>
+    </div>
+
+    <div class="audio-warn" id="audioWarn">
+      ⚠️ No Japanese voice detected yet. If audio is silent, make sure a Japanese voice is installed in your Android text-to-speech settings, then reload this page.
+    </div>
+
+    <div class="actions">
+      <button class="btn prev" id="prevBtn" title="Previous (←)">←</button>
+      <button class="btn ghost" id="saveBtn" title="Save (S)">
+        <span class="ico">♡</span>Save
+      </button>
+      <button class="btn primary" id="nextBtn" title="Next (→)">Next →</button>
+    </div>
+  </section>
+
+  <section class="panel hidden" id="panel-saved">
+    <div class="saved-head">
+      <h2>My list</h2>
+      <span class="meta" id="savedMeta">0 saved</span>
+    </div>
+
+    <div class="filters" id="filters">
+      <button class="filter active" data-filter="all">All</button>
+      <button class="filter" data-filter="words">Words</button>
+      <button class="filter" data-filter="expressions">Expressions</button>
+    </div>
+
+    <div class="saved-list" id="savedList"></div>
+  </section>
+</div>
+
+<script>
+/* =====================================================================
+   CATEGORY META
+   ===================================================================== */
+
+const CATS = {
+  pronoun:      { label:'Pronoun',      ja:'代名詞',    color:'#6366f1' },
+  demonstrative:{ label:'Demonstrative',ja:'指示詞',    color:'#8b5cf6' },
+  number:       { label:'Number',       ja:'数詞',      color:'#a855f7' },
+  counter:      { label:'Counter',      ja:'助数詞',    color:'#d946ef' },
+  time:         { label:'Time word',    ja:'時の言葉',  color:'#ec4899' },
+  question:     { label:'Question word',ja:'疑問詞',    color:'#f43f5e' },
+  noun:         { label:'Noun',         ja:'名詞',      color:'#0ea5e9' },
+  verb:         { label:'Verb',         ja:'動詞',      color:'#ef4444' },
+  adjective:    { label:'I-adjective',  ja:'い形容詞',  color:'#f97316' },
+  na_adjective: { label:'Na-adjective', ja:'な形容詞',  color:'#fb923c' },
+  adverb:       { label:'Adverb',       ja:'副詞',      color:'#eab308' },
+  particle:     { label:'Particle',     ja:'助詞',      color:'#22c55e' },
+  conjunction:  { label:'Conjunction',  ja:'接続詞',    color:'#14b8a6' },
+
+  greeting:     { label:'Greeting',     ja:'挨拶',      color:'#10b981' },
+  intro:        { label:'Introduce',    ja:'自己紹介',  color:'#3b82f6' },
+  language:     { label:'Language',     ja:'言葉',      color:'#6366f1' },
+  daily:        { label:'Daily life',   ja:'日常',      color:'#f59e0b' },
+  shopping:     { label:'Shopping',     ja:'買い物',    color:'#ec4899' },
+  directions:   { label:'Directions',   ja:'道案内',    color:'#14b8a6' },
+  social:       { label:'Social',       ja:'社交',      color:'#8b5cf6' },
+  feelings:     { label:'Feelings',     ja:'気持ち',    color:'#f43f5e' },
+  weather:      { label:'Weather',      ja:'天気',      color:'#0ea5e9' },
+  wishes:       { label:'Wishes',       ja:'お祝い',    color:'#d946ef' }
+};
+
+const CAT_ORDER = [
+  'pronoun','demonstrative','number','counter','time','question',
+  'noun','verb','adjective','na_adjective','adverb','particle','conjunction',
+  'greeting','intro','language','daily','shopping','directions','social','feelings','weather','wishes'
+];
+
+/* =====================================================================
+   WORD DATA  [ japanese, romaji, english ]
+   ===================================================================== */
+
+const RAW_WORDS = {
+
+  pronoun: [
+    ['私','watashi','I, me'],
+    ['僕','boku','I (male, casual)'],
+    ['俺','ore','I (male, rough)'],
+    ['あなた','anata','you'],
+    ['君','kimi','you (informal)'],
+    ['彼','kare','he, him'],
+    ['彼女','kanojo','she, her'],
+    ['私たち','watashitachi','we, us'],
+    ['あなたたち','anatatachi','you all'],
+    ['彼ら','karera','they, them'],
+    ['自分','jibun','oneself'],
+    ['皆','mina','everyone'],
+    ['誰か','dareka','someone'],
+    ['何か','nanika','something'],
+    ['何も','nanimo','nothing'],
+    ['皆さん','minasan','everyone (polite)']
+  ],
+
+  demonstrative: [
+    ['これ','kore','this'],
+    ['それ','sore','that'],
+    ['あれ','are','that (over there)'],
+    ['どれ','dore','which'],
+    ['この','kono','this ~'],
+    ['その','sono','that ~'],
+    ['あの','ano','that ~ (over there)'],
+    ['どの','dono','which ~'],
+    ['ここ','koko','here'],
+    ['そこ','soko','there'],
+    ['あそこ','asoko','over there'],
+    ['どこ','doko','where'],
+    ['こちら','kochira','this way (polite)'],
+    ['そちら','sochira','that way (polite)'],
+    ['あちら','achira','that way over there'],
+    ['どちら','dochira','which way']
+  ],
+
+  number: [
+    ['ゼロ','zero','zero'],
+    ['一','ichi','one'],
+    ['二','ni','two'],
+    ['三','san','three'],
+    ['四','yon','four'],
+    ['五','go','five'],
+    ['六','roku','six'],
+    ['七','nana','seven'],
+    ['八','hachi','eight'],
+    ['九','kyuu','nine'],
+    ['十','juu','ten'],
+    ['百','hyaku','hundred'],
+    ['千','sen','thousand'],
+    ['万','man','ten thousand'],
+    ['一つ','hitotsu','one (thing)'],
+    ['二つ','futatsu','two (things)'],
+    ['三つ','mittsu','three (things)'],
+    ['第一','daiichi','first'],
+    ['第二','daini','second'],
+    ['第三','daisan','third']
+  ],
+
+  counter: [
+    ['つ','tsu','(general counter)'],
+    ['個','ko','(small objects)'],
+    ['人','nin','(people)'],
+    ['本','hon','(long objects)'],
+    ['枚','mai','(flat objects)'],
+    ['匹','hiki','(small animals)'],
+    ['台','dai','(machines, vehicles)'],
+    ['冊','satsu','(books)'],
+    ['杯','hai','(cups, glasses)'],
+    ['歳','sai','(years old)'],
+    ['回','kai','(times, occurrences)'],
+    ['階','kai','(floors)'],
+    ['匹','hiki','(insects, fish)'],
+    ['軒','ken','(houses)'],
+    ['組','kumi','(groups, sets)'],
+    ['度','do','(degrees, times)'],
+    ['番','ban','(numbers, turns)'],
+    ['羽','wa','(birds, rabbits)']
+  ],
+
+  time: [
+    ['今日','kyou','today'],
+    ['明日','ashita','tomorrow'],
+    ['昨日','kinou','yesterday'],
+    ['明後日','asatte','day after tomorrow'],
+    ['一昨日','ototoi','day before yesterday'],
+    ['今','ima','now'],
+    ['朝','asa','morning'],
+    ['昼','hiru','noon'],
+    ['夜','yoru','night'],
+    ['今朝','kesa','this morning'],
+    ['今晩','konban','this evening'],
+    ['午前','gozen','AM'],
+    ['午後','gogo','PM'],
+    ['今年','kotoshi','this year'],
+    ['来年','rainen','next year'],
+    ['去年','kyonen','last year'],
+    ['毎日','mainichi','every day'],
+    ['毎週','maishuu','every week'],
+    ['月曜日','getsuyoubi','Monday'],
+    ['火曜日','kayoubi','Tuesday'],
+    ['水曜日','suiyoubi','Wednesday'],
+    ['木曜日','mokuyoubi','Thursday'],
+    ['金曜日','kinyoubi','Friday'],
+    ['土曜日','doyoubi','Saturday'],
+    ['日曜日','nichiyoubi','Sunday'],
+    ['週末','shuumatsu','weekend'],
+    ['時間','jikan','time, hour'],
+    ['分','fun','minute'],
+    ['秒','byou','second'],
+    ['月','gatsu','month'],
+    ['年','toshi','year'],
+    ['時','toki','time, moment'],
+    ['最近','saikin','recently'],
+    ['すぐに','sugu ni','immediately'],
+    ['もうすぐ','mou sugu','soon']
+  ],
+
+  question: [
+    ['誰','dare','who'],
+    ['何','nani','what'],
+    ['何処','doko','where'],
+    ['いつ','itsu','when'],
+    ['何故','naze','why'],
+    ['どうして','doushite','why'],
+    ['どう','dou','how'],
+    ['いくら','ikura','how much'],
+    ['いくつ','ikutsu','how many'],
+    ['どんな','donna','what kind of'],
+    ['どのくらい','dono kurai','how long, how much'],
+    ['どちら','dochira','which one'],
+    ['なぜ','naze','why (formal)']
+  ],
+
+  noun: [
+    // family & people
+    ['家族','kazoku','family'],
+    ['お父さん','otousan','father'],
+    ['お母さん','okaasan','mother'],
+    ['父','chichi','father (formal)'],
+    ['母','haha','mother (formal)'],
+    ['お兄さん','oniisan','older brother'],
+    ['お姉さん','oneesan','older sister'],
+    ['弟','otouto','younger brother'],
+    ['妹','imouto','younger sister'],
+    ['祖父','sofu','grandfather'],
+    ['祖母','sobo','grandmother'],
+    ['おじさん','ojisan','uncle'],
+    ['おばさん','obasan','aunt'],
+    ['息子','musuko','son'],
+    ['娘','musume','daughter'],
+    ['両親','ryoushin','parents'],
+    ['友達','tomodachi','friend'],
+    ['男性','dansei','male'],
+    ['女性','josei','female'],
+    ['男の子','otokonoko','boy'],
+    ['女の子','onnanoko','girl'],
+    ['大人','otona','adult'],
+    ['子供','kodomo','child'],
+    ['人','hito','person'],
+    ['名前','namae','name'],
+    ['皆','mina','everyone'],
+
+    // food
+    ['水','mizu','water'],
+    ['お茶','ocha','tea'],
+    ['コーヒー','koohii','coffee'],
+    ['ご飯','gohan','rice, meal'],
+    ['パン','pan','bread'],
+    ['肉','niku','meat'],
+    ['魚','sakana','fish'],
+    ['野菜','yasai','vegetables'],
+    ['果物','kudamono','fruit'],
+    ['りんご','ringo','apple'],
+    ['卵','tamago','egg'],
+    ['牛乳','gyuunyuu','milk'],
+    ['お酒','osake','alcohol'],
+    ['ビール','biiru','beer'],
+    ['朝ご飯','asagohan','breakfast'],
+    ['昼ご飯','hirugohan','lunch'],
+    ['晩ご飯','bangohan','dinner'],
+    ['レストラン','resutoran','restaurant'],
+    ['メニュー','menyuu','menu'],
+    ['お会計','okaikei','bill'],
+    ['料理','ryouri','cooking, dish'],
+    ['寿司','sushi','sushi'],
+    ['天ぷら','tenpura','tempura'],
+    ['お菓子','okashi','sweets, snacks'],
+    ['飴','ame','candy'],
+    ['チョコレート','chokoreeto','chocolate'],
+    ['ケーキ','keeki','cake'],
+    ['パスタ','pasuta','pasta'],
+    ['サラダ','sarada','salad'],
+    ['スープ','suupu','soup'],
+
+    // places
+    ['家','ie','house'],
+    ['うち','uchi','home'],
+    ['学校','gakkou','school'],
+    ['大学','daigaku','university'],
+    ['会社','kaisha','company'],
+    ['病院','byouin','hospital'],
+    ['店','mise','shop'],
+    ['銀行','ginkou','bank'],
+    ['駅','eki','station'],
+    ['空港','kuukou','airport'],
+    ['公園','kouen','park'],
+    ['図書館','toshokan','library'],
+    ['博物館','hakubutsukan','museum'],
+    ['神社','jinja','shrine'],
+    ['寺','tera','temple'],
+    ['町','machi','town'],
+    ['村','mura','village'],
+    ['国','kuni','country'],
+    ['日本','Nihon','Japan'],
+    ['アメリカ','Amerika','America'],
+    ['イギリス','Igirisu','UK'],
+    ['中国','Chuugoku','China'],
+    ['韓国','Kankoku','Korea'],
+    ['海','umi','sea'],
+    ['山','yama','mountain'],
+    ['川','kawa','river'],
+    ['湖','mizuumi','lake'],
+    ['空','sora','sky'],
+    ['道','michi','road, way'],
+    ['部屋','heya','room'],
+    ['台所','daidokoro','kitchen'],
+    ['お手洗い','otearai','toilet'],
+    ['風呂','furo','bath'],
+    ['庭','niwa','garden'],
+    ['ビル','biru','building'],
+    ['コンビニ','konbini','convenience store'],
+    ['デパート','depaato','department store'],
+
+    // objects
+    ['本','hon','book'],
+    ['辞書','jisho','dictionary'],
+    ['ペン','pen','pen'],
+    ['鉛筆','enpitsu','pencil'],
+    ['紙','kami','paper'],
+    ['机','tsukue','desk'],
+    ['椅子','isu','chair'],
+    ['ベッド','beddo','bed'],
+    ['窓','mado','window'],
+    ['ドア','doa','door'],
+    ['電話','denwa','telephone'],
+    ['携帯','keitai','mobile phone'],
+    ['パソコン','pasokon','computer'],
+    ['テレビ','terebi','television'],
+    ['車','kuruma','car'],
+    ['自転車','jitensha','bicycle'],
+    ['電車','densha','train'],
+    ['飛行機','hikouki','airplane'],
+    ['バス','basu','bus'],
+    ['服','fuku','clothes'],
+    ['シャツ','shatsu','shirt'],
+    ['ズボン','zubon','trousers'],
+    ['靴','kutsu','shoes'],
+    ['帽子','boushi','hat'],
+    ['鞄','kaban','bag'],
+    ['財布','saifu','wallet'],
+    ['鍵','kagi','key'],
+    ['傘','kasa','umbrella'],
+    ['眼鏡','megane','glasses'],
+    ['時計','tokei','watch, clock'],
+    ['お金','okane','money'],
+    ['切符','kippu','ticket'],
+    ['薬','kusuri','medicine'],
+    ['手紙','tegami','letter'],
+    ['写真','shashin','photo'],
+    ['プレゼント','purezento','gift'],
+    ['コップ','koppu','cup'],
+    ['お皿','osara','plate'],
+    ['箸','hashi','chopsticks'],
+    ['スプーン','supuun','spoon'],
+    ['フォーク','fooku','fork'],
+    ['ナイフ','naifu','knife'],
+    ['ナプキン','napukin','napkin'],
+    ['タオル','taoru','towel'],
+    ['石鹸','sekken','soap'],
+
+    // body
+    ['頭','atama','head'],
+    ['目','me','eye'],
+    ['鼻','hana','nose'],
+    ['口','kuchi','mouth'],
+    ['耳','mimi','ear'],
+    ['手','te','hand'],
+    ['足','ashi','leg, foot'],
+    ['心','kokoro','heart'],
+    ['体','karada','body'],
+    ['髪','kami','hair'],
+    ['顔','kao','face'],
+    ['歯','ha','tooth'],
+    ['お腹','onaka','stomach'],
+    ['背中','senaka','back'],
+    ['首','kubi','neck'],
+    ['指','yubi','finger'],
+    ['腕','ude','arm'],
+    ['胸','mune','chest'],
+
+    // nature
+    ['太陽','taiyou','sun'],
+    ['月','tsuki','moon'],
+    ['星','hoshi','star'],
+    ['天気','tenki','weather'],
+    ['雨','ame','rain'],
+    ['雪','yuki','snow'],
+    ['風','kaze','wind'],
+    ['雲','kumo','cloud'],
+    ['木','ki','tree'],
+    ['花','hana','flower'],
+    ['草','kusa','grass'],
+    ['火','hi','fire'],
+    ['土','tsuchi','earth, soil'],
+    ['空気','kuuki','air'],
+    ['自然','shizen','nature'],
+
+    // abstract
+    ['仕事','shigoto','work, job'],
+    ['問題','mondai','problem'],
+    ['物','mono','thing'],
+    ['意味','imi','meaning'],
+    ['方法','houhou','method'],
+    ['言葉','kotoba','language, word'],
+    ['日本語','Nihongo','Japanese language'],
+    ['英語','Eigo','English language'],
+    ['歴史','rekishi','history'],
+    ['音楽','ongaku','music'],
+    ['映画','eiga','movie'],
+    ['歌','uta','song'],
+    ['趣味','shumi','hobby'],
+    ['習慣','shuukan','habit'],
+    ['機会','kikai','opportunity'],
+    ['世界','sekai','world'],
+    ['生活','seikatsu','life'],
+    ['文化','bunka','culture'],
+    ['色','iro','color'],
+    ['愛','ai','love'],
+    ['平和','heiwa','peace'],
+    ['戦争','sensou','war'],
+    ['嘘','uso','lie'],
+    ['本当','hontou','truth'],
+    ['考え','kangae','thought, idea'],
+    ['質問','shitsumon','question'],
+    ['答え','kotae','answer'],
+    ['場所','basho','place'],
+    ['旅行','ryokou','travel, trip'],
+    ['電話番号','denwa bangou','phone number'],
+    ['住所','juusho','address'],
+    ['天気予報','tenki yohou','weather forecast']
+  ],
+
+  verb: [
+    ['する','suru','to do'],
+    ['いる','iru','to exist (animate)'],
+    ['ある','aru','to exist (inanimate)'],
+    ['行く','iku','to go'],
+    ['来る','kuru','to come'],
+    ['帰る','kaeru','to return, go home'],
+    ['歩く','aruku','to walk'],
+    ['走る','hashiru','to run'],
+    ['飛ぶ','tobu','to fly'],
+    ['出る','deru','to go out'],
+    ['入る','hairu','to enter'],
+    ['上がる','agaru','to go up'],
+    ['下がる','sagaru','to go down'],
+    ['出発する','shuppatsu suru','to depart'],
+    ['到着する','touchaku suru','to arrive'],
+    ['戻る','modoru','to return'],
+    ['通る','tooru','to pass through'],
+    ['座る','suwaru','to sit'],
+    ['立つ','tatsu','to stand'],
+    ['寝る','neru','to sleep'],
+    ['住む','sumu','to live'],
+    ['食べる','taberu','to eat'],
+    ['飲む','nomu','to drink'],
+    ['起きる','okiru','to get up'],
+    ['洗う','arau','to wash'],
+    ['着る','kiru','to wear'],
+    ['脱ぐ','nugu','to take off'],
+    ['料理する','ryouri suru','to cook'],
+    ['掃除する','souji suru','to clean'],
+    ['買う','kau','to buy'],
+    ['売る','uru','to sell'],
+    ['使う','tsukau','to use'],
+    ['話す','hanasu','to speak'],
+    ['聞く','kiku','to listen, ask'],
+    ['見る','miru','to see, watch'],
+    ['読む','yomu','to read'],
+    ['書く','kaku','to write'],
+    ['歌う','utau','to sing'],
+    ['答える','kotaeru','to answer'],
+    ['電話する','denwa suru','to phone'],
+    ['呼ぶ','yobu','to call'],
+    ['言う','iu','to say'],
+    ['教える','oshieru','to teach, tell'],
+    ['愛する','aisuru','to love'],
+    ['知る','shiru','to know'],
+    ['分かる','wakaru','to understand'],
+    ['覚える','oboeru','to remember'],
+    ['忘れる','wasureru','to forget'],
+    ['考える','kangaeru','to think'],
+    ['信じる','shinjiru','to believe'],
+    ['望む','nozomu','to hope'],
+    ['準備する','junbi suru','to prepare'],
+    ['決める','kimeru','to decide'],
+    ['心配する','shinpai suru','to worry'],
+    ['感じる','kanjiru','to feel'],
+    ['思う','omou','to think'],
+    ['学ぶ','manabu','to learn'],
+    ['勉強する','benkyou suru','to study'],
+    ['練習する','renshuu suru','to practice'],
+    ['働く','hataraku','to work'],
+    ['手伝う','tetsudau','to help'],
+    ['始める','hajimeru','to begin'],
+    ['終わる','owaru','to finish'],
+    ['待つ','matsu','to wait'],
+    ['探す','sagasu','to look for'],
+    ['見つける','mitsukeru','to find'],
+    ['試す','tamesu','to try'],
+    ['遊ぶ','asobu','to play'],
+    ['旅行する','ryokou suru','to travel'],
+    ['泳ぐ','oyogu','to swim'],
+    ['踊る','odoru','to dance'],
+    ['笑う','warau','to laugh'],
+    ['泣く','naku','to cry'],
+    ['楽しむ','tanoshimu','to enjoy'],
+    ['休む','yasumu','to rest'],
+    ['開ける','akeru','to open'],
+    ['閉める','shimeru','to close'],
+    ['取る','toru','to take'],
+    ['置く','oku','to put'],
+    ['送る','okuru','to send'],
+    ['もらう','morau','to receive'],
+    ['貸す','kasu','to lend'],
+    ['変える','kaeru','to change'],
+    ['直す','naosu','to repair'],
+    ['会う','au','to meet'],
+    ['あげる','ageru','to give'],
+    ['持つ','motsu','to hold'],
+    ['選ぶ','erabu','to choose'],
+    ['従う','shitagau','to follow'],
+    ['勝つ','katsu','to win'],
+    ['負ける','makeru','to lose'],
+    ['壊す','kowasu','to break'],
+    ['持って来る','motte kuru','to bring'],
+    ['払う','harau','to pay'],
+    ['遅れる','okureru','to be late'],
+    ['急ぐ','isogu','to hurry'],
+    ['止まる','tomaru','to stop'],
+    ['曲がる','magaru','to turn'],
+    ['渡る','wataru','to cross']
+  ],
+
+  adjective: [
+    ['良い','yoi','good'],
+    ['いい','ii','good (casual)'],
+    ['悪い','warui','bad'],
+    ['大きい','ookii','big'],
+    ['小さい','chiisai','small'],
+    ['高い','takai','tall, expensive'],
+    ['低い','hikui','low'],
+    ['安い','yasui','cheap'],
+    ['長い','nagai','long'],
+    ['短い','mijikai','short'],
+    ['新しい','atarashii','new'],
+    ['古い','furui','old'],
+    ['速い','hayai','fast'],
+    ['遅い','osoi','slow, late'],
+    ['暑い','atsui','hot (weather)'],
+    ['寒い','samui','cold (weather)'],
+    ['暖かい','atatakai','warm'],
+    ['涼しい','suzushii','cool'],
+    ['近い','chikai','near'],
+    ['遠い','tooi','far'],
+    ['明るい','akarui','bright'],
+    ['暗い','kurai','dark'],
+    ['広い','hiroi','wide'],
+    ['狭い','semai','narrow'],
+    ['太い','futoi','thick'],
+    ['細い','hosoi','thin'],
+    ['重い','omoi','heavy'],
+    ['軽い','karui','light'],
+    ['強い','tsuyoi','strong'],
+    ['弱い','yowai','weak'],
+    ['若い','wakai','young'],
+    ['難しい','muzukashii','difficult'],
+    ['易しい','yasashii','easy'],
+    ['美味しい','oishii','delicious'],
+    ['甘い','amai','sweet'],
+    ['辛い','karai','spicy'],
+    ['酸っぱい','suppai','sour'],
+    ['苦い','nigai','bitter'],
+    ['楽しい','tanoshii','fun'],
+    ['面白い','omoshiroi','interesting'],
+    ['つまらない','tsumaranai','boring'],
+    ['忙しい','isogashii','busy'],
+    ['眠い','nemui','sleepy'],
+    ['痛い','itai','painful'],
+    ['嬉しい','ureshii','happy'],
+    ['悲しい','kanashii','sad'],
+    ['寂しい','sabishii','lonely'],
+    ['怖い','kowai','scary'],
+    ['優しい','yasashii','kind'],
+    ['危ない','abunai','dangerous'],
+    ['正しい','tadashii','correct'],
+    ['素晴らしい','subarashii','wonderful'],
+    ['可愛い','kawaii','cute'],
+    ['美しい','utsukushii','beautiful'],
+    ['かっこいい','kakkoii','cool, handsome'],
+    ['うるさい','urusai','noisy'],
+    ['白い','shiroi','white'],
+    ['黒い','kuroi','black'],
+    ['赤い','akai','red'],
+    ['青い','aoi','blue']
+  ],
+
+  na_adjective: [
+    ['静か','shizuka','quiet'],
+    ['賑やか','nigiyaka','lively'],
+    ['綺麗','kirei','beautiful, clean'],
+    ['有名','yuumei','famous'],
+    ['便利','benri','convenient'],
+    ['不便','fuben','inconvenient'],
+    ['大切','taisetsu','important'],
+    ['簡単','kantan','simple'],
+    ['複雑','fukuzatsu','complex'],
+    ['親切','shinsetsu','kind'],
+    ['元気','genki','healthy, energetic'],
+    ['上手','jouzu','skillful'],
+    ['下手','heta','unskillful'],
+    ['好き','suki','liked'],
+    ['嫌い','kirai','disliked'],
+    ['暇','hima','free (time)'],
+    ['大変','taihen','tough'],
+    ['危険','kiken','dangerous'],
+    ['安全','anzen','safe'],
+    ['特別','tokubetsu','special'],
+    ['変','hen','strange'],
+    ['無理','muri','impossible'],
+    ['十分','juubun','enough'],
+    ['自由','jiyuu','free'],
+    ['真面目','majime','serious'],
+    ['失礼','shitsurei','rude'],
+    ['静か','shizuka','quiet (repeat)']
+  ],
+
+  adverb: [
+    ['とても','totemo','very'],
+    ['すごく','sugoku','very'],
+    ['ちょっと','chotto','a little'],
+    ['たくさん','takusan','a lot'],
+    ['少し','sukoshi','a little'],
+    ['もっと','motto','more'],
+    ['あまり','amari','not much'],
+    ['全然','zenzen','not at all'],
+    ['いつも','itsumo','always'],
+    ['よく','yoku','often, well'],
+    ['時々','tokidoki','sometimes'],
+    ['たまに','tamani','occasionally'],
+    ['決して','kesshite','never'],
+    ['もう','mou','already'],
+    ['まだ','mada','still, yet'],
+    ['ゆっくり','yukkuri','slowly'],
+    ['早く','hayaku','quickly, early'],
+    ['一緒に','issho ni','together'],
+    ['多分','tabun','probably'],
+    ['きっと','kitto','surely'],
+    ['もちろん','mochiron','of course'],
+    ['実は','jitsu wa','actually'],
+    ['大体','daitai','mostly'],
+    ['全部','zenbu','all'],
+    ['是非','zehi','by all means'],
+    ['きちんと','kichinto','properly'],
+    ['しっかり','shikkari','firmly']
+  ],
+
+  particle: [
+    ['は','wa','(topic marker)'],
+    ['が','ga','(subject marker)'],
+    ['を','o','(object marker)'],
+    ['に','ni','(to, at, in)'],
+    ['で','de','(at, by means of)'],
+    ['へ','e','(to, towards)'],
+    ['と','to','(and, with)'],
+    ['も','mo','(also, too)'],
+    ['の','no','(possessive)'],
+    ['から','kara','(from, because)'],
+    ['まで','made','(until, as far as)'],
+    ['より','yori','(than)'],
+    ['や','ya','(and, list)'],
+    ['か','ka','(question marker)'],
+    ['ね','ne','(right?, isn\'t it?)'],
+    ['よ','yo','(emphasis, assertion)'],
+    ['な','na','(don\'t, emphasis)'],
+    ['だけ','dake','(only)'],
+    ['しか','shika','(only, with negative)'],
+    ['でも','demo','(even, but)'],
+    ['など','nado','(etc.)'],
+    ['くらい','kurai','(about, approximately)'],
+    ['ながら','nagara','(while doing)'],
+    ['ので','node','(because)'],
+    ['のに','noni','(although)']
+  ],
+
+  conjunction: [
+    ['そして','soshite','and then'],
+    ['でも','demo','but'],
+    ['しかし','shikashi','however'],
+    ['だから','dakara','so, therefore'],
+    ['それで','sorede','and so'],
+    ['けれど','keredo','but, however'],
+    ['または','matawa','or'],
+    ['なぜなら','nazenara','because'],
+    ['それに','soreni','besides'],
+    ['つまり','tsumari','in other words'],
+    ['それから','sorekara','and then'],
+    ['すると','suruto','then, thereupon'],
+    ['ところで','tokorode','by the way'],
+    ['つまり','tsumari','that is'],
+    ['したがって','shitagatte','therefore']
+  ]
+};
+
+/* =====================================================================
+   EXPRESSION DATA  [ japanese, romaji, english ]
+   ===================================================================== */
+
+const RAW_EXPR = {
+
+  greeting: [
+    ['おはようございます','ohayou gozaimasu','Good morning'],
+    ['こんにちは','konnichiwa','Hello / Good afternoon'],
+    ['こんばんは','konbanwa','Good evening'],
+    ['おやすみなさい','oyasuminasai','Good night'],
+    ['さようなら','sayounara','Goodbye'],
+    ['じゃあね','jaa ne','See you (casual)'],
+    ['また明日','mata ashita','See you tomorrow'],
+    ['お元気ですか','ogenki desu ka','How are you?'],
+    ['元気です','genki desu','I am fine'],
+    ['初めまして','hajimemashite','Nice to meet you'],
+    ['よろしくお願いします','yoroshiku onegaishimasu','Please treat me well'],
+    ['ありがとうございます','arigatou gozaimasu','Thank you'],
+    ['どういたしまして','dou itashimashite','You are welcome'],
+    ['すみません','sumimasen','Excuse me / I am sorry'],
+    ['ごめんなさい','gomen nasai','I am sorry'],
+    ['失礼します','shitsurei shimasu','Excuse me (formal)']
+  ],
+
+  intro: [
+    ['お名前は何ですか','onamae wa nan desu ka','What is your name?'],
+    ['私は田中です','watashi wa Tanaka desu','I am Tanaka'],
+    ['どこから来ましたか','doko kara kimashita ka','Where are you from?'],
+    ['アメリカから来ました','Amerika kara kimashita','I am from America'],
+    ['おいくつですか','oikutsu desu ka','How old are you?'],
+    ['二十五歳です','nijuu go sai desu','I am 25 years old'],
+    ['お仕事は何ですか','oshigoto wa nan desu ka','What is your job?'],
+    ['私は先生です','watashi wa sensei desu','I am a teacher'],
+    ['どこに住んでいますか','doko ni sunde imasu ka','Where do you live?'],
+    ['東京に住んでいます','Toukyou ni sunde imasu','I live in Tokyo'],
+    ['家族は何人ですか','kazoku wa nannin desu ka','How many people in your family?'],
+    ['四人です','yonin desu','There are four'],
+    ['趣味は何ですか','shumi wa nan desu ka','What are your hobbies?'],
+    ['音楽を聴くことです','ongaku o kiku koto desu','Listening to music']
+  ],
+
+  language: [
+    ['日本語を話せますか','Nihongo o hanasemasu ka','Can you speak Japanese?'],
+    ['少し話せます','sukoshi hanasemasu','I can speak a little'],
+    ['これは日本語で何と言いますか','kore wa Nihongo de nan to iimasu ka','How do you say this in Japanese?'],
+    ['どういう意味ですか','dou iu imi desu ka','What does it mean?'],
+    ['分かりました','wakarimashita','I understand'],
+    ['分かりません','wakarimasen','I do not understand'],
+    ['もっとゆっくり話してください','motto yukkuri hanashite kudasai','Please speak more slowly'],
+    ['日本語を勉強しています','Nihongo o benkyou shite imasu','I am studying Japanese'],
+    ['日本語は難しいです','Nihongo wa muzukashii desu','Japanese is difficult']
+  ],
+
+  daily: [
+    ['お腹が空きました','onaka ga sukimashita','I am hungry'],
+    ['喉が渇きました','nodo ga kawakimashita','I am thirsty'],
+    ['今何時ですか','ima nanji desu ka','What time is it?'],
+    ['三時です','sanji desu','It is three o clock'],
+    ['遅れています','okurete imasu','I am late'],
+    ['すぐ行きます','sugu ikimasu','I am coming right away'],
+    ['ちょっと待ってください','chotto matte kudasai','Please wait a moment'],
+    ['今日は何曜日ですか','kyou wa nan youbi desu ka','What day is it today?'],
+    ['月曜日です','getsuyoubi desu','It is Monday'],
+    ['週末は暇ですか','shuumatsu wa hima desu ka','Are you free this weekend?'],
+    ['暇です','hima desu','I am free'],
+    ['暇じゃないです','hima ja nai desu','I am not free'],
+    ['食べに行きましょう','tabe ni ikimashou','Let us go eat'],
+    ['美味しいです','oishii desu','It is delicious'],
+    ['お腹いっぱいです','onaka ippai desu','I am full']
+  ],
+
+  shopping: [
+    ['いくらですか','ikura desu ka','How much is it?'],
+    ['高すぎます','takasugimasu','Too expensive'],
+    ['安くできますか','yasuku dekimasu ka','Can it be cheaper?'],
+    ['これをください','kore o kudasai','This one please'],
+    ['それはいりません','sore wa irimasen','I do not want that'],
+    ['カードで払えますか','kaado de haraemasu ka','Can I pay by card?'],
+    ['現金で払います','genkin de haraimasu','I will pay in cash'],
+    ['お会計をお願いします','okaikei o onegaishimasu','The bill please'],
+    ['メニューをください','menyuu o kudasai','Menu please'],
+    ['トイレはどこですか','toire wa doko desu ka','Where is the toilet?'],
+    ['何時に閉まりますか','nanji ni shimarimasu ka','What time do you close?']
+  ],
+
+  directions: [
+    ['駅はどこですか','eki wa doko desu ka','Where is the station?'],
+    ['遠いですか','tooi desu ka','Is it far?'],
+    ['近いです','chikai desu','It is close'],
+    ['まっすぐ行ってください','massugu itte kudasai','Go straight'],
+    ['左に曲がってください','hidari ni magatte kudasai','Turn left'],
+    ['右に曲がってください','migi ni magatte kudasai','Turn right'],
+    ['道に迷いました','michi ni mayoimashita','I am lost'],
+    ['助けてください','tasukete kudasai','Please help me'],
+    ['ありがとうございます','arigatou gozaimasu','Thank you']
+  ],
+
+  social: [
+    ['映画を見に行きましょう','eiga o mi ni ikimashou','Let us go see a movie'],
+    ['いい映画でした','ii eiga deshita','It was a good movie'],
+    ['音楽は好きですか','ongaku wa suki desu ka','Do you like music?'],
+    ['どんな音楽が好きですか','donna ongaku ga suki desu ka','What music do you like?'],
+    ['ピアノが弾けますか','piano ga hikemasu ka','Can you play the piano?'],
+    ['弾けません','hikemasen','I cannot play'],
+    ['残念ですね','zannen desu ne','What a pity'],
+    ['頑張ってください','ganbatte kudasai','Do your best'],
+    ['楽しんでください','tanoshinde kudasai','Enjoy yourself']
+  ],
+
+  feelings: [
+    ['お元気ですか','ogenki desu ka','How are you?'],
+    ['元気です','genki desu','I am well'],
+    ['少し疲れました','sukoshi tsukaremashita','I am a bit tired'],
+    ['とても忙しいです','totemo isogashii desu','I am very busy'],
+    ['嬉しいです','ureshii desu','I am happy'],
+    ['悲しいです','kanashii desu','I am sad'],
+    ['心配しないでください','shinpai shinaide kudasai','Do not worry'],
+    ['気分が良くないです','kibun ga yokunai desu','I do not feel well'],
+    ['風邪を引きました','kaze o hikimashita','I caught a cold']
+  ],
+
+  weather: [
+    ['天気はどうですか','tenki wa dou desu ka','How is the weather?'],
+    ['今日はいい天気です','kyou wa ii tenki desu','The weather is nice today'],
+    ['雨が降っています','ame ga futte imasu','It is raining'],
+    ['今日は寒いです','kyou wa samui desu','It is cold today'],
+    ['今日は暑いです','kyou wa atsui desu','It is hot today'],
+    ['暖かくしてください','atatakaku shite kudasai','Dress warmly'],
+    ['気をつけてください','ki o tsukete kudasai','Please be careful']
+  ],
+
+  wishes: [
+    ['お誕生日おめでとうございます','otanjoubi omedetou gozaimasu','Happy birthday'],
+    ['頑張ってください','ganbatte kudasai','Good luck'],
+    ['お元気で','ogenki de','Take care'],
+    ['ごちそうさまでした','gochisousama deshita','Thank you for the meal'],
+    ['良い旅を','yoi tabi o','Have a good trip'],
+    ['おめでとうございます','omedetou gozaimasu','Congratulations']
+  ]
+};
+
+/* =====================================================================
+   FLATTEN DATA
+   ===================================================================== */
+
+const seenW = new Set();
+const WORDS = Object.entries(RAW_WORDS).flatMap(([pos, arr]) =>
+  arr.map(([h, p, e]) => ({ h, p, e, cat: pos }))
+).filter(w => { if (seenW.has(w.h)) return false; seenW.add(w.h); return true; });
+
+const EXPR = Object.entries(RAW_EXPR).flatMap(([cat, arr]) =>
+  arr.map(([h, p, e]) => ({ h, p, e, cat }))
+);
+
+const DATA = { words: WORDS, expressions: EXPR };
+
+/* =====================================================================
+   ROMAJI → ENGLISH-FRIENDLY RESPELLING
+   ===================================================================== */
+
+function splitSyllables(w){
+  const out = [];
+  let i = 0;
+  w = w.toLowerCase();
+  while (i < w.length){
+    // consonant + y + vowel (kya, nyu, etc.)
+    if (i+2 < w.length && /[kgnmhrbpy]/.test(w[i]) && w[i+1]==='y' && /[aiueo]/.test(w[i+2])){
+      out.push(w.substr(i,3)); i += 3; continue;
+    }
+    // sh/ch + vowel
+    if (i+2 < w.length && /[sc]/.test(w[i]) && w[i+1]==='h' && /[aiueo]/.test(w[i+2])){
+      out.push(w.substr(i,3)); i += 3; continue;
+    }
+    // doubled consonant (small tsu): double letter + vowel
+    if (i+2 < w.length && w[i] === w[i+1] && /[kstpgzdh]/.test(w[i]) && /[aiueo]/.test(w[i+2])){
+      out.push(w[i] + w.substr(i+1,2)); i += 3; continue;
+    }
+    // consonant + vowel
+    if (i+1 < w.length && /[kstnmhrbpdgz]/.test(w[i]) && /[aiueo]/.test(w[i+1])){
+      out.push(w.substr(i,2)); i += 2; continue;
+    }
+    // lone vowel or n
+    out.push(w[i]); i++;
+  }
+  return out;
+}
+
+function respellSyll(s){
+  return s
+    .replace(/a/g, 'ah').replace(/i/g, 'ee').replace(/u/g, 'oo')
+    .replace(/e/g, 'eh').replace(/o/g, 'oh')
+    .replace(/n$/, 'n');
+}
+
+function toRomajiRespell(romaji){
+  if (!romaji) return '';
+  // Pre-process long vowels before splitting
+  const clean = romaji
+    .toLowerCase()
+    .replace(/ou/g, 'oo')      // おう → long o
+    .replace(/uu/g, 'uu')      // うう → long u
+    .replace(/ei/g, 'ee')      // えい → long e
+    .replace(/[^a-z\s]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+  if (!clean) return '';
+  return clean.split(' ').map(word => {
+    const sylls = splitSyllables(word);
+    return sylls.map((s, i) => {
+      const r = respellSyll(s);
+      return i === 0 ? r.toUpperCase() : r;
+    }).join('-');
+  }).join(' ');
+}
+
+/* =====================================================================
+   TEXT-TO-SPEECH MODULE — ANDROID SAFE
+   ===================================================================== */
+
+const TTS = (() => {
+  const supported = 'speechSynthesis' in window;
+  const LANG = 'ja-JP';
+  let targetVoice = null;
+  let voicesReady = false;
+  let autoPlay = false;
+
+  try { autoPlay = localStorage.getItem('ja-flashcards-autoplay') === '1'; } catch(e){}
+
+  /* Keep retrying until Android gives us the voice list (can take 5+ seconds) */
+  function loadVoices(){
+    if (!supported) return;
+    const voices = speechSynthesis.getVoices();
+    if (!voices.length){
+      setTimeout(loadVoices, 250);
+      return;
+    }
+    const prefix = LANG.split('-')[0];
+    targetVoice =
+      voices.find(v => v.lang === LANG) ||
+      voices.find(v => v.lang.replace('_','-').startsWith(LANG)) ||
+      voices.find(v => v.lang.toLowerCase().startsWith(prefix)) ||
+      null;
+    voicesReady = true;
+    updateWarn();
+  }
+
+  function updateWarn(){
+    const warn = document.getElementById('audioWarn');
+    if (!warn) return;
+    if (!supported || !targetVoice) warn.classList.add('show');
+    else warn.classList.remove('show');
+  }
+
+  if (supported){
+    speechSynthesis.addEventListener('voiceschanged', loadVoices);
+    loadVoices();
+  }
+
+  function clean(text){
+    return text
+      .replace(/[「」『』（）【】…—\s]/g, '')
+      .replace(/[?.,!;:'"()\-]/g, '')
+      .trim();
+  }
+
+  function speak(text, btnEl){
+    if (!supported) return;
+
+    /* If voices aren't loaded yet, wait for them, then try again */
+    if (!voicesReady){
+      loadVoices();
+      setTimeout(() => speak(text, btnEl), 400);
+      return;
+    }
+
+    const clean_text = clean(text);
+    if (!clean_text) return;
+
+    /* Android/iOS bug: cancel() right before speak() kills playback.
+       Only cancel if something is actually playing. */
+    if (speechSynthesis.speaking){
+      speechSynthesis.cancel();
+    }
+
+    const u = new SpeechSynthesisUtterance(clean_text);
+    u.lang  = LANG;
+    u.rate  = 0.85;
+    u.pitch = 1;
+    if (targetVoice) {
+      try { u.voice = targetVoice; } catch(e){}
+    }
+
+    const targets = [];
+    if (btnEl) targets.push(btnEl);
+    const mainBtn = document.getElementById('speakBtn');
+    if (mainBtn && btnEl !== mainBtn && !document.getElementById('panel-learn').classList.contains('hidden')) {
+      const cur = currentItem();
+      if (cur && cur.h === text) targets.push(mainBtn);
+    }
+
+    const setOn  = () => targets.forEach(t => t.classList.add('speaking'));
+    const setOff = () => targets.forEach(t => t.classList.remove('speaking'));
+
+    u.onstart = setOn;
+    u.onend   = setOff;
+    u.onerror = setOff;
+    setTimeout(setOn, 80);
+
+    speechSynthesis.speak(u);
+
+    /* Safety: if onend never fires (Android bug), clear the button state */
+    const maxMs = 2500 + clean_text.length * 300;
+    setTimeout(() => { if (!speechSynthesis.speaking) setOff(); }, maxMs);
+  }
+
+  function stop(){
+    if (!supported) return;
+    speechSynthesis.cancel();
+    document.querySelectorAll('.speaking').forEach(el => el.classList.remove('speaking'));
+  }
+
+  function setAuto(on){
+    autoPlay = on;
+    try { localStorage.setItem('ja-flashcards-autoplay', on ? '1' : '0'); } catch(e){}
+    const chip = document.getElementById('autoChip');
+    if (chip) chip.classList.toggle('on', on);
+  }
+
+  function isAuto(){ return autoPlay; }
+
+  return { speak, stop, setAuto, isAuto, supported };
+})();
+
+/* =====================================================================
+   STATE
+   ===================================================================== */
+
+const el  = id => document.getElementById(id);
+const KEY = 'ja-flashcards-learned-v1';
+const ROMAJI_KEY = 'ja-flashcards-romaji-v1';
+
+let mode        = 'words';
+let catFilter   = 'all';
+let poolIdx     = { words: 0, expressions: 0 };
+let savedFilter = 'all';
+let showRomaji  = true;
+
+try {
+  const v = localStorage.getItem(ROMAJI_KEY);
+  if (v === '0') showRomaji = false;
+} catch(e){}
+
+const keyOf    = (m, h) => m + '::' + h;
+const splitKey = k => { const i = k.indexOf('::'); return { mode: k.slice(0,i), h: k.slice(i+2) }; };
+
+let learned = [];
+try {
+  const raw = JSON.parse(localStorage.getItem(KEY));
+  if (Array.isArray(raw)) learned = raw.filter(k => typeof k === 'string');
+} catch(e) { learned = []; }
+
+learned = learned.filter(k => {
+  const { mode:m, h } = splitKey(k);
+  return DATA[m] && DATA[m].some(w => w.h === h);
+});
+
+const persist = () => { try { localStorage.setItem(KEY, JSON.stringify(learned)); } catch(e){} };
+
+/* =====================================================================
+   LEARN PANEL
+   ===================================================================== */
+
+function getPool(){
+  const base = DATA[mode];
+  if (catFilter === 'all') return base;
+  return base.filter(w => w.cat === catFilter);
+}
+
+function currentItem(){
+  const pool = getPool();
+  return pool[poolIdx[mode] % pool.length];
+}
+
+function animateWord(){
+  const w = el('word');
+  w.style.animation = 'none';
+  void w.offsetWidth;
+  w.style.animation = 'popIn .45s cubic-bezier(.2,.8,.3,1)';
+}
+
+function sizeClassFor(text){
+  const len = [...text].length;
+  if (len <= 4)  return 'size-l';
+  if (len <= 8)  return 'size-m';
+  return 'size-s';
+}
+
+function syncSaveBtn(){
+  const saved = learned.includes(keyOf(mode, currentItem().h));
+  const b = el('saveBtn');
+  b.classList.toggle('saved', saved);
+  b.innerHTML = saved ? '<span class="ico">♥</span>Saved'
+                      : '<span class="ico">♡</span>Save';
+}
+
+function syncRomajiChip(){
+  el('romajiChip').classList.toggle('on', showRomaji);
+  el('pinyin').style.display = showRomaji ? '' : 'none';
+  el('latin').classList.toggle('hide', !showRomaji);
+}
+
+function renderCard(animate = true){
+  const pool = getPool();
+  const i    = poolIdx[mode] % pool.length;
+  const w    = pool[i];
+  const meta = CATS[w.cat] || { label:w.cat, ja:'', color:'#7b8098' };
+
+  const badge = el('posbadge');
+  badge.style.setProperty('--cat', meta.color || '#7b8098');
+  badge.innerHTML = `${meta.label}${meta.ja ? `<span class="ja">${meta.ja}</span>` : ''}`;
+
+  const hz = el('hanzi');
+  hz.textContent = w.h;
+  hz.className   = 'hanzi ' + sizeClassFor(w.h);
+
+  el('pinyin').textContent    = w.p;
+  el('latinText').textContent = toRomajiRespell(w.p);
+  el('english').textContent   = w.e;
+  el('counter').textContent   = (i + 1) + ' / ' + pool.length;
+
+  syncSaveBtn();
+  syncRomajiChip();
+  if (animate) animateWord();
+
+  TTS.stop();
+  if (TTS.isAuto()) {
+    setTimeout(() => TTS.speak(w.h, el('speakBtn')), 300);
+  }
+}
+
+function renderCatBar(){
+  const bar   = el('catbar');
+  const items = DATA[mode];
+  const counts = {};
+  items.forEach(w => counts[w.cat] = (counts[w.cat] || 0) + 1);
+
+  const cats = Object.keys(counts).sort(
+    (a,b) => CAT_ORDER.indexOf(a) - CAT_ORDER.indexOf(b)
+  );
+
+  let html = `<button class="cat${catFilter==='all'?' active':''}" data-cat="all">
+    All <span class="catn">${items.length}</span>
+  </button>`;
+
+  cats.forEach(c => {
+    const meta = CATS[c] || { label:c, color:'#7b8098' };
+    html += `<button class="cat${catFilter===c?' active':''}" data-cat="${c}" style="--cat:${meta.color}">
+      ${meta.label} <span class="catn">${counts[c]}</span>
+    </button>`;
+  });
+
+  bar.innerHTML = html;
+
+  bar.querySelectorAll('.cat').forEach(btn => {
+    btn.addEventListener('click', () => {
+      catFilter = btn.dataset.cat;
+      poolIdx[mode] = 0;
+      renderCatBar();
+      renderCard();
+    });
+  });
+}
+
+function nextWord(){
+  const pool = getPool();
+  poolIdx[mode] = (poolIdx[mode] + 1) % pool.length;
+  renderCard();
+}
+
+function prevWord(){
+  const pool = getPool();
+  poolIdx[mode] = (poolIdx[mode] - 1 + pool.length) % pool.length;
+  renderCard();
+}
+
+function toggleSave(){
+  const k = keyOf(mode, currentItem().h);
+  const i = learned.indexOf(k);
+
+  if (i === -1){
+    learned.push(k);
+    const badge = el('badge');
+    badge.classList.remove('pop');
+    void badge.offsetWidth;
+    badge.classList.add('pop');
+  } else {
+    learned.splice(i, 1);
+  }
+
+  persist();
+  syncSaveBtn();
+  renderSaved();
+}
+
+function setMode(m){
+  mode = m;
+  catFilter = 'all';
+  poolIdx[m] = 0;
+  document.querySelectorAll('.mode-chip').forEach(c =>
+    c.classList.toggle('active', c.dataset.mode === m)
+  );
+  renderCatBar();
+  renderCard();
+}
+
+/* =====================================================================
+   SAVED PANEL
+   ===================================================================== */
+
+function renderSaved(){
+  const list = el('savedList');
+
+  const entries = learned.slice().reverse().map(k => {
+    const { mode:m, h } = splitKey(k);
+    const w = (DATA[m] || []).find(x => x.h === h);
+    return w ? { ...w, mode:m, key:k } : null;
+  }).filter(Boolean);
+
+  const countWords = entries.filter(e => e.mode === 'words').length;
+  const countExpr  = entries.filter(e => e.mode === 'expressions').length;
+
+  el('badge').textContent     = entries.length;
+  el('savedMeta').textContent = entries.length
+    ? `${countWords} words · ${countExpr} phrases`
+    : '0 saved';
+
+  const filters = el('filters');
+  filters.querySelector('[data-filter="all"]').textContent         = `All ${entries.length}`;
+  filters.querySelector('[data-filter="words"]').textContent       = `Words ${countWords}`;
+  filters.querySelector('[data-filter="expressions"]').textContent = `Expressions ${countExpr}`;
+  filters.querySelectorAll('.filter').forEach(f =>
+    f.classList.toggle('active', f.dataset.filter === savedFilter)
+  );
+
+  const shown = savedFilter === 'all'
+    ? entries
+    : entries.filter(e => e.mode === savedFilter);
+
+  if (!shown.length){
+    list.innerHTML = `
+      <div class="empty">
+        <div class="icon">📖</div>
+        <p>${entries.length ? 'Nothing here' : 'Your list is empty'}</p>
+        <span>${entries.length
+          ? 'No saved items match this filter.'
+          : 'Tap "Save" on a word or phrase you want to remember, and it will appear here.'}</span>
+      </div>`;
+    return;
+  }
+
+  list.innerHTML = shown.map((w, i) => {
+    const meta = CATS[w.cat] || { label:w.cat, color:'#94a3b8' };
+    const latin = showRomaji ? `<div class="si-latin">≈ ${toRomajiRespell(w.p)}</div>` : '';
+    const pinyin = showRomaji ? `<span class="si-pinyin">${w.p}</span>` : '';
+    return `
+      <div class="saved-item" data-key="${w.key}" style="animation-delay:${Math.min(i,12)*40}ms">
+        <div class="si-hanzi${[...w.h].length > 5 ? ' long' : ''}">${w.h}</div>
+        <div class="si-info">
+          <div class="si-line">
+            <span class="si-cat" style="--cat:${meta.color}">${meta.label}</span>
+            ${pinyin}
+          </div>
+          ${latin}
+          <div class="si-english">${w.e}</div>
+        </div>
+        <button class="si-speak" data-speak="${w.h}" title="Listen">🔊</button>
+        <button class="remove" data-remove="${w.key}" title="Remove">✕</button>
+      </div>`;
+  }).join('')
+    + `<button class="clear-btn" id="clearBtn">Remove all ${entries.length} saved items</button>`;
+
+  list.querySelectorAll('.saved-item').forEach(item => {
+    item.addEventListener('click', ev => {
+      if (ev.target.closest('.remove') || ev.target.closest('.si-speak')) return;
+      const { mode:m, h } = splitKey(item.dataset.key);
+      const i = DATA[m].findIndex(x => x.h === h);
+      if (i < 0) return;
+      mode = m;
+      catFilter = 'all';
+      poolIdx[m] = i;
+      document.querySelectorAll('.mode-chip').forEach(c =>
+        c.classList.toggle('active', c.dataset.mode === m)
+      );
+      renderCatBar();
+      renderCard();
+      switchTab('learn');
+    });
+  });
+
+  list.querySelectorAll('.si-speak').forEach(btn => {
+    btn.addEventListener('click', ev => {
+      ev.stopPropagation();
+      TTS.speak(btn.dataset.speak, btn);
+    });
+  });
+
+  list.querySelectorAll('.remove').forEach(btn => {
+    btn.addEventListener('click', ev => {
+      ev.stopPropagation();
+      learned = learned.filter(k => k !== btn.dataset.remove);
+      persist();
+      syncSaveBtn();
+      renderSaved();
+    });
+  });
+
+  el('clearBtn').addEventListener('click', () => {
+    if (!confirm(`Remove all ${entries.length} saved items?`)) return;
+    learned = [];
+    persist();
+    syncSaveBtn();
+    renderSaved();
+  });
+}
+
+/* =====================================================================
+   TABS
+   ===================================================================== */
+
+function switchTab(name){
+  document.querySelectorAll('.tab').forEach(t =>
+    t.classList.toggle('active', t.dataset.tab === name)
+  );
+  el('indicator').style.transform = name === 'learn' ? 'translateX(0)' : 'translateX(100%)';
+  el('panel-learn').classList.toggle('hidden', name !== 'learn');
+  el('panel-saved').classList.toggle('hidden', name !== 'saved');
+  if (name !== 'learn') TTS.stop();
+}
+
+/* =====================================================================
+   EVENTS
+   ===================================================================== */
+
+el('nextBtn').addEventListener('click', nextWord);
+el('prevBtn').addEventListener('click', prevWord);
+el('saveBtn').addEventListener('click', toggleSave);
+el('speakBtn').addEventListener('click', () => TTS.speak(currentItem().h, el('speakBtn')));
+el('hanzi').addEventListener('click', () => TTS.speak(currentItem().h, el('speakBtn')));
+
+el('autoChip').addEventListener('click', () => {
+  TTS.setAuto(!TTS.isAuto());
+  if (TTS.isAuto()) TTS.speak(currentItem().h, el('speakBtn'));
+});
+
+el('romajiChip').addEventListener('click', () => {
+  showRomaji = !showRomaji;
+  try { localStorage.setItem(ROMAJI_KEY, showRomaji ? '1' : '0'); } catch(e){}
+  syncRomajiChip();
+  renderSaved();
+});
+
+document.querySelectorAll('.tab').forEach(t =>
+  t.addEventListener('click', () => switchTab(t.dataset.tab))
+);
+
+document.querySelectorAll('.mode-chip').forEach(c =>
+  c.addEventListener('click', () => setMode(c.dataset.mode))
+);
+
+document.querySelectorAll('.filter').forEach(f =>
+  f.addEventListener('click', () => { savedFilter = f.dataset.filter; renderSaved(); })
+);
+
+document.addEventListener('keydown', e => {
+  if (e.target.matches('input, textarea')) return;
+  if (el('panel-learn').classList.contains('hidden')) return;
+
+  if (e.key === 'ArrowRight'){ e.preventDefault(); nextWord(); }
+  if (e.key === 'ArrowLeft'){  e.preventDefault(); prevWord(); }
+  if (e.key.toLowerCase() === 's'){ e.preventDefault(); toggleSave(); }
+  if (e.key === ' '){ e.preventDefault(); TTS.speak(currentItem().h, el('speakBtn')); }
+  if (e.key.toLowerCase() === 'r'){ e.preventDefault(); el('romajiChip').click(); }
+});
+
+window.addEventListener('beforeunload', () => TTS.stop());
+
+/* =====================================================================
+   INIT
+   ===================================================================== */
+
+el('nWords').textContent = DATA.words.length;
+el('nExpr').textContent  = DATA.expressions.length;
+el('totalCount').textContent = DATA.words.length;
+
+el('autoChip').classList.toggle('on', TTS.isAuto());
+
+renderCatBar();
+renderCard(false);
+renderSaved();
+
+if (TTS.isAuto()) setTimeout(() => TTS.speak(currentItem().h, el('speakBtn')), 400);
+</script>
+</body>
+</html>
