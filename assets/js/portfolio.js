@@ -7,9 +7,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const mount = document.getElementById('portfolio-mount');
   if (!mount) return;
 
-  const id = new URLSearchParams(location.search).get('id');
+  const params = new URLSearchParams(location.search);
+  const id = params.get('id');
+  const q = (params.get('q') || '').toLowerCase().trim();
+
   if (id) renderDetail(Number(id));
-  else renderGrid();
+  else renderGrid(q);
 
   wireLightbox();
 });
@@ -44,25 +47,47 @@ function videoHtml(src) {
 }
 
 /* ---------- Grid ---------- */
-function renderGrid() {
+function renderGrid(query) {
   const mount = document.getElementById('portfolio-mount');
   document.title = 'Portfolio - Smail Lotmani';
 
-  if (!PROJECTS.length) {
-    mount.innerHTML = '<p class="text-center text-gray-500">No projects found.</p>';
+  let list = PROJECTS;
+  if (query) {
+    list = PROJECTS.filter(p => {
+      const hay = [
+        p.title, p.org, p.description,
+        ...(p.skills || []), ...(p.keywords || [])
+      ].join(' ').toLowerCase();
+      return hay.includes(query);
+    });
+  }
+
+  if (!list.length) {
+    mount.innerHTML = `
+      <div class="card p-10 text-center max-w-lg mx-auto">
+        <i class="fas fa-search text-4xl mb-4" style="color: var(--text-muted);"></i>
+        <p style="color: var(--text-soft);" class="mb-6">No projects match your search.</p>
+        <a href="portfolio.html" class="btn btn-outline">
+          <i class="fas fa-arrow-left"></i> Show all projects
+        </a>
+      </div>`;
     return;
   }
 
-  mount.innerHTML = `
+  const header = query
+    ? `<p class="mb-6 text-sm" style="color: var(--text-muted);">Showing ${list.length} result${list.length === 1 ? '' : 's'} for “${escapeHtml(query)}”</p>`
+    : '';
+
+  mount.innerHTML = header + `
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-      ${PROJECTS.map(p => `
+      ${list.map(p => `
         <a href="portfolio.html?id=${p.id}" class="project-card card">
           ${projectThumbHtml(p, 'project-image')}
           <div class="p-5">
             <p class="label mb-2">${escapeHtml(p.period)}</p>
             <h2 class="project-title text-lg leading-snug mb-2">${escapeHtml(p.title)}</h2>
-            ${p.org ? `<p class="text-sm text-gray-500 mb-3">${escapeHtml(p.org)}</p>` : ''}
-            <div>${(p.skills || []).slice(0,4).map(s => `<span class="tag">${escapeHtml(s)}</span>`).join('')}</div>
+            ${p.org ? `<p class="text-sm mb-3" style="color: var(--text-muted);">${escapeHtml(p.org)}</p>` : ''}
+            <div>${(p.skills || []).slice(0, 4).map(s => `<span class="tag">${escapeHtml(s)}</span>`).join('')}</div>
           </div>
         </a>`).join('')}
     </div>`;
@@ -77,8 +102,8 @@ function renderDetail(id) {
     document.title = 'Not found - Smail Lotmani';
     mount.innerHTML = `
       <div class="card p-10 text-center max-w-lg mx-auto">
-        <i class="fas fa-search text-4xl text-gray-300 mb-4"></i>
-        <p class="text-gray-600 mb-6">Project not found.</p>
+        <i class="fas fa-search text-4xl mb-4" style="color: var(--text-muted);"></i>
+        <p style="color: var(--text-soft);" class="mb-6">Project not found.</p>
         <a href="portfolio.html" class="btn btn-outline">
           <i class="fas fa-arrow-left"></i> Back to Portfolio
         </a>
@@ -126,23 +151,26 @@ function renderDetail(id) {
       <i class="fas fa-external-link-alt"></i> View Project
     </a>` : '';
 
+  const descHtml = escapeHtml(project.description)
+    .replace(/\n\n/g, '</p><p class="mb-4">')
+    .replace(/\n/g, '<br>');
+
   mount.innerHTML = `
     <article class="card p-7 md:p-10 max-w-3xl mx-auto">
-      <p class="label mb-3">${escapeHtml(project.period)}</p>
-      <h1 class="display text-3xl md:text-4xl mb-3">${escapeHtml(project.title)}</h1>
-      ${project.org ? `<p class="text-gray-500 mb-8">${escapeHtml(project.org)}</p>` : '<div class="mb-6"></div>'}
-
-      <p class="text-gray-700 mb-8 leading-relaxed whitespace-pre-line">${escapeHtml(project.description)}</p>
-
+      <a href="portfolio.html" class="link-accent text-sm mb-6 inline-flex items-center gap-1">
+        <i class="fas fa-arrow-left"></i> All projects
+      </a>
+      <p class="label mb-3 mt-4">${escapeHtml(project.period)}</p>
+      <h1 class="section-title mb-2">${escapeHtml(project.title)}</h1>
+      ${project.org ? `<p class="mb-6" style="color: var(--text-muted);">${escapeHtml(project.org)}</p>` : '<div class="mb-6"></div>'}
       ${linkBlock}
+      <div class="leading-relaxed mb-8" style="color: var(--text-soft);">
+        <p class="mb-4">${descHtml}</p>
+      </div>
       ${skillsBlock}
       ${keywordsBlock}
       ${photosBlock}
       ${videosBlock}
-
-      <a href="portfolio.html" class="btn btn-ghost">
-        <i class="fas fa-arrow-left"></i> Back to Portfolio
-      </a>
     </article>`;
 }
 
@@ -152,25 +180,32 @@ function wireLightbox() {
   const modalImg = document.getElementById('modalImage');
   if (!modal || !modalImg) return;
 
-  const close = () => {
-    modal.classList.remove('open');
-    document.body.classList.remove('modal-open');
-    modalImg.src = '';
-  };
-
   document.addEventListener('click', e => {
-    const thumb = e.target.closest('.gallery-image');
-    if (thumb) {
-      modalImg.src = thumb.dataset.full;
-      modalImg.alt = thumb.alt;
+    const img = e.target.closest('.gallery-image');
+    if (img && img.dataset.full) {
+      modalImg.src = img.dataset.full;
+      modalImg.alt = img.alt || '';
       modal.classList.add('open');
       document.body.classList.add('modal-open');
-      return;
     }
-    if (e.target === modal || e.target.closest('.modal-close')) close();
+  });
+
+  modal.querySelector('.modal-close')?.addEventListener('click', () => {
+    modal.classList.remove('open');
+    document.body.classList.remove('modal-open');
+  });
+
+  modal.addEventListener('click', e => {
+    if (e.target === modal) {
+      modal.classList.remove('open');
+      document.body.classList.remove('modal-open');
+    }
   });
 
   document.addEventListener('keydown', e => {
-    if (e.key === 'Escape' && modal.classList.contains('open')) close();
+    if (e.key === 'Escape' && modal.classList.contains('open')) {
+      modal.classList.remove('open');
+      document.body.classList.remove('modal-open');
+    }
   });
 }
