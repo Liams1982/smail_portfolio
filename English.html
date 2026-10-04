@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Language Flashcards</title>
+<title>English Flashcards · A2 · Audio + Prononciation</title>
 <style>
   :root{
     --ink:#151726;
     --muted:#7b8098;
+    --accent:#0055a4;
     --line:#eceef6;
   }
 
@@ -20,337 +21,1695 @@
     min-height:100vh;
     display:flex;
     justify-content:center;
-    padding:56px 20px 80px;
+    padding:40px 20px 70px;
     background:
-      radial-gradient(900px 520px at 8% -12%, #ffe1e1 0%, transparent 62%),
-      radial-gradient(820px 520px at 102% -4%, #dfe6ff 0%, transparent 58%),
-      radial-gradient(760px 520px at 50% 118%, #d8f6ee 0%, transparent 62%),
+      radial-gradient(900px 520px at 8% -12%, #dbe8ff 0%, transparent 62%),
+      radial-gradient(820px 520px at 102% -4%, #ffe0e3 0%, transparent 58%),
+      radial-gradient(760px 520px at 50% 118%, #eef1f7 0%, transparent 62%),
       #f7f8fc;
     background-attachment:fixed;
   }
 
-  .wrap{width:100%;max-width:560px}
+  .app{width:100%;max-width:520px}
 
-  header{text-align:center;margin-bottom:38px}
-
+  .brand{display:flex;align-items:center;gap:14px;margin-bottom:22px;padding-left:4px}
   .logo{
-    width:72px;height:72px;border-radius:22px;
-    display:grid;place-items:center;margin:0 auto 22px;
-    font-size:34px;font-weight:700;
+    width:52px;height:52px;border-radius:18px;flex:none;
+    display:grid;place-items:center;
+    font-size:20px;font-weight:800;color:#fff;letter-spacing:.02em;
+    background:linear-gradient(90deg,#0055a4 0%,#0055a4 33%,#ffffff 33%,#ffffff 66%,#ef4135 66%,#ef4135 100%);
+    box-shadow:0 12px 26px -10px rgba(0,85,164,.65);
+    text-shadow:0 1px 4px rgba(0,0,0,.7);
+  }
+  h1{font-size:19px;font-weight:700;letter-spacing:-.015em}
+  .subtitle{font-size:13px;color:var(--muted);margin-top:3px}
+  .subtitle b{color:var(--accent);font-weight:700}
+
+  .tabs{
+    position:relative;display:grid;grid-template-columns:1fr 1fr;
+    background:#e8ebf4;border-radius:999px;padding:4px;margin-bottom:18px;
+    user-select:none;
+  }
+  .tab{
+    position:relative;z-index:1;border:0;background:none;cursor:pointer;
+    font:inherit;font-size:14px;font-weight:650;color:var(--muted);
+    padding:12px 8px;border-radius:999px;
+    display:flex;align-items:center;justify-content:center;gap:7px;
+    transition:color .25s;
+  }
+  .tab.active{color:var(--ink)}
+  .indicator{
+    position:absolute;top:4px;left:4px;
+    width:calc(50% - 4px);height:calc(100% - 8px);
+    background:#fff;border-radius:999px;
+    box-shadow:0 4px 14px -3px rgba(30,35,80,.18);
+    transition:transform .35s cubic-bezier(.2,.8,.3,1);
+  }
+  .badge{
+    min-width:20px;height:20px;padding:0 6px;border-radius:999px;
+    background:var(--accent);color:#fff;font-size:11px;font-weight:700;
+    display:inline-grid;place-items:center;
+  }
+  .badge.pop{animation:badgePop .45s ease}
+
+  .panel{animation:popIn .45s cubic-bezier(.2,.8,.3,1) both}
+  .hidden{display:none !important}
+
+  .modeswitch{display:flex;gap:9px;margin-bottom:12px;padding:0 2px}
+  .mode-chip{
+    flex:1;border:1px solid var(--line);cursor:pointer;font:inherit;
+    background:rgba(255,255,255,.72);
+    border-radius:16px;padding:12px 8px;
+    font-size:13.5px;font-weight:650;color:var(--muted);
+    display:flex;align-items:center;justify-content:center;gap:7px;
+    transition:all .25s;
+  }
+  .mode-chip .n{
+    font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:999px;
+    background:#eef0f7;color:#98a0b8;transition:all .25s;
+  }
+  .mode-chip:hover{border-color:#dfe3f0}
+  .mode-chip:active{transform:scale(.98)}
+  .mode-chip.active{
     background:linear-gradient(135deg,#1d2033,#3b4168);
-    box-shadow:0 20px 40px -16px rgba(29,32,51,.95);
-    color:#fff;
+    color:#fff;border-color:transparent;
+    box-shadow:0 14px 24px -14px rgba(29,32,51,.95);
   }
+  .mode-chip.active .n{background:rgba(255,255,255,.22);color:#fff}
 
-  h1{
-    font-size:clamp(26px,6.5vw,34px);
-    font-weight:800;
-    letter-spacing:-.02em;
-    line-height:1.1;
-    margin-bottom:10px;
-    background:linear-gradient(135deg,#1d2033,#3b4168 60%,#5b62a8);
-    -webkit-background-clip:text;
-    background-clip:text;
-    -webkit-text-fill-color:transparent;
+  .catbar{
+    display:flex;gap:7px;overflow-x:auto;
+    padding:2px 20px 14px;margin:0 -20px;
+    scrollbar-width:none;-ms-overflow-style:none;
   }
-
-  .tagline{
-    font-size:14.5px;
-    color:var(--muted);
-    line-height:1.55;
-    max-width:340px;
-    margin:0 auto;
-    font-weight:500;
+  .catbar::-webkit-scrollbar{display:none}
+  .cat{
+    flex:none;border:1px solid var(--line);background:rgba(255,255,255,.72);
+    border-radius:999px;padding:8px 13px;cursor:pointer;
+    font:inherit;font-size:12.5px;font-weight:650;color:var(--muted);
+    display:flex;align-items:center;gap:6px;white-space:nowrap;
+    transition:all .22s;
   }
-
-  .grid{
-    display:grid;
-    grid-template-columns:1fr;
-    gap:14px;
+  .cat:hover{border-color:#dfe3f0;color:var(--ink)}
+  .cat .catn{
+    font-size:10.5px;font-weight:700;padding:1px 6px;border-radius:999px;
+    background:#eef0f7;color:#98a0b8;transition:all .22s;
   }
+  .cat.active{
+    background:var(--cat,var(--ink));color:#fff;border-color:transparent;
+    box-shadow:0 10px 20px -12px var(--cat,rgba(29,32,51,.9));
+  }
+  .cat.active .catn{background:rgba(255,255,255,.25);color:#fff}
 
   .card{
-    display:flex;
-    align-items:center;
-    gap:16px;
-    padding:18px 20px;
-    border-radius:24px;
+    position:relative;overflow:hidden;
     background:rgba(255,255,255,.88);
     backdrop-filter:blur(14px);
     -webkit-backdrop-filter:blur(14px);
     border:1px solid rgba(255,255,255,.95);
-    text-decoration:none;
-    color:var(--ink);
-    box-shadow:0 22px 44px -28px rgba(35,40,90,.55), 0 2px 6px rgba(35,40,90,.04);
-    transition:transform .22s cubic-bezier(.2,.8,.3,1), box-shadow .25s, border-color .25s;
-    position:relative;
-    overflow:hidden;
-    animation:slideIn .5s cubic-bezier(.2,.8,.3,1) both;
+    border-radius:30px;
+    padding:18px 24px 26px;
+    box-shadow:0 34px 64px -28px rgba(35,40,90,.30), 0 2px 6px rgba(35,40,90,.04);
+  }
+  .card-top{
+    display:flex;justify-content:space-between;align-items:center;
+    gap:8px;margin-bottom:6px;min-height:26px;flex-wrap:wrap;
+  }
+  .posbadge{
+    font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+    padding:5px 10px;border-radius:999px;
+    color:#fff;background:var(--cat,var(--muted));
+    box-shadow:0 8px 16px -10px var(--cat,rgba(0,0,0,.4));
+    white-space:nowrap;
+  }
+  .posbadge .fr{
+    font-style:italic;font-weight:600;
+    opacity:.85;margin-left:5px;letter-spacing:0;
+    text-transform:none;font-size:11px;
+  }
+  .top-right{display:flex;align-items:center;gap:6px;flex:none}
+
+  .auto-chip{
+    border:1px solid var(--line);background:rgba(255,255,255,.72);
+    border-radius:999px;padding:5px 9px;cursor:pointer;
+    font:inherit;font-size:10.5px;font-weight:700;color:#98a0b8;
+    letter-spacing:.03em;
+    display:flex;align-items:center;gap:5px;
+    transition:all .22s;
+    white-space:nowrap;
+  }
+  .auto-chip:hover{border-color:#dfe3f0;color:var(--ink)}
+  .auto-chip .dot{
+    width:7px;height:7px;border-radius:50%;background:#cbd0e0;
+    transition:background .22s,box-shadow .22s;
+  }
+  .auto-chip.on{
+    background:linear-gradient(135deg,#e8fff4,#f0fff9);
+    border-color:#b8f0d8;color:#059669;
+  }
+  .auto-chip.on .dot{
+    background:#10b981;
+    box-shadow:0 0 0 3px rgba(16,185,129,.22);
+  }
+  .auto-chip.pron.on{
+    background:linear-gradient(135deg,#eef2ff,#f5f7ff);
+    border-color:#c7d2fe;color:#4f46e5;
+  }
+  .auto-chip.pron.on .dot{
+    background:#6366f1;
+    box-shadow:0 0 0 3px rgba(99,102,241,.22);
+  }
+  .auto-chip.pron .sym{font-weight:800;font-size:12px;line-height:1}
+
+  .counter{
+    font-size:11px;font-weight:700;letter-spacing:.14em;
+    text-transform:uppercase;color:#b3b9cd;
+    white-space:nowrap;
   }
 
-  .card::before{
-    content:'';
-    position:absolute;
-    left:0;top:0;bottom:0;
-    width:5px;
-    background:var(--accent,#7b8098);
-    border-radius:5px 0 0 5px;
+  .word{
+    min-height:240px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;padding:6px 0 4px;
+  }
+  .hanzi{
+    font-weight:700;line-height:1.15;letter-spacing:-.01em;
+    word-break:break-word;
+    cursor:pointer;
+    transition:transform .18s, color .18s;
+    user-select:none;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .hanzi:hover{color:var(--accent);transform:scale(1.03)}
+  .hanzi:active{transform:scale(.97)}
+  .hanzi.size-l{font-size:clamp(48px,14vw,68px)}
+  .hanzi.size-m{font-size:clamp(32px,9.5vw,46px)}
+  .hanzi.size-s{font-size:clamp(20px,6vw,28px);line-height:1.35}
+
+  .pinyin{
+    margin-top:14px;
+    font-size:clamp(14px,4.1vw,18px);font-weight:650;letter-spacing:.02em;
+    color:var(--accent);word-break:break-word;line-height:1.45;
+    transition:opacity .3s, transform .3s;
+  }
+  .pinyin.hide{display:none}
+
+  .english{
+    margin-top:16px;font-size:clamp(14px,4vw,16.5px);
+    color:var(--muted);font-weight:500;line-height:1.5;
+  }
+  .english::before{
+    content:"";display:block;width:26px;height:2px;border-radius:2px;
+    background:var(--line);margin:0 auto 16px;
   }
 
-  .card:hover{
-    transform:translateY(-3px);
-    box-shadow:0 30px 54px -30px rgba(35,40,90,.65), 0 4px 10px rgba(35,40,90,.06);
-  }
-
-  .card:active{transform:translateY(-1px) scale(.99)}
-
-  .flag{
-    flex:none;
-    width:56px;height:56px;
-    border-radius:16px;
+  .speak-btn{
+    position:absolute;bottom:16px;right:16px;
+    width:46px;height:46px;border-radius:50%;
+    border:0;cursor:pointer;color:#fff;font-size:19px;
+    background:linear-gradient(135deg,#1d2033,#3b4168);
     display:grid;place-items:center;
-    font-size:24px;font-weight:700;color:#fff;
-    box-shadow:0 10px 22px -12px rgba(0,0,0,.55);
-    text-shadow:0 1px 3px rgba(0,0,0,.35);
-    letter-spacing:.02em;
+    box-shadow:0 14px 26px -12px rgba(29,32,51,.95);
+    transition:transform .15s, box-shadow .25s, background .25s;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .speak-btn:hover{transform:scale(1.06)}
+  .speak-btn:active{transform:scale(.94)}
+  .speak-btn.speaking{
+    background:linear-gradient(135deg,#0055a4,#ef4135);
+    animation:speakPulse 1s ease-in-out infinite;
+  }
+  @keyframes speakPulse{
+    0%,100%{box-shadow:0 14px 26px -12px rgba(0,85,164,.95), 0 0 0 0 rgba(0,85,164,.55)}
+    50%    {box-shadow:0 14px 26px -12px rgba(0,85,164,.95), 0 0 0 14px rgba(0,85,164,0)}
   }
 
-  .info{flex:1;min-width:0}
-
-  .name{
-    font-size:17.5px;
-    font-weight:750;
-    letter-spacing:-.01em;
-    margin-bottom:4px;
-    display:flex;
-    align-items:baseline;
-    gap:8px;
-    flex-wrap:wrap;
+  .actions{display:grid;grid-template-columns:58px 1fr 1.25fr;gap:10px;margin-top:16px}
+  .btn{
+    border:0;font:inherit;font-size:15px;font-weight:650;
+    padding:17px 10px;border-radius:18px;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    transition:transform .15s, box-shadow .25s, background .25s, color .25s, border-color .25s;
   }
-
-  .native{
-    font-size:13px;
-    color:var(--muted);
-    font-weight:500;
-  }
-
-  .meta{
-    font-size:12.5px;
-    color:var(--muted);
-    font-weight:500;
-    line-height:1.45;
-  }
-
-  .meta b{
-    color:var(--accent);
-    font-weight:700;
-    margin-right:2px;
-  }
-
-  .arrow{
-    flex:none;
-    width:34px;height:34px;
-    border-radius:12px;
-    background:#f2f4fa;
-    color:#6b7290;
-    display:grid;place-items:center;
-    font-size:15px;
-    font-weight:700;
-    transition:background .22s, color .22s, transform .22s;
-  }
-
-  .card:hover .arrow{
-    background:var(--accent,#3b4168);
+  .btn:active{transform:scale(.97)}
+  .btn .ico{font-size:17px;line-height:1}
+  .btn.primary{
+    background:linear-gradient(135deg,#1d2033,#363b60);
     color:#fff;
-    transform:translateX(3px);
+    box-shadow:0 16px 30px -14px rgba(29,32,51,.95);
+  }
+  .btn.primary:hover{box-shadow:0 20px 34px -14px rgba(29,32,51,.95)}
+  .btn.ghost{
+    background:#fff;color:var(--ink);
+    border:1.5px solid var(--line);
+    box-shadow:0 6px 16px -10px rgba(35,40,90,.35);
+  }
+  .btn.ghost:hover{border-color:#dde1ee}
+  .btn.ghost.saved{
+    background:linear-gradient(135deg,#e8efff,#f0f5ff);
+    border-color:#c7d9ff;color:var(--accent);
+  }
+  .btn.prev{
+    background:#fff;border:1.5px solid var(--line);color:var(--muted);
+    font-size:18px;padding:17px 0;
+    box-shadow:0 6px 16px -10px rgba(35,40,90,.35);
+  }
+  .btn.prev:hover{color:var(--ink);border-color:#dde1ee}
+
+  .saved-head{
+    display:flex;align-items:baseline;justify-content:space-between;
+    margin-bottom:12px;padding:0 6px;
+  }
+  .saved-head h2{font-size:15px;font-weight:700}
+  .saved-head .meta{font-size:13px;color:var(--muted);font-weight:600}
+
+  .filters{display:flex;gap:7px;margin-bottom:14px;padding:0 2px;flex-wrap:wrap}
+  .filter{
+    border:1px solid var(--line);background:rgba(255,255,255,.72);
+    border-radius:999px;padding:8px 14px;cursor:pointer;
+    font:inherit;font-size:12.5px;font-weight:650;color:var(--muted);
+    transition:all .22s;
+  }
+  .filter:hover{border-color:#dfe3f0}
+  .filter.active{
+    background:var(--ink);color:#fff;border-color:transparent;
+    box-shadow:0 10px 20px -12px rgba(29,32,51,.9);
   }
 
-  .card:nth-child(1){animation-delay:0ms}
-  .card:nth-child(2){animation-delay:60ms}
-  .card:nth-child(3){animation-delay:120ms}
-  .card:nth-child(4){animation-delay:180ms}
-  .card:nth-child(5){animation-delay:240ms}
-  .card:nth-child(6){animation-delay:300ms}
+  .saved-list{display:flex;flex-direction:column;gap:10px}
 
-  @keyframes slideIn{
-    from{opacity:0;transform:translateY(18px)}
+  .saved-item{
+    display:flex;align-items:center;gap:12px;cursor:pointer;
+    background:rgba(255,255,255,.88);
+    backdrop-filter:blur(10px);
+    border:1px solid rgba(255,255,255,.95);
+    border-radius:20px;padding:12px 14px;
+    box-shadow:0 12px 26px -20px rgba(35,40,90,.75);
+    animation:slideIn .4s cubic-bezier(.2,.8,.3,1) both;
+    transition:transform .18s, box-shadow .25s;
+  }
+  .saved-item:hover{transform:translateY(-2px);box-shadow:0 18px 32px -20px rgba(35,40,90,.8)}
+  .si-hanzi{
+    font-weight:700;font-size:18px;line-height:1.25;
+    min-width:58px;max-width:110px;text-align:center;
+  }
+  .si-hanzi.long{font-size:12.5px;max-width:118px}
+  .si-info{flex:1;min-width:0}
+  .si-line{display:flex;align-items:center;gap:6px;margin-bottom:3px;min-width:0}
+  .si-cat{
+    font-size:9.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+    padding:2px 7px;border-radius:6px;color:#fff;background:var(--cat,var(--muted));
+    white-space:nowrap;flex:none;
+  }
+  .si-pinyin{
+    font-size:12px;font-weight:700;color:var(--accent);letter-spacing:.02em;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .si-english{
+    font-size:13px;color:var(--muted);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .si-speak{
+    flex:none;width:32px;height:32px;border:0;border-radius:12px;cursor:pointer;
+    background:#f2f4fa;color:#6b7290;font-size:14px;
+    display:grid;place-items:center;
+    transition:background .2s,color .2s,transform .15s;
+  }
+  .si-speak:hover{background:#e8ebff;color:#3b4168}
+  .si-speak:active{transform:scale(.9)}
+  .si-speak.speaking{background:#e8efff;color:var(--accent)}
+  .remove{
+    flex:none;width:32px;height:32px;border:0;border-radius:12px;cursor:pointer;
+    background:#f2f4fa;color:#9aa0b8;font-size:13px;
+    display:grid;place-items:center;
+    transition:background .2s,color .2s,transform .15s;
+  }
+  .remove:hover{background:#ffe8e8;color:#ef4135}
+  .remove:active{transform:scale(.9)}
+
+  .clear-btn{
+    margin-top:6px;border:0;background:transparent;cursor:pointer;
+    font:inherit;font-size:13px;font-weight:650;color:#9aa0b8;
+    padding:14px;border-radius:16px;
+    transition:background .2s,color .2s;
+  }
+  .clear-btn:hover{background:#ffe8e8;color:#ef4135}
+
+  .empty{text-align:center;padding:54px 20px;color:var(--muted)}
+  .empty .icon{font-size:42px;margin-bottom:14px}
+  .empty p{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:7px}
+  .empty span{font-size:13.5px;line-height:1.55;display:block;max-width:260px;margin:0 auto}
+
+  @keyframes popIn{
+    from{opacity:0;transform:translateY(16px) scale(.97)}
     to{opacity:1;transform:none}
   }
-
-  footer{
-    margin-top:38px;
-    text-align:center;
-    font-size:12.5px;
-    color:var(--muted);
-    line-height:1.7;
-    font-weight:500;
+  @keyframes slideIn{
+    from{opacity:0;transform:translateY(12px)}
+    to{opacity:1;transform:none}
+  }
+  @keyframes badgePop{
+    0%{transform:scale(1)}
+    45%{transform:scale(1.4)}
+    100%{transform:scale(1)}
   }
 
-  footer .hint{
-    display:inline-block;
-    padding:8px 15px;
-    border-radius:999px;
-    background:rgba(255,255,255,.7);
-    border:1px solid var(--line);
-    margin-top:10px;
+  .audio-warn{
+    display:none;margin-top:12px;padding:11px 14px;border-radius:14px;
+    background:#fff7ed;border:1px solid #fed7aa;
+    font-size:12px;color:#9a3412;line-height:1.5;
   }
-
-  footer kbd{
-    font-family:'Inter',sans-serif;
-    font-size:11px;
-    font-weight:700;
-    padding:2px 7px;
-    border-radius:6px;
-    background:#1d2033;
-    color:#fff;
-    margin:0 2px;
-    vertical-align:1px;
-  }
-
-  .card.chinese    {--accent:#e05252}
-  .card.chinese .flag{
-    background:linear-gradient(135deg,#e05252,#ff8a5c);
-  }
-
-  .card.italian    {--accent:#009246}
-  .card.italian .flag{
-    background:linear-gradient(135deg,#009246 0%,#009246 33%,#f4f5f0 33%,#f4f5f0 66%,#ce2b37 66%,#ce2b37 100%);
-    color:#fff;
-    text-shadow:0 1px 4px rgba(0,0,0,.6);
-  }
-
-  .card.german     {--accent:#dd0000}
-  .card.german .flag{
-    background:linear-gradient(180deg,#000 0%,#000 33%,#dd0000 33%,#dd0000 66%,#ffce00 66%,#ffce00 100%);
-  }
-
-  .card.japanese   {--accent:#bc002d}
-  .card.japanese .flag{
-    background:linear-gradient(180deg,#fff 0%,#fff 100%);
-    color:#bc002d;
-    border:2px solid #bc002d;
-    text-shadow:none;
-  }
-  .card.japanese .flag::after{content:'日'; font-size:26px; font-weight:800;}
-
-  .card.spanish    {--accent:#c60b1e}
-  .card.spanish .flag{
-    background:linear-gradient(180deg,#c60b1e 0%,#c60b1e 25%,#ffc400 25%,#ffc400 75%,#c60b1e 75%,#c60b1e 100%);
-  }
-
-  .card.english    {--accent:#0055a4}
-  .card.english .flag{
-    background:linear-gradient(90deg,#0055a4 0%,#0055a4 33%,#ffffff 33%,#ffffff 66%,#ef4135 66%,#ef4135 100%);
-    color:#fff;
-    text-shadow:0 1px 4px rgba(0,0,0,.7);
-  }
+  .audio-warn.show{display:block}
 
   @media (max-width:400px){
-    body{padding:40px 14px 60px}
-    .logo{width:62px;height:62px;border-radius:20px;font-size:28px}
-    .card{padding:15px 16px;gap:13px;border-radius:22px}
-    .flag{width:50px;height:50px;font-size:20px}
-    .name{font-size:16px}
-    .native{font-size:12px}
-    .meta{font-size:11.5px}
-    .arrow{width:30px;height:30px;font-size:14px}
+    body{padding:26px 14px 50px}
+    .card{padding:16px 18px 22px;border-radius:26px}
+    .word{min-height:210px}
+    .actions{grid-template-columns:52px 1fr 1.2fr;gap:8px}
+    .btn{font-size:14px;padding:16px 8px}
+    .speak-btn{width:42px;height:42px;font-size:17px;bottom:14px;right:14px}
+    .auto-chip{padding:4px 7px;font-size:10px}
   }
 </style>
 </head>
 <body>
 
-<div class="wrap">
-
-  <header>
-    <div class="logo">語</div>
-    <h1>Language Flashcards</h1>
-    <p class="tagline">A2 vocabulary with audio, respelling, and a personal saved list. Pick a language to start.</p>
+<div class="app">
+  <header class="brand">
+    <div class="logo">EN</div>
+    <div>
+      <h1>English Flashcards · A2</h1>
+      <p class="subtitle"><b id="totalCount">0</b> mots · 100 phrases · audio + prononciation FR</p>
+    </div>
   </header>
 
-  <div class="grid">
+  <nav class="tabs">
+    <span class="indicator" id="indicator"></span>
+    <button class="tab active" data-tab="learn">Apprendre</button>
+    <button class="tab" data-tab="saved">Ma liste <span class="badge" id="badge">0</span></button>
+  </nav>
 
-    <a class="card chinese" href="Chinese.html">
-      <div class="flag">中</div>
-      <div class="info">
-        <div class="name">
-          Chinese
-          <span class="native">中文 · Mandarin</span>
-        </div>
-        <div class="meta"><b>450</b> words · <b>100</b> phrases · pinyin + Latin</div>
-      </div>
-      <div class="arrow">→</div>
-    </a>
+  <section class="panel" id="panel-learn">
 
-    <a class="card japanese" href="Japanese.html">
-      <div class="flag"></div>
-      <div class="info">
-        <div class="name">
-          Japanese
-          <span class="native">日本語</span>
-        </div>
-        <div class="meta"><b>450</b> words · <b>100</b> phrases · kana + romaji</div>
-      </div>
-      <div class="arrow">→</div>
-    </a>
-
-    <a class="card spanish" href="Spanish.html">
-      <div class="flag">ES</div>
-      <div class="info">
-        <div class="name">
-          Spanish
-          <span class="native">Español</span>
-        </div>
-        <div class="meta"><b>450</b> words · <b>100</b> phrases · Latin American + Spain</div>
-      </div>
-      <div class="arrow">→</div>
-    </a>
-
-    <a class="card italian" href="Italian.html">
-      <div class="flag">IT</div>
-      <div class="info">
-        <div class="name">
-          Italian
-          <span class="native">Italiano</span>
-        </div>
-        <div class="meta"><b>450</b> words · <b>100</b> phrases · standard Italian</div>
-      </div>
-      <div class="arrow">→</div>
-    </a>
-
-    <a class="card german" href="German.html">
-      <div class="flag">DE</div>
-      <div class="info">
-        <div class="name">
-          German
-          <span class="native">Deutsch</span>
-        </div>
-        <div class="meta"><b>420</b> words · <b>100</b> phrases · Hochdeutsch</div>
-      </div>
-      <div class="arrow">→</div>
-    </a>
-
-    <a class="card english" href="English.html">
-      <div class="flag">EN</div>
-      <div class="info">
-        <div class="name">
-          English
-          <span class="native">Français → English</span>
-        </div>
-        <div class="meta"><b>400</b> mots · <b>100</b> phrases · sens en français</div>
-      </div>
-      <div class="arrow">→</div>
-    </a>
-
-  </div>
-
-  <footer>
-    Tap a card to open the flashcards.
-    <div class="hint">
-      Press <kbd>Space</kbd> for audio · <kbd>P</kbd> to toggle pronunciation · <kbd>S</kbd> to save
+    <div class="modeswitch">
+      <button class="mode-chip active" data-mode="words">
+        Mots <span class="n" id="nWords">0</span>
+      </button>
+      <button class="mode-chip" data-mode="expressions">
+        Expressions <span class="n" id="nExpr">0</span>
+      </button>
     </div>
-  </footer>
 
+    <div class="catbar" id="catbar"></div>
+
+    <div class="card" id="card">
+      <div class="card-top">
+        <span class="posbadge" id="posbadge"></span>
+        <div class="top-right">
+          <button class="auto-chip" id="autoChip" title="Lecture automatique">
+            <span class="dot"></span>Auto
+          </button>
+          <button class="auto-chip pron" id="pronChip" title="Afficher la prononciation">
+            <span class="dot"></span><span class="sym">≈</span>Pronon.
+          </button>
+          <span class="counter" id="counter">1 / 1</span>
+        </div>
+      </div>
+      <div class="word" id="word">
+        <div class="hanzi size-l" id="hanzi" title="Cliquer pour écouter">hello</div>
+        <div class="pinyin" id="pinyin">hè-LÔ</div>
+        <div class="english" id="english">bonjour</div>
+      </div>
+      <button class="speak-btn" id="speakBtn" title="Écouter (Espace)">🔊</button>
+    </div>
+
+    <div class="audio-warn" id="audioWarn">
+      ⚠️ Aucune voix anglaise détectée. Installez une voix anglaise dans les paramètres de synthèse vocale de votre téléphone, puis rechargez la page.
+    </div>
+
+    <div class="actions">
+      <button class="btn prev" id="prevBtn" title="Précédent (←)">←</button>
+      <button class="btn ghost" id="saveBtn" title="Sauvegarder (S)">
+        <span class="ico">♡</span>Garder
+      </button>
+      <button class="btn primary" id="nextBtn" title="Suivant (→)">Suivant →</button>
+    </div>
+  </section>
+
+  <section class="panel hidden" id="panel-saved">
+    <div class="saved-head">
+      <h2>Ma liste</h2>
+      <span class="meta" id="savedMeta">0 sauvegardés</span>
+    </div>
+
+    <div class="filters" id="filters">
+      <button class="filter active" data-filter="all">Tout</button>
+      <button class="filter" data-filter="words">Mots</button>
+      <button class="filter" data-filter="expressions">Expressions</button>
+    </div>
+
+    <div class="saved-list" id="savedList"></div>
+  </section>
 </div>
 
+<script>
+/* =====================================================================
+   CATEGORY META
+   ===================================================================== */
+
+const CATS = {
+  pronoun:     { label:'Pronoun',      fr:'pronom',       color:'#6366f1' },
+  article:     { label:'Article',      fr:'article',      color:'#8b5cf6' },
+  noun:        { label:'Noun',         fr:'nom',          color:'#0ea5e9' },
+  verb:        { label:'Verb',         fr:'verbe',        color:'#ef4444' },
+  adjective:   { label:'Adjective',    fr:'adjectif',     color:'#f97316' },
+  adverb:      { label:'Adverb',       fr:'adverbe',      color:'#eab308' },
+  preposition: { label:'Preposition',  fr:'préposition',  color:'#22c55e' },
+  conjunction: { label:'Conjunction',  fr:'conjonction',  color:'#14b8a6' },
+  number:      { label:'Number',       fr:'nombre',       color:'#a855f7' },
+  time:        { label:'Time word',    fr:'temps',        color:'#ec4899' },
+  question:    { label:'Question word',fr:'interrogatif', color:'#f43f5e' },
+  particle:    { label:'Particle',     fr:'particule',    color:'#94a3b8' },
+
+  greeting:    { label:'Greeting',     fr:'salutations',  color:'#10b981' },
+  intro:       { label:'Introduce',    fr:'se présenter', color:'#3b82f6' },
+  language:    { label:'Language',     fr:'langue',       color:'#6366f1' },
+  daily:       { label:'Daily life',   fr:'quotidien',    color:'#f59e0b' },
+  shopping:    { label:'Shopping',     fr:'achats',       color:'#ec4899' },
+  directions:  { label:'Directions',   fr:'directions',   color:'#14b8a6' },
+  social:      { label:'Social',       fr:'social',       color:'#8b5cf6' },
+  feelings:    { label:'Feelings',     fr:'sentiments',   color:'#f43f5e' },
+  weather:     { label:'Weather',      fr:'météo',        color:'#0ea5e9' },
+  wishes:      { label:'Wishes',       fr:'vœux',         color:'#d946ef' }
+};
+
+const CAT_ORDER = [
+  'pronoun','article','noun','verb','adjective','adverb',
+  'preposition','conjunction','number','time','question','particle',
+  'greeting','intro','language','daily','shopping','directions','social','feelings','weather','wishes'
+];
+
+/* =====================================================================
+   WORD DATA  [ english, prononciation FR, français ]
+   ===================================================================== */
+
+const RAW_WORDS = {
+
+  pronoun: [
+    ['I','aï','je'],
+    ['you','you','tu, vous'],
+    ['he','hi','il'],
+    ['she','shi','elle'],
+    ['it','it','il, elle (chose)'],
+    ['we','wi','nous'],
+    ['they','zéï','ils, elles'],
+    ['me','mi','moi'],
+    ['him','him','lui'],
+    ['her','heur','elle'],
+    ['us','euss','nous'],
+    ['them','zèm','eux'],
+    ['this','ziss','ceci'],
+    ['that','zatt','cela'],
+    ['mine','maïn','le mien'],
+    ['yours','yôrz','le tien'],
+    ['his','hiz','le sien'],
+    ['hers','heurzz','le sien (à elle)'],
+    ['ours','aourz','le nôtre'],
+    ['theirs','zèrz','le leur'],
+    ['myself','maï-SÈLF','moi-même'],
+    ['someone','SEUM-wane','quelqu\'un'],
+    ['nobody','NÔ-beu-di','personne'],
+    ['something','SEUM-sing','quelque chose'],
+    ['nothing','NEU-sing','rien'],
+    ['everyone','ÈV-ri-wane','tout le monde'],
+    ['everything','ÈV-ri-sing','tout']
+  ],
+
+  article: [
+    ['the','zeu (devant consonne), zi (devant voyelle)','le, la, les'],
+    ['a','eu','un, une'],
+    ['an','ann','un, une (devant voyelle)'],
+    ['some','seum','du, de la, des'],
+    ['any','È-ni','quelque'],
+    ['no','nô','aucun'],
+    ['each','itch','chaque'],
+    ['every','ÈV-ri','chaque, tout']
+  ],
+
+  noun: [
+    // famille & gens
+    ['father','FÂ-zeur','père'],
+    ['mother','MEU-zeur','mère'],
+    ['dad','dadd','papa'],
+    ['mom','mom','maman'],
+    ['brother','BREU-zeur','frère'],
+    ['sister','SISS-teur','sœur'],
+    ['son','seun','fils'],
+    ['daughter','DÔ-teur','fille'],
+    ['grandfather','GRANN-fâ-zeur','grand-père'],
+    ['grandmother','GRANN-meu-zeur','grand-mère'],
+    ['uncle','EUN-keul','oncle'],
+    ['aunt','ânt','tante'],
+    ['cousin','KEU-zeun','cousin'],
+    ['husband','HEUSS-beund','mari'],
+    ['wife','waïf','épouse'],
+    ['child','tchaïld','enfant'],
+    ['boy','boï','garçon'],
+    ['girl','gueurl','fille'],
+    ['man','mann','homme'],
+    ['woman','WOU-meun','femme'],
+    ['person','PEUR-seun','personne'],
+    ['friend','frènd','ami'],
+    ['family','FÂ-mi-li','famille'],
+    ['name','néïm','nom'],
+    ['teacher','TI-tcheur','professeur'],
+    ['student','STIOU-deunt','étudiant'],
+    ['doctor','DOK-teur','médecin'],
+
+    // nourriture
+    ['water','WÔ-teur','eau'],
+    ['bread','brèd','pain'],
+    ['coffee','KÔ-fi','café'],
+    ['tea','ti','thé'],
+    ['rice','raïss','riz'],
+    ['meat','mit','viande'],
+    ['fish','fich','poisson'],
+    ['chicken','TCHI-keun','poulet'],
+    ['egg','ègg','œuf'],
+    ['cheese','tchizz','fromage'],
+    ['milk','milk','lait'],
+    ['butter','BEU-teur','beurre'],
+    ['salt','sôlt','sel'],
+    ['pepper','PÈ-peur','poivre'],
+    ['sugar','CHOU-gueur','sucre'],
+    ['fruit','frout','fruit'],
+    ['apple','Â-peul','pomme'],
+    ['banana','beu-NA-neu','banane'],
+    ['orange','O-rendj','orange'],
+    ['grape','grèïp','raisin'],
+    ['lemon','LÈ-meun','citron'],
+    ['tomato','teu-MÂ-tô','tomate'],
+    ['potato','peu-TÈÏ-tô','pomme de terre'],
+    ['salad','SÂ-leud','salade'],
+    ['vegetable','VÈD-je-teu-beul','légume'],
+    ['wine','waïn','vin'],
+    ['beer','biïr','bière'],
+    ['breakfast','BRÈK-feust','petit-déjeuner'],
+    ['lunch','leunntch','déjeuner'],
+    ['dinner','DI-neur','dîner'],
+    ['restaurant','RÈS-teu-rânt','restaurant'],
+    ['menu','MÈ-niou','menu'],
+    ['bill','bil','addition'],
+    ['ice cream','AÏSS krim','glace'],
+    ['chocolate','TCHO-keu-leut','chocolat'],
+    ['cake','kèïk','gâteau'],
+
+    // animaux
+    ['dog','dog','chien'],
+    ['cat','katt','chat'],
+    ['bird','beurd','oiseau'],
+    ['horse','horss','cheval'],
+    ['cow','kaou','vache'],
+    ['sheep','chip','mouton'],
+    ['pig','pigg','cochon'],
+    ['mouse','maouss','souris'],
+    ['rabbit','RÂ-bitt','lapin'],
+    ['lion','LAÏ-eun','lion'],
+    ['tiger','TAÏ-gueur','tigre'],
+    ['elephant','È-leu-feunt','éléphant'],
+    ['monkey','MEUN-ki','singe'],
+
+    // lieux
+    ['house','haouss','maison'],
+    ['school','skoul','école'],
+    ['university','YOU-ni-VEUR-si-ti','université'],
+    ['hospital','HOS-pi-teul','hôpital'],
+    ['shop','chop','magasin'],
+    ['office','O-fiss','bureau'],
+    ['bank','bannk','banque'],
+    ['airport','ÈR-port','aéroport'],
+    ['station','STÈÏ-cheun','gare'],
+    ['park','park','parc'],
+    ['library','LAÏ-breu-ri','bibliothèque'],
+    ['museum','miou-ZI-eum','musée'],
+    ['church','tcheurtch','église'],
+    ['street','strit','rue'],
+    ['city','SI-ti','ville'],
+    ['village','VI-lidj','village'],
+    ['sea','si','mer'],
+    ['mountain','MAOUN-teun','montagne'],
+    ['river','RI-veur','rivière'],
+    ['lake','lèïk','lac'],
+    ['beach','bitch','plage'],
+    ['hotel','hô-TÈL','hôtel'],
+    ['supermarket','SIOU-peur-mar-kit','supermarché'],
+    ['market','MAR-kit','marché'],
+    ['bathroom','BÂSS-roum','salle de bains'],
+    ['kitchen','KI-tcheun','cuisine'],
+    ['room','roum','chambre'],
+
+    // objets
+    ['book','bouk','livre'],
+    ['pen','pèn','stylo'],
+    ['pencil','PÈN-seul','crayon'],
+    ['paper','PÈÏ-peur','papier'],
+    ['table','TÈÏ-beul','table'],
+    ['chair','tchèr','chaise'],
+    ['bed','bèd','lit'],
+    ['door','dor','porte'],
+    ['window','WIN-dô','fenêtre'],
+    ['telephone','TÈ-leu-fône','téléphone'],
+    ['computer','keum-PIOU-teur','ordinateur'],
+    ['television','TÈ-leu-vi-jeun','télévision'],
+    ['car','kar','voiture'],
+    ['bicycle','BAÏ-si-keul','vélo'],
+    ['train','trèïn','train'],
+    ['plane','plèïn','avion'],
+    ['bus','beuss','bus'],
+    ['clothes','klôz','vêtements'],
+    ['shirt','cheurt','chemise'],
+    ['trousers','TRAOU-zeurz','pantalon'],
+    ['skirt','skeurt','jupe'],
+    ['shoes','chouz','chaussures'],
+    ['hat','hatt','chapeau'],
+    ['bag','bagg','sac'],
+    ['suitcase','SOUT-kèïss','valise'],
+    ['money','MEU-ni','argent'],
+    ['wallet','WÔ-litt','portefeuille'],
+    ['key','ki','clé'],
+    ['umbrella','eum-BRÈ-leu','parapluie'],
+    ['glasses','GLÂ-sizz','lunettes'],
+    ['watch','wotch','montre'],
+    ['gift','gift','cadeau'],
+    ['glass','glâss','verre'],
+    ['plate','plèït','assiette'],
+    ['cup','keup','tasse'],
+    ['fork','fork','fourchette'],
+    ['knife','naïf','couteau'],
+    ['spoon','spoun','cuillère'],
+    ['bottle','BO-teul','bouteille'],
+    ['box','bokss','boîte'],
+
+    // corps
+    ['head','hèd','tête'],
+    ['eye','aï','œil'],
+    ['nose','nôz','nez'],
+    ['mouth','maouss','bouche'],
+    ['ear','iïr','oreille'],
+    ['hand','hannd','main'],
+    ['foot','fout','pied'],
+    ['heart','hart','cœur'],
+    ['body','BO-di','corps'],
+    ['hair','hèr','cheveux'],
+    ['face','fèïss','visage'],
+    ['leg','lègg','jambe'],
+    ['arm','arm','bras'],
+    ['tooth','touss','dent'],
+    ['stomach','STEUM-meuk','estomac'],
+    ['back','bakk','dos'],
+    ['neck','nèkk','cou'],
+    ['finger','FIN-gueur','doigt'],
+
+    // nature
+    ['sun','seun','soleil'],
+    ['moon','moun','lune'],
+    ['star','star','étoile'],
+    ['sky','skaï','ciel'],
+    ['wind','winnd','vent'],
+    ['rain','rèïn','pluie'],
+    ['snow','snô','neige'],
+    ['cloud','klaoud','nuage'],
+    ['tree','tri','arbre'],
+    ['flower','FLAOU-eur','fleur'],
+    ['grass','grâss','herbe'],
+    ['fire','faïeur','feu'],
+    ['earth','eurss','terre'],
+    ['air','èr','air'],
+    ['weather','WÈ-zeur','temps (météo)'],
+    ['nature','NÈÏ-tcheur','nature'],
+
+    // abstrait
+    ['work','weurk','travail'],
+    ['problem','PRO-bleum','problème'],
+    ['thing','sing','chose'],
+    ['meaning','MI-ning','signification'],
+    ['way','wèï','façon'],
+    ['method','MÈ-zeud','méthode'],
+    ['language','LANN-gwidj','langue'],
+    ['English','INN-glich','anglais'],
+    ['French','frèntch','français'],
+    ['history','HISS-teu-ri','histoire'],
+    ['music','MIOU-zik','musique'],
+    ['movie','MOU-vi','film'],
+    ['song','sonng','chanson'],
+    ['hobby','HO-bi','passe-temps'],
+    ['habit','HÂ-bitt','habitude'],
+    ['opportunity','O-peur-TIOU-ni-ti','occasion'],
+    ['world','weurld','monde'],
+    ['life','laïf','vie'],
+    ['culture','KEUL-tcheur','culture'],
+    ['color','KEU-leur','couleur'],
+    ['love','leuv','amour'],
+    ['friendship','FRÈND-chip','amitié'],
+    ['health','hèlss','santé'],
+    ['peace','piss','paix'],
+    ['war','wor','guerre'],
+    ['truth','trouss','vérité'],
+    ['lie','laï','mensonge'],
+    ['idea','aï-DI-eu','idée'],
+    ['question','KWÈSS-tcheun','question'],
+    ['answer','ANN-seur','réponse']
+  ],
+
+  verb: [
+    ['be','bi','être'],
+    ['have','hav','avoir'],
+    ['do','dou','faire'],
+    ['say','sèï','dire'],
+    ['go','gô','aller'],
+    ['come','keum','venir'],
+    ['walk','wôk','marcher'],
+    ['run','reun','courir'],
+    ['fly','flaï','voler'],
+    ['leave','liv','partir'],
+    ['enter','ÈN-teur','entrer'],
+    ['arrive','eu-RAÏV','arriver'],
+    ['return','ri-TEURNN','revenir'],
+    ['pass','pâss','passer'],
+    ['turn','teurnn','tourner'],
+    ['eat','it','manger'],
+    ['drink','drinnk','boire'],
+    ['sleep','slip','dormir'],
+    ['wake up','wèïk eup','se réveiller'],
+    ['get up','guèt eup','se lever'],
+    ['wash','woch','laver'],
+    ['cook','kouk','cuisiner'],
+    ['clean','klin','nettoyer'],
+    ['buy','baï','acheter'],
+    ['sell','sèl','vendre'],
+    ['use','youz','utiliser'],
+    ['speak','spik','parler'],
+    ['listen','LI-seun','écouter'],
+    ['look','louk','regarder'],
+    ['see','si','voir'],
+    ['read','rid','lire'],
+    ['write','raït','écrire'],
+    ['sing','sinng','chanter'],
+    ['ask','âsk','demander'],
+    ['answer','ANN-seur','répondre'],
+    ['call','kôl','appeler'],
+    ['tell','tèl','raconter'],
+    ['like','laïk','aimer bien'],
+    ['love','leuv','aimer'],
+    ['hate','hèït','détester'],
+    ['know','nô','savoir, connaître'],
+    ['understand','EUN-deur-STANND','comprendre'],
+    ['remember','ri-MÈM-beur','se souvenir'],
+    ['forget','feur-GUÈT','oublier'],
+    ['think','sinnk','penser'],
+    ['believe','bi-LIV','croire'],
+    ['hope','hôp','espérer'],
+    ['prepare','pri-PÈR','préparer'],
+    ['decide','di-SAÏD','décider'],
+    ['worry','WEU-ri','s\'inquiéter'],
+    ['feel','fil','sentir'],
+    ['seem','sim','sembler'],
+    ['learn','leurNN','apprendre'],
+    ['study','STEUD-di','étudier'],
+    ['teach','titch','enseigner'],
+    ['work','weurk','travailler'],
+    ['help','hèlp','aider'],
+    ['begin','bi-GUINN','commencer'],
+    ['finish','FI-nich','finir'],
+    ['wait','wèït','attendre'],
+    ['look for','louk for','chercher'],
+    ['find','faïnnd','trouver'],
+    ['try','traï','essayer'],
+    ['play','plèï','jouer'],
+    ['travel','TRÂ-veul','voyager'],
+    ['swim','swimm','nager'],
+    ['dance','dânss','danser'],
+    ['laugh','lâf','rire'],
+    ['cry','kraï','pleurer'],
+    ['rest','rèst','se reposer'],
+    ['open','Ô-peun','ouvrir'],
+    ['close','klôz','fermer'],
+    ['take','tèïk','prendre'],
+    ['put','pout','mettre'],
+    ['send','sènnd','envoyer'],
+    ['receive','ri-SIV','recevoir'],
+    ['lend','lènnd','prêter'],
+    ['change','tchèïnndj','changer'],
+    ['repair','ri-PÈR','réparer'],
+    ['meet','mit','rencontrer'],
+    ['give','guiv','donner'],
+    ['hold','hôld','tenir'],
+    ['choose','tchouz','choisir'],
+    ['follow','FO-lô','suivre'],
+    ['win','winn','gagner'],
+    ['lose','louz','perdre'],
+    ['break','brèïk','casser'],
+    ['bring','brinng','apporter'],
+    ['pay','pèï','payer'],
+    ['cost','kost','coûter'],
+    ['serve','seurv','servir']
+  ],
+
+  adjective: [
+    ['good','goud','bon'],
+    ['bad','badd','mauvais'],
+    ['big','bigg','grand'],
+    ['small','smôl','petit'],
+    ['tall','tôl','grand (taille)'],
+    ['short','chort','court, petit'],
+    ['long','lonng','long'],
+    ['new','niou','nouveau'],
+    ['old','ôld','vieux'],
+    ['young','yeunng','jeune'],
+    ['fast','fâst','rapide'],
+    ['slow','slô','lent'],
+    ['hot','hott','chaud'],
+    ['cold','kôld','froid'],
+    ['warm','worm','tiède'],
+    ['cool','koul','frais'],
+    ['expensive','èks-PÈN-siv','cher'],
+    ['cheap','tchip','bon marché'],
+    ['easy','I-zi','facile'],
+    ['difficult','DI-fi-keult','difficile'],
+    ['right','raït','correct'],
+    ['wrong','ronng','faux'],
+    ['true','trou','vrai'],
+    ['false','fâlss','faux'],
+    ['early','EUR-li','tôt'],
+    ['late','lèït','tard'],
+    ['far','far','loin'],
+    ['near','niïr','proche'],
+    ['light','laït','clair'],
+    ['dark','dark','sombre'],
+    ['deep','dip','profond'],
+    ['thin','sinn','mince'],
+    ['wide','waïd','large'],
+    ['narrow','NÈ-rô','étroit'],
+    ['fat','fatt','gros'],
+    ['healthy','HÈL-si','sain'],
+    ['sick','sikk','malade'],
+    ['happy','HÂ-pi','heureux'],
+    ['sad','sadd','triste'],
+    ['tired','TAÏ-eurd','fatigué'],
+    ['busy','BI-zi','occupé'],
+    ['free','fri','libre'],
+    ['clean','klin','propre'],
+    ['dirty','DEUR-ti','sale'],
+    ['noisy','NOÏ-zi','bruyant'],
+    ['quiet','KWAÏ-eut','silencieux'],
+    ['full','foul','plein'],
+    ['empty','ÈMP-ti','vide'],
+    ['safe','sèïf','sûr'],
+    ['dangerous','DÈÏN-djeu-reuss','dangereux'],
+    ['interesting','INN-treu-stinng','intéressant'],
+    ['boring','BO-rinng','ennuyeux'],
+    ['important','im-POR-teunt','important'],
+    ['simple','SIM-peul','simple'],
+    ['complicated','KOM-pli-kèï-tid','compliqué'],
+    ['strange','strèïnndj','étrange'],
+    ['special','SPÈ-cheul','spécial'],
+    ['intelligent','in-TÈ-li-djeunt','intelligent'],
+    ['lazy','LÈÏ-zi','paresseux'],
+    ['brave','brèïv','courageux'],
+    ['nervous','NEUR-veuss','nerveux'],
+    ['kind','kaïnnd','gentil'],
+    ['nice','naïss','sympathique'],
+    ['rich','ritch','riche'],
+    ['poor','pour','pauvre'],
+    ['strong','stronng','fort'],
+    ['weak','wik','faible'],
+    ['sweet','swit','sucré'],
+    ['salty','SÔL-ti','salé'],
+    ['ready','RÈ-di','prêt'],
+    ['crazy','KRÈÏ-zi','fou']
+  ],
+
+  adverb: [
+    ['very','VÈ-ri','très'],
+    ['too','tou','trop'],
+    ['really','RI-li','vraiment'],
+    ['more','mor','plus'],
+    ['less','lèss','moins'],
+    ['also','ÔL-sô','aussi'],
+    ['only','ÔN-li','seulement'],
+    ['already','ôl-RÈ-di','déjà'],
+    ['still','stil','encore'],
+    ['often','O-feun','souvent'],
+    ['always','ÔL-wèïz','toujours'],
+    ['never','NÈ-veur','jamais'],
+    ['together','teu-GUÈ-zeur','ensemble'],
+    ['probably','PRO-beu-bli','probablement'],
+    ['maybe','MÈÏ-bi','peut-être'],
+    ['almost','ÔL-môst','presque'],
+    ['not','nott','pas'],
+    ['now','naou','maintenant'],
+    ['here','hiïr','ici'],
+    ['there','zèr','là'],
+    ['well','wèl','bien'],
+    ['badly','BÂD-li','mal']
+  ],
+
+  preposition: [
+    ['of','euv','de'],
+    ['to','tou','à'],
+    ['in','inn','dans'],
+    ['with','wizz','avec'],
+    ['on','onn','sur'],
+    ['for','for','pour'],
+    ['between','bi-TWIN','entre'],
+    ['against','eu-GUÈNST','contre'],
+    ['without','wi-ZAOUT','sans'],
+    ['under','EUN-deur','sous'],
+    ['over','Ô-veur','au-dessus'],
+    ['before','bi-FOR','avant'],
+    ['behind','bi-HAÏNND','derrière'],
+    ['during','DIOU-rinng','pendant'],
+    ['from','freum','de']
+  ],
+
+  conjunction: [
+    ['and','annd','et'],
+    ['or','or','ou'],
+    ['but','beut','mais'],
+    ['because','bi-KÔZ','parce que'],
+    ['if','if','si'],
+    ['when','wèn','quand'],
+    ['while','waïl','pendant que'],
+    ['so','sô','donc'],
+    ['although','ôl-ZÔ','bien que'],
+    ['that','zatt','que']
+  ],
+
+  number: [
+    ['zero','ZI-rô','zéro'],
+    ['one','weun','un'],
+    ['two','tou','deux'],
+    ['three','sri','trois'],
+    ['four','for','quatre'],
+    ['five','faïv','cinq'],
+    ['six','sikss','six'],
+    ['seven','SÈ-veun','sept'],
+    ['eight','èït','huit'],
+    ['nine','naïn','neuf'],
+    ['ten','tèn','dix'],
+    ['eleven','i-LÈ-veun','onze'],
+    ['twelve','twèlv','douze'],
+    ['twenty','TWÈN-ti','vingt'],
+    ['hundred','HEUN-dreud','cent'],
+    ['thousand','TAOU-zeund','mille'],
+    ['first','feurst','premier'],
+    ['second','SÈ-keund','deuxième']
+  ],
+
+  time: [
+    ['today','teu-DÈÏ','aujourd\'hui'],
+    ['tomorrow','teu-MO-rô','demain'],
+    ['yesterday','YÈS-teur-dèï','hier'],
+    ['now','naou','maintenant'],
+    ['morning','MOR-ninng','matin'],
+    ['afternoon','ÂF-teur-noun','après-midi'],
+    ['evening','IV-ninng','soir'],
+    ['night','naït','nuit'],
+    ['noon','noun','midi'],
+    ['year','yiïr','année'],
+    ['month','meunsse','mois'],
+    ['week','wik','semaine'],
+    ['day','dèï','jour'],
+    ['Monday','MEUN-dèï','lundi'],
+    ['Tuesday','TIOUZ-dèï','mardi'],
+    ['Wednesday','WÈNZ-dèï','mercredi'],
+    ['Thursday','TEURZ-dèï','jeudi'],
+    ['Friday','FRAÏ-dèï','vendredi'],
+    ['Saturday','SÂ-teur-dèï','samedi'],
+    ['Sunday','SEUN-dèï','dimanche'],
+    ['weekend','wik-ÈND','week-end'],
+    ['hour','AOU-eur','heure'],
+    ['minute','MI-nitt','minute'],
+    ['soon','soun','bientôt']
+  ],
+
+  question: [
+    ['who','hou','qui'],
+    ['what','wott','quoi'],
+    ['where','wèr','où'],
+    ['when','wèn','quand'],
+    ['how','haou','comment'],
+    ['why','waï','pourquoi'],
+    ['how much','haou meutch','combien'],
+    ['which','wittch','quel'],
+    ['how many','haou MÈ-ni','combien']
+  ],
+
+  particle: [
+    ['yes','yèss','oui'],
+    ['no','nô','non'],
+    ['okay','ô-KÈÏ','d\'accord'],
+    ['well','wèl','eh bien'],
+    ['hey','hèï','hé']
+  ]
+};
+
+/* =====================================================================
+   EXPRESSION DATA  [ english, prononciation FR, français ]
+   ===================================================================== */
+
+const RAW_EXPR = {
+
+  greeting: [
+    ['Hello!','hè-LÔ','Bonjour !'],
+    ['Good morning!','goud MOR-ninng','Bonjour ! (le matin)'],
+    ['Good afternoon!','goud ÂF-teur-noun','Bon après-midi !'],
+    ['Good evening!','goud IV-ninng','Bonsoir !'],
+    ['Good night!','goud naït','Bonne nuit !'],
+    ['How are you?','haou ar you','Comment allez-vous ?'],
+    ['I am fine, thank you.','aï am faïn, sènk you','Je vais bien, merci.'],
+    ['Nice to meet you.','naïss tou mit you','Enchanté.'],
+    ['Goodbye!','goud-BAÏ','Au revoir !'],
+    ['See you later!','si you LÈÏ-teur','À plus tard !'],
+    ['See you tomorrow!','si you teu-MO-rô','À demain !'],
+    ['Have a nice day!','hav eu naïss dèï','Bonne journée !'],
+    ['Welcome!','WÈL-keum','Bienvenue !'],
+    ['Excuse me.','èks-KIOUZ mi','Excusez-moi.'],
+    ['I am sorry.','aï am SO-ri','Je suis désolé.']
+  ],
+
+  intro: [
+    ['What is your name?','wott iz yor nèïm','Comment vous appelez-vous ?'],
+    ['My name is Marc.','maï nèïm iz Mark','Je m\'appelle Marc.'],
+    ['Where are you from?','wèr ar you freum','D\'où venez-vous ?'],
+    ['I am from France.','aï am freum Frânss','Je viens de France.'],
+    ['How old are you?','haou ôld ar you','Quel âge avez-vous ?'],
+    ['I am twenty-five.','aï am TWÈN-ti-faïv','J\'ai vingt-cinq ans.'],
+    ['What do you do?','wott dou you dou','Que faites-vous comme travail ?'],
+    ['I am a teacher.','aï am eu TI-tcheur','Je suis professeur.'],
+    ['Where do you live?','wèr dou you liv','Où habitez-vous ?'],
+    ['I live in Paris.','aï liv inn PÂ-riss','J\'habite à Paris.'],
+    ['Pleased to meet you.','plizd tou mit you','Enchanté de vous rencontrer.'],
+    ['Likewise.','LAÏK-waïz','De même.'],
+    ['Do you speak English?','dou you spik INN-glich','Parlez-vous anglais ?'],
+    ['I do not understand.','aï dou not EUN-deur-STANND','Je ne comprends pas.'],
+    ['Can you repeat?','kann you ri-PIT','Pouvez-vous répéter ?']
+  ],
+
+  language: [
+    ['Do you speak French?','dou you spik frèntch','Parlez-vous français ?'],
+    ['I speak a little English.','aï spik eu LI-teul INN-glich','Je parle un peu anglais.'],
+    ['How do you say...?','haou dou you sèï','Comment dit-on... ?'],
+    ['What does that mean?','wott daz zatt min','Qu\'est-ce que ça veut dire ?'],
+    ['I understand.','aï EUN-deur-STANND','Je comprends.'],
+    ['I do not understand.','aï dou not EUN-deur-STANND','Je ne comprends pas.'],
+    ['Please speak more slowly.','pliz spik mor SLÔ-li','Parlez plus lentement, s\'il vous plaît.'],
+    ['I am learning English.','aï am LEUR-ninng INN-glich','J\'apprends l\'anglais.'],
+    ['English is difficult.','INN-glich iz DI-fi-keult','L\'anglais est difficile.']
+  ],
+
+  daily: [
+    ['I am hungry.','aï am HEUN-gri','J\'ai faim.'],
+    ['I am thirsty.','aï am THEURS-ti','J\'ai soif.'],
+    ['What time is it?','wott taïm iz it','Quelle heure est-il ?'],
+    ['It is three o\'clock.','it iz sri eu-KLOK','Il est trois heures.'],
+    ['I am late.','aï am lèït','Je suis en retard.'],
+    ['I am coming.','aï am KEUM-minng','J\'arrive.'],
+    ['Wait a moment.','wèït eu MÔ-meunt','Attendez un instant.'],
+    ['What day is it?','wott dèï iz it','Quel jour sommes-nous ?'],
+    ['Today is Monday.','teu-DÈÏ iz MEUN-dèï','Aujourd\'hui, c\'est lundi.'],
+    ['Are you free this weekend?','ar you fri ziss wik-ÈND','Êtes-vous libre ce week-end ?'],
+    ['I am free.','aï am fri','Je suis libre.'],
+    ['I am not free.','aï am not fri','Je ne suis pas libre.'],
+    ['Let us eat.','lèts it','Allons manger.'],
+    ['It is delicious.','it iz di-LI-cheuss','C\'est délicieux.'],
+    ['I am full.','aï am foul','Je suis rassasié.']
+  ],
+
+  shopping: [
+    ['How much is it?','haou meutch iz it','Combien ça coûte ?'],
+    ['It is too expensive.','it iz tou èks-PÈN-siv','C\'est trop cher.'],
+    ['Can you give me a discount?','kann you guiv mi eu DISS-kaount','Pouvez-vous me faire une réduction ?'],
+    ['I would like this one.','aï woud laïk ziss weun','Je voudrais celui-ci.'],
+    ['I do not want that.','aï dou not wont zatt','Je ne veux pas de ça.'],
+    ['Can I pay by card?','kann aï pèï baï kard','Puis-je payer par carte ?'],
+    ['I will pay cash.','aï wil pèï kach','Je paie en espèces.'],
+    ['The bill, please.','zeu bil, pliz','L\'addition, s\'il vous plaît.'],
+    ['The menu, please.','zeu MÈ-niou, pliz','Le menu, s\'il vous plaît.'],
+    ['Where is the bathroom?','wèr iz zeu BÂSS-roum','Où sont les toilettes ?'],
+    ['What time do you close?','wott taïm dou you klôz','À quelle heure fermez-vous ?']
+  ],
+
+  directions: [
+    ['Where is the station?','wèr iz zeu STÈÏ-cheun','Où est la gare ?'],
+    ['Is it far?','iz it far','C\'est loin ?'],
+    ['It is close.','it iz klôz','C\'est près.'],
+    ['Go straight.','gô strèït','Allez tout droit.'],
+    ['Turn left.','teurn lèft','Tournez à gauche.'],
+    ['Turn right.','teurn raït','Tournez à droite.'],
+    ['I am lost.','aï am lost','Je suis perdu.'],
+    ['Can you help me?','kann you hèlp mi','Pouvez-vous m\'aider ?'],
+    ['Thank you very much!','sènk you VÈ-ri meutch','Merci beaucoup !']
+  ],
+
+  social: [
+    ['Let us go to the cinema.','lèts gô tou zeu SI-neu-meu','Allons au cinéma.'],
+    ['What a great film!','wott eu grèït film','Quel bon film !'],
+    ['Do you like music?','dou you laïk MIOU-zik','Aimez-vous la musique ?'],
+    ['What music do you like?','wott MIOU-zik dou you laïk','Quelle musique aimez-vous ?'],
+    ['Do you play the piano?','dou you plèï zeu PIA-nô','Jouez-vous du piano ?'],
+    ['I cannot play.','aï KÂN-not plèï','Je ne sais pas jouer.'],
+    ['What a pity!','wott eu PI-ti','Quel dommage !'],
+    ['Come on!','keum onn','Allez !'],
+    ['Have fun!','hav feun','Amusez-vous bien !']
+  ],
+
+  feelings: [
+    ['How are you?','haou ar you','Comment allez-vous ?'],
+    ['I am well.','aï am wèl','Je vais bien.'],
+    ['I am a bit tired.','aï am eu bitt TAÏ-eurd','Je suis un peu fatigué.'],
+    ['I am very busy.','aï am VÈ-ri BI-zi','Je suis très occupé.'],
+    ['I am happy.','aï am HÂ-pi','Je suis heureux.'],
+    ['I am sad.','aï am sadd','Je suis triste.'],
+    ['Do not worry.','dou not WEU-ri','Ne vous inquiétez pas.'],
+    ['How do you feel?','haou dou you fil','Comment vous sentez-vous ?'],
+    ['I do not feel well.','aï dou not fil wèl','Je ne me sens pas bien.'],
+    ['I have a cold.','aï hav eu kôld','J\'ai un rhume.']
+  ],
+
+  weather: [
+    ['What is the weather like?','wott iz zeu WÈ-zeur laïk','Quel temps fait-il ?'],
+    ['The weather is nice today.','zeu WÈ-zeur iz naïss teu-DÈÏ','Il fait beau aujourd\'hui.'],
+    ['It is raining.','it iz RÈÏ-ninng','Il pleut.'],
+    ['It is cold today.','it iz kôld teu-DÈÏ','Il fait froid aujourd\'hui.'],
+    ['It is hot today.','it iz hott teu-DÈÏ','Il fait chaud aujourd\'hui.'],
+    ['Dress warmly.','drèss WORM-li','Couvrez-vous bien.'],
+    ['Be careful.','bi KÈR-feul','Faites attention.']
+  ],
+
+  wishes: [
+    ['Happy birthday!','HÂ-pi BEURSS-dèï','Joyeux anniversaire !'],
+    ['Good luck!','goud leuk','Bonne chance !'],
+    ['Congratulations!','keun-GRÂ-tiou-LÈÏ-cheunz','Félicitations !'],
+    ['Enjoy your meal!','ènn-DJOÏ yor mil','Bon appétit !'],
+    ['Have a good trip!','hav eu goud trip','Bon voyage !']
+  ]
+};
+
+/* =====================================================================
+   FLATTEN DATA
+   ===================================================================== */
+
+const seenW = new Set();
+const WORDS = Object.entries(RAW_WORDS).flatMap(([pos, arr]) =>
+  arr.map(([h, p, e]) => ({ h, p, e, cat: pos }))
+).filter(w => { if (seenW.has(w.h)) return false; seenW.add(w.h); return true; });
+
+const EXPR = Object.entries(RAW_EXPR).flatMap(([cat, arr]) =>
+  arr.map(([h, p, e]) => ({ h, p, e, cat }))
+);
+
+const DATA = { words: WORDS, expressions: EXPR };
+
+/* =====================================================================
+   TEXT-TO-SPEECH MODULE — ANDROID SAFE
+   ===================================================================== */
+
+const TTS = (() => {
+  const supported = 'speechSynthesis' in window;
+  const LANG = 'en-GB';
+  let targetVoice = null;
+  let voicesReady = false;
+  let autoPlay = false;
+
+  try { autoPlay = localStorage.getItem('en-flashcards-autoplay') === '1'; } catch(e){}
+
+  function loadVoices(){
+    if (!supported) return;
+    const voices = speechSynthesis.getVoices();
+    if (!voices.length){
+      setTimeout(loadVoices, 250);
+      return;
+    }
+    const prefix = LANG.split('-')[0];
+    targetVoice =
+      voices.find(v => v.lang === LANG) ||
+      voices.find(v => v.lang.replace('_','-').startsWith(LANG)) ||
+      voices.find(v => v.lang.toLowerCase().startsWith(prefix)) ||
+      null;
+    voicesReady = true;
+    updateWarn();
+  }
+
+  function updateWarn(){
+    const warn = document.getElementById('audioWarn');
+    if (!warn) return;
+    if (!supported || !targetVoice) warn.classList.add('show');
+    else warn.classList.remove('show');
+  }
+
+  if (supported){
+    speechSynthesis.addEventListener('voiceschanged', loadVoices);
+    loadVoices();
+  }
+
+  function clean(text){
+    return text
+      .replace(/[«»""''…—]/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  function speak(text, btnEl){
+    if (!supported) return;
+
+    if (!voicesReady){
+      loadVoices();
+      setTimeout(() => speak(text, btnEl), 400);
+      return;
+    }
+
+    const clean_text = clean(text);
+    if (!clean_text) return;
+
+    if (speechSynthesis.speaking){
+      speechSynthesis.cancel();
+    }
+
+    const u = new SpeechSynthesisUtterance(clean_text);
+    u.lang  = LANG;
+    u.rate  = 0.9;
+    u.pitch = 1;
+    if (targetVoice) {
+      try { u.voice = targetVoice; } catch(e){}
+    }
+
+    const targets = [];
+    if (btnEl) targets.push(btnEl);
+    const mainBtn = document.getElementById('speakBtn');
+    if (mainBtn && btnEl !== mainBtn && !document.getElementById('panel-learn').classList.contains('hidden')) {
+      const cur = currentItem();
+      if (cur && cur.h === text) targets.push(mainBtn);
+    }
+
+    const setOn  = () => targets.forEach(t => t.classList.add('speaking'));
+    const setOff = () => targets.forEach(t => t.classList.remove('speaking'));
+
+    u.onstart = setOn;
+    u.onend   = setOff;
+    u.onerror = setOff;
+    setTimeout(setOn, 80);
+
+    speechSynthesis.speak(u);
+
+    const maxMs = 2500 + clean_text.length * 250;
+    setTimeout(() => { if (!speechSynthesis.speaking) setOff(); }, maxMs);
+  }
+
+  function stop(){
+    if (!supported) return;
+    speechSynthesis.cancel();
+    document.querySelectorAll('.speaking').forEach(el => el.classList.remove('speaking'));
+  }
+
+  function setAuto(on){
+    autoPlay = on;
+    try { localStorage.setItem('en-flashcards-autoplay', on ? '1' : '0'); } catch(e){}
+    const chip = document.getElementById('autoChip');
+    if (chip) chip.classList.toggle('on', on);
+  }
+
+  function isAuto(){ return autoPlay; }
+
+  return { speak, stop, setAuto, isAuto, supported };
+})();
+
+/* =====================================================================
+   STATE
+   ===================================================================== */
+
+const el  = id => document.getElementById(id);
+const KEY = 'en-flashcards-learned-v1';
+const PRON_KEY = 'en-flashcards-pron-v1';
+
+let mode        = 'words';
+let catFilter   = 'all';
+let poolIdx     = { words: 0, expressions: 0 };
+let savedFilter = 'all';
+let showPron    = true;
+
+try {
+  const v = localStorage.getItem(PRON_KEY);
+  if (v === '0') showPron = false;
+} catch(e){}
+
+const keyOf    = (m, h) => m + '::' + h;
+const splitKey = k => { const i = k.indexOf('::'); return { mode: k.slice(0,i), h: k.slice(i+2) }; };
+
+let learned = [];
+try {
+  const raw = JSON.parse(localStorage.getItem(KEY));
+  if (Array.isArray(raw)) learned = raw.filter(k => typeof k === 'string');
+} catch(e) { learned = []; }
+
+learned = learned.filter(k => {
+  const { mode:m, h } = splitKey(k);
+  return DATA[m] && DATA[m].some(w => w.h === h);
+});
+
+const persist = () => { try { localStorage.setItem(KEY, JSON.stringify(learned)); } catch(e){} };
+
+/* =====================================================================
+   LEARN PANEL
+   ===================================================================== */
+
+function getPool(){
+  const base = DATA[mode];
+  if (catFilter === 'all') return base;
+  return base.filter(w => w.cat === catFilter);
+}
+
+function currentItem(){
+  const pool = getPool();
+  return pool[poolIdx[mode] % pool.length];
+}
+
+function animateWord(){
+  const w = el('word');
+  w.style.animation = 'none';
+  void w.offsetWidth;
+  w.style.animation = 'popIn .45s cubic-bezier(.2,.8,.3,1)';
+}
+
+function sizeClassFor(text){
+  const len = [...text].length;
+  if (len <= 8)  return 'size-l';
+  if (len <= 16) return 'size-m';
+  return 'size-s';
+}
+
+function syncSaveBtn(){
+  const saved = learned.includes(keyOf(mode, currentItem().h));
+  const b = el('saveBtn');
+  b.classList.toggle('saved', saved);
+  b.innerHTML = saved ? '<span class="ico">♥</span>Gardé'
+                      : '<span class="ico">♡</span>Garder';
+}
+
+function syncPronChip(){
+  el('pronChip').classList.toggle('on', showPron);
+  el('pinyin').classList.toggle('hide', !showPron);
+}
+
+function renderCard(animate = true){
+  const pool = getPool();
+  const i    = poolIdx[mode] % pool.length;
+  const w    = pool[i];
+  const meta = CATS[w.cat] || { label:w.cat, fr:'', color:'#7b8098' };
+
+  const badge = el('posbadge');
+  badge.style.setProperty('--cat', meta.color || '#7b8098');
+  badge.innerHTML = `${meta.label}${meta.fr ? `<span class="fr">${meta.fr}</span>` : ''}`;
+
+  const hz = el('hanzi');
+  hz.textContent = w.h;
+  hz.className   = 'hanzi ' + sizeClassFor(w.h);
+
+  el('pinyin').textContent  = w.p;
+  el('english').textContent = w.e;
+  el('counter').textContent = (i + 1) + ' / ' + pool.length;
+
+  syncSaveBtn();
+  syncPronChip();
+  if (animate) animateWord();
+
+  TTS.stop();
+  if (TTS.isAuto()) {
+    setTimeout(() => TTS.speak(w.h, el('speakBtn')), 300);
+  }
+}
+
+function renderCatBar(){
+  const bar   = el('catbar');
+  const items = DATA[mode];
+  const counts = {};
+  items.forEach(w => counts[w.cat] = (counts[w.cat] || 0) + 1);
+
+  const cats = Object.keys(counts).sort(
+    (a,b) => CAT_ORDER.indexOf(a) - CAT_ORDER.indexOf(b)
+  );
+
+  let html = `<button class="cat${catFilter==='all'?' active':''}" data-cat="all">
+    Tout <span class="catn">${items.length}</span>
+  </button>`;
+
+  cats.forEach(c => {
+    const meta = CATS[c] || { label:c, color:'#7b8098' };
+    html += `<button class="cat${catFilter===c?' active':''}" data-cat="${c}" style="--cat:${meta.color}">
+      ${meta.label} <span class="catn">${counts[c]}</span>
+    </button>`;
+  });
+
+  bar.innerHTML = html;
+
+  bar.querySelectorAll('.cat').forEach(btn => {
+    btn.addEventListener('click', () => {
+      catFilter = btn.dataset.cat;
+      poolIdx[mode] = 0;
+      renderCatBar();
+      renderCard();
+    });
+  });
+}
+
+function nextWord(){
+  const pool = getPool();
+  poolIdx[mode] = (poolIdx[mode] + 1) % pool.length;
+  renderCard();
+}
+
+function prevWord(){
+  const pool = getPool();
+  poolIdx[mode] = (poolIdx[mode] - 1 + pool.length) % pool.length;
+  renderCard();
+}
+
+function toggleSave(){
+  const k = keyOf(mode, currentItem().h);
+  const i = learned.indexOf(k);
+
+  if (i === -1){
+    learned.push(k);
+    const badge = el('badge');
+    badge.classList.remove('pop');
+    void badge.offsetWidth;
+    badge.classList.add('pop');
+  } else {
+    learned.splice(i, 1);
+  }
+
+  persist();
+  syncSaveBtn();
+  renderSaved();
+}
+
+function setMode(m){
+  mode = m;
+  catFilter = 'all';
+  poolIdx[m] = 0;
+  document.querySelectorAll('.mode-chip').forEach(c =>
+    c.classList.toggle('active', c.dataset.mode === m)
+  );
+  renderCatBar();
+  renderCard();
+}
+
+/* =====================================================================
+   SAVED PANEL
+   ===================================================================== */
+
+function renderSaved(){
+  const list = el('savedList');
+
+  const entries = learned.slice().reverse().map(k => {
+    const { mode:m, h } = splitKey(k);
+    const w = (DATA[m] || []).find(x => x.h === h);
+    return w ? { ...w, mode:m, key:k } : null;
+  }).filter(Boolean);
+
+  const countWords = entries.filter(e => e.mode === 'words').length;
+  const countExpr  = entries.filter(e => e.mode === 'expressions').length;
+
+  el('badge').textContent     = entries.length;
+  el('savedMeta').textContent = entries.length
+    ? `${countWords} mots · ${countExpr} phrases`
+    : '0 sauvegardé';
+
+  const filters = el('filters');
+  filters.querySelector('[data-filter="all"]').textContent         = `Tout ${entries.length}`;
+  filters.querySelector('[data-filter="words"]').textContent       = `Mots ${countWords}`;
+  filters.querySelector('[data-filter="expressions"]').textContent = `Expressions ${countExpr}`;
+  filters.querySelectorAll('.filter').forEach(f =>
+    f.classList.toggle('active', f.dataset.filter === savedFilter)
+  );
+
+  const shown = savedFilter === 'all'
+    ? entries
+    : entries.filter(e => e.mode === savedFilter);
+
+  if (!shown.length){
+    list.innerHTML = `
+      <div class="empty">
+        <div class="icon">📖</div>
+        <p>${entries.length ? 'Rien ici' : 'Votre liste est vide'}</p>
+        <span>${entries.length
+          ? 'Aucun élément ne correspond à ce filtre.'
+          : 'Appuyez sur "Garder" sur un mot ou une phrase pour l\'ajouter ici.'}</span>
+      </div>`;
+    return;
+  }
+
+  list.innerHTML = shown.map((w, i) => {
+    const meta = CATS[w.cat] || { label:w.cat, color:'#94a3b8' };
+    const pron = showPron
+      ? `<span class="si-pinyin" style="margin-left:auto">${w.p}</span>`
+      : '';
+    return `
+      <div class="saved-item" data-key="${w.key}" style="animation-delay:${Math.min(i,12)*40}ms">
+        <div class="si-hanzi${[...w.h].length > 8 ? ' long' : ''}">${w.h}</div>
+        <div class="si-info">
+          <div class="si-line">
+            <span class="si-cat" style="--cat:${meta.color}">${meta.label}</span>
+            ${pron}
+          </div>
+          <div class="si-english">${w.e}</div>
+        </div>
+        <button class="si-speak" data-speak="${w.h}" title="Écouter">🔊</button>
+        <button class="remove" data-remove="${w.key}" title="Retirer">✕</button>
+      </div>`;
+  }).join('')
+    + `<button class="clear-btn" id="clearBtn">Retirer les ${entries.length} éléments</button>`;
+
+  list.querySelectorAll('.saved-item').forEach(item => {
+    item.addEventListener('click', ev => {
+      if (ev.target.closest('.remove') || ev.target.closest('.si-speak')) return;
+      const { mode:m, h } = splitKey(item.dataset.key);
+      const i = DATA[m].findIndex(x => x.h === h);
+      if (i < 0) return;
+      mode = m;
+      catFilter = 'all';
+      poolIdx[m] = i;
+      document.querySelectorAll('.mode-chip').forEach(c =>
+        c.classList.toggle('active', c.dataset.mode === m)
+      );
+      renderCatBar();
+      renderCard();
+      switchTab('learn');
+    });
+  });
+
+  list.querySelectorAll('.si-speak').forEach(btn => {
+    btn.addEventListener('click', ev => {
+      ev.stopPropagation();
+      TTS.speak(btn.dataset.speak, btn);
+    });
+  });
+
+  list.querySelectorAll('.remove').forEach(btn => {
+    btn.addEventListener('click', ev => {
+      ev.stopPropagation();
+      learned = learned.filter(k => k !== btn.dataset.remove);
+      persist();
+      syncSaveBtn();
+      renderSaved();
+    });
+  });
+
+  el('clearBtn').addEventListener('click', () => {
+    if (!confirm(`Retirer les ${entries.length} éléments sauvegardés ?`)) return;
+    learned = [];
+    persist();
+    syncSaveBtn();
+    renderSaved();
+  });
+}
+
+/* =====================================================================
+   TABS
+   ===================================================================== */
+
+function switchTab(name){
+  document.querySelectorAll('.tab').forEach(t =>
+    t.classList.toggle('active', t.dataset.tab === name)
+  );
+  el('indicator').style.transform = name === 'learn' ? 'translateX(0)' : 'translateX(100%)';
+  el('panel-learn').classList.toggle('hidden', name !== 'learn');
+  el('panel-saved').classList.toggle('hidden', name !== 'saved');
+  if (name !== 'learn') TTS.stop();
+}
+
+/* =====================================================================
+   EVENTS
+   ===================================================================== */
+
+el('nextBtn').addEventListener('click', nextWord);
+el('prevBtn').addEventListener('click', prevWord);
+el('saveBtn').addEventListener('click', toggleSave);
+el('speakBtn').addEventListener('click', () => TTS.speak(currentItem().h, el('speakBtn')));
+el('hanzi').addEventListener('click', () => TTS.speak(currentItem().h, el('speakBtn')));
+
+el('autoChip').addEventListener('click', () => {
+  TTS.setAuto(!TTS.isAuto());
+  if (TTS.isAuto()) TTS.speak(currentItem().h, el('speakBtn'));
+});
+
+el('pronChip').addEventListener('click', () => {
+  showPron = !showPron;
+  try { localStorage.setItem(PRON_KEY, showPron ? '1' : '0'); } catch(e){}
+  syncPronChip();
+  renderSaved();
+});
+
+document.querySelectorAll('.tab').forEach(t =>
+  t.addEventListener('click', () => switchTab(t.dataset.tab))
+);
+
+document.querySelectorAll('.mode-chip').forEach(c =>
+  c.addEventListener('click', () => setMode(c.dataset.mode))
+);
+
+document.querySelectorAll('.filter').forEach(f =>
+  f.addEventListener('click', () => { savedFilter = f.dataset.filter; renderSaved(); })
+);
+
+document.addEventListener('keydown', e => {
+  if (e.target.matches('input, textarea')) return;
+  if (el('panel-learn').classList.contains('hidden')) return;
+
+  if (e.key === 'ArrowRight'){ e.preventDefault(); nextWord(); }
+  if (e.key === 'ArrowLeft'){  e.preventDefault(); prevWord(); }
+  if (e.key.toLowerCase() === 's'){ e.preventDefault(); toggleSave(); }
+  if (e.key === ' '){ e.preventDefault(); TTS.speak(currentItem().h, el('speakBtn')); }
+  if (e.key.toLowerCase() === 'p'){ e.preventDefault(); el('pronChip').click(); }
+});
+
+window.addEventListener('beforeunload', () => TTS.stop());
+
+/* =====================================================================
+   INIT
+   ===================================================================== */
+
+el('nWords').textContent = DATA.words.length;
+el('nExpr').textContent  = DATA.expressions.length;
+el('totalCount').textContent = DATA.words.length;
+
+el('autoChip').classList.toggle('on', TTS.isAuto());
+
+renderCatBar();
+renderCard(false);
+renderSaved();
+
+if (TTS.isAuto()) setTimeout(() => TTS.speak(currentItem().h, el('speakBtn')), 400);
+</script>
 </body>
 </html>
