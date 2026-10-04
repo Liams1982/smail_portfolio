@@ -171,7 +171,6 @@
     background:#10b981;
     box-shadow:0 0 0 3px rgba(16,185,129,.22);
   }
-
   .auto-chip.latin.on{
     background:linear-gradient(135deg,#eef2ff,#f5f7ff);
     border-color:#c7d2fe;color:#4f46e5;
@@ -214,7 +213,6 @@
     color:var(--accent);word-break:break-word;line-height:1.45;
   }
 
-  /* ---------- LATIN TRANSCRIPTION ---------- */
   .latin{
     margin-top:8px;
     display:inline-flex;align-items:center;gap:7px;
@@ -408,7 +406,7 @@
   @media (max-width:400px){
     body{padding:26px 14px 50px}
     .card{padding:16px 18px 22px;border-radius:26px}
-    .word{min-height:220px}
+    .word{min-height:210px}
     .actions{grid-template-columns:52px 1fr 1.2fr;gap:8px}
     .btn{font-size:14px;padding:16px 8px}
     .speak-btn{width:42px;height:42px;font-size:17px;bottom:14px;right:14px}
@@ -469,7 +467,7 @@
     </div>
 
     <div class="audio-warn" id="audioWarn">
-      ⚠️ No Chinese voice detected on this device. Audio may sound off — try installing a Chinese voice in your system settings.
+      ⚠️ No Chinese voice detected yet. If audio is silent, make sure a Chinese voice is installed in your Android text-to-speech settings, then reload this page.
     </div>
 
     <div class="actions">
@@ -982,14 +980,12 @@ function respellSyllable(s){
     if (s.startsWith(ini)){ initial = ini; final = s.slice(ini.length); break; }
   }
 
-  // Handle erhua (r-suffix)
   let erhua = '';
   if (final.length > 1 && final.endsWith('r') && final !== 'er'){
     erhua = 'r';
     final = final.slice(0, -1);
   }
 
-  // Special buzzing "i" after zh/ch/sh/r/z/c/s
   if (final === 'i' && ['zh','ch','sh','r','z','c','s'].includes(initial)){
     final = 'ur';
   }
@@ -1002,7 +998,6 @@ function respellSyllable(s){
 
 function toLatin(pinyin){
   if (!pinyin) return '';
-  // Replace Chinese punctuation with space, lowercase, collapse whitespace
   const clean = pinyin
     .replace(/[，。！？、；：""''（）《》〈〉【】…—·]/g, ' ')
     .replace(/[?.,!;:'"()\-]/g, ' ')
@@ -1017,61 +1012,82 @@ function toLatin(pinyin){
 }
 
 /* =====================================================================
-   TEXT-TO-SPEECH MODULE
+   TEXT-TO-SPEECH MODULE — ANDROID SAFE
    ===================================================================== */
 
 const TTS = (() => {
   const supported = 'speechSynthesis' in window;
-  let zhVoice = null;
+  const LANG = 'zh-CN';
+  let targetVoice = null;
+  let voicesReady = false;
   let autoPlay = false;
 
   try { autoPlay = localStorage.getItem('cn-flashcards-autoplay') === '1'; } catch(e){}
 
-  function pickVoice(){
+  /* Keep retrying until Android gives us the voice list (can take 5+ seconds) */
+  function loadVoices(){
     if (!supported) return;
     const voices = speechSynthesis.getVoices();
-    if (!voices.length) return;
-    zhVoice =
-      voices.find(v => v.lang === 'zh-CN') ||
-      voices.find(v => v.lang.replace('_','-').startsWith('zh-CN')) ||
-      voices.find(v => v.lang.toLowerCase().startsWith('zh')) ||
+    if (!voices.length){
+      setTimeout(loadVoices, 250);
+      return;
+    }
+    const prefix = LANG.split('-')[0];
+    targetVoice =
+      voices.find(v => v.lang === LANG) ||
+      voices.find(v => v.lang.replace('_','-').startsWith(LANG)) ||
+      voices.find(v => v.lang.toLowerCase().startsWith(prefix)) ||
       null;
+    voicesReady = true;
     updateWarn();
   }
 
   function updateWarn(){
     const warn = document.getElementById('audioWarn');
     if (!warn) return;
-    if (!supported || !zhVoice) warn.classList.add('show');
+    if (!supported || !targetVoice) warn.classList.add('show');
     else warn.classList.remove('show');
   }
 
   if (supported){
-    speechSynthesis.onvoiceschanged = pickVoice;
-    pickVoice();
-    setTimeout(pickVoice, 300);
-    setTimeout(pickVoice, 1200);
+    speechSynthesis.addEventListener('voiceschanged', loadVoices);
+    loadVoices();
   }
 
   function clean(text){
     return text
-      .replace(/[，。！？、；：""''（）《》〈〉【】…—\s]/g, '')
+      .replace(/[，。！？、；：""''（）《》〈〉【】…—«»"']/g, '')
       .replace(/[?.,!;:'"()\-]/g, '')
+      .replace(/\s+/g, ' ')
       .trim();
   }
 
   function speak(text, btnEl){
     if (!supported) return;
+
+    /* If voices aren't loaded yet, wait for them, then try again */
+    if (!voicesReady){
+      loadVoices();
+      setTimeout(() => speak(text, btnEl), 400);
+      return;
+    }
+
     const clean_text = clean(text);
     if (!clean_text) return;
 
-    speechSynthesis.cancel();
+    /* Android/iOS bug: cancel() right before speak() kills playback.
+       Only cancel if something is actually playing. */
+    if (speechSynthesis.speaking){
+      speechSynthesis.cancel();
+    }
 
     const u = new SpeechSynthesisUtterance(clean_text);
-    u.lang  = 'zh-CN';
+    u.lang  = LANG;
     u.rate  = 0.85;
     u.pitch = 1;
-    if (zhVoice) u.voice = zhVoice;
+    if (targetVoice) {
+      try { u.voice = targetVoice; } catch(e){}
+    }
 
     const targets = [];
     if (btnEl) targets.push(btnEl);
@@ -1087,9 +1103,13 @@ const TTS = (() => {
     u.onstart = setOn;
     u.onend   = setOff;
     u.onerror = setOff;
-    setTimeout(setOn, 60);
+    setTimeout(setOn, 80);
 
     speechSynthesis.speak(u);
+
+    /* Safety: if onend never fires (Android bug), clear the button state */
+    const maxMs = 2500 + clean_text.length * 250;
+    setTimeout(() => { if (!speechSynthesis.speaking) setOff(); }, maxMs);
   }
 
   function stop(){
@@ -1107,7 +1127,7 @@ const TTS = (() => {
 
   function isAuto(){ return autoPlay; }
 
-  return { speak, stop, setAuto, isAuto, pickVoice, supported };
+  return { speak, stop, setAuto, isAuto, supported };
 })();
 
 /* =====================================================================
@@ -1212,7 +1232,7 @@ function renderCard(animate = true){
 
   TTS.stop();
   if (TTS.isAuto()) {
-    setTimeout(() => TTS.speak(w.h, el('speakBtn')), 220);
+    setTimeout(() => TTS.speak(w.h, el('speakBtn')), 300);
   }
 }
 
