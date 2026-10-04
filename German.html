@@ -444,7 +444,7 @@
     </div>
 
     <div class="audio-warn" id="audioWarn">
-      ⚠️ No German voice detected on this device. Audio may sound off — try installing a German voice in your system settings.
+      ⚠️ No German voice detected yet. If audio is silent, make sure a German voice is installed in your Android text-to-speech settings, then reload this page.
     </div>
 
     <div class="actions">
@@ -1280,61 +1280,81 @@ const EXPR = Object.entries(RAW_EXPR).flatMap(([cat, arr]) =>
 const DATA = { words: WORDS, expressions: EXPR };
 
 /* =====================================================================
-   TEXT-TO-SPEECH MODULE  (German)
+   TEXT-TO-SPEECH MODULE — ANDROID SAFE
    ===================================================================== */
 
 const TTS = (() => {
   const supported = 'speechSynthesis' in window;
-  let deVoice = null;
+  const LANG = 'de-DE';
+  let targetVoice = null;
+  let voicesReady = false;
   let autoPlay = false;
 
   try { autoPlay = localStorage.getItem('de-flashcards-autoplay') === '1'; } catch(e){}
 
-  function pickVoice(){
+  /* Keep retrying until Android gives us the voice list (can take 5+ seconds) */
+  function loadVoices(){
     if (!supported) return;
     const voices = speechSynthesis.getVoices();
-    if (!voices.length) return;
-    deVoice =
-      voices.find(v => v.lang === 'de-DE') ||
-      voices.find(v => v.lang.replace('_','-').startsWith('de-DE')) ||
-      voices.find(v => v.lang.toLowerCase().startsWith('de')) ||
+    if (!voices.length){
+      setTimeout(loadVoices, 250);
+      return;
+    }
+    const prefix = LANG.split('-')[0];
+    targetVoice =
+      voices.find(v => v.lang === LANG) ||
+      voices.find(v => v.lang.replace('_','-').startsWith(LANG)) ||
+      voices.find(v => v.lang.toLowerCase().startsWith(prefix)) ||
       null;
+    voicesReady = true;
     updateWarn();
   }
 
   function updateWarn(){
     const warn = document.getElementById('audioWarn');
     if (!warn) return;
-    if (!supported || !deVoice) warn.classList.add('show');
+    if (!supported || !targetVoice) warn.classList.add('show');
     else warn.classList.remove('show');
   }
 
   if (supported){
-    speechSynthesis.onvoiceschanged = pickVoice;
-    pickVoice();
-    setTimeout(pickVoice, 300);
-    setTimeout(pickVoice, 1200);
+    speechSynthesis.addEventListener('voiceschanged', loadVoices);
+    loadVoices();
   }
 
   function clean(text){
     return text
-      .replace(/[«»""''…]/g, '')
+      .replace(/[«»""''…—]/g, '')
       .replace(/\s+/g, ' ')
       .trim();
   }
 
   function speak(text, btnEl){
     if (!supported) return;
+
+    /* If voices aren't loaded yet, wait for them, then try again */
+    if (!voicesReady){
+      loadVoices();
+      setTimeout(() => speak(text, btnEl), 400);
+      return;
+    }
+
     const clean_text = clean(text);
     if (!clean_text) return;
 
-    speechSynthesis.cancel();
+    /* Android/iOS bug: cancel() right before speak() kills playback.
+       Only cancel if something is actually playing. */
+    if (speechSynthesis.speaking){
+      speechSynthesis.cancel();
+    }
 
     const u = new SpeechSynthesisUtterance(clean_text);
-    u.lang  = 'de-DE';
+    u.lang  = LANG;
     u.rate  = 0.9;
     u.pitch = 1;
-    if (deVoice) u.voice = deVoice;
+    if (targetVoice) {
+      try { u.voice = targetVoice; } catch(e){}
+    }
 
     const targets = [];
     if (btnEl) targets.push(btnEl);
@@ -1350,9 +1370,13 @@ const TTS = (() => {
     u.onstart = setOn;
     u.onend   = setOff;
     u.onerror = setOff;
-    setTimeout(setOn, 60);
+    setTimeout(setOn, 80);
 
     speechSynthesis.speak(u);
+
+    /* Safety: if onend never fires (Android bug), clear the button state */
+    const maxMs = 2500 + clean_text.length * 250;
+    setTimeout(() => { if (!speechSynthesis.speaking) setOff(); }, maxMs);
   }
 
   function stop(){
@@ -1370,7 +1394,7 @@ const TTS = (() => {
 
   function isAuto(){ return autoPlay; }
 
-  return { speak, stop, setAuto, isAuto, pickVoice, supported };
+  return { speak, stop, setAuto, isAuto, supported };
 })();
 
 /* =====================================================================
@@ -1474,7 +1498,7 @@ function renderCard(animate = true){
 
   TTS.stop();
   if (TTS.isAuto()) {
-    setTimeout(() => TTS.speak(w.h, el('speakBtn')), 220);
+    setTimeout(() => TTS.speak(w.h, el('speakBtn')), 300);
   }
 }
 
