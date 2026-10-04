@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Language Flashcards</title>
+<style>
+  :root{
+    --ink:#151726;
+    --muted:#7b8098;
+    --line:#eceef6;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+
+  body{
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    color:var(--ink);
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    padding:56px 20px 80px;
+    background:
+      radial-gradient(900px 520px at 8% -12%, #ffe1e1 0%, transparent 62%),
+      radial-gradient(820px 520px at 102% -4%, #dfe6ff 0%, transparent 58%),
+      radial-gradient(760px 520px at 50% 118%, #d8f6ee 0%, transparent 62%),
+      #f7f8fc;
+    background-attachment:fixed;
+  }
+
+  .wrap{width:100%;max-width:560px}
+
+  /* ---------- header ---------- */
+  header{text-align:center;margin-bottom:38px}
+
+  .logo{
+    width:72px;height:72px;border-radius:22px;
+    display:grid;place-items:center;margin:0 auto 22px;
+    font-size:34px;font-weight:700;
+    background:linear-gradient(135deg,#1d2033,#3b4168);
+    box-shadow:0 20px 40px -16px rgba(29,32,51,.95);
+    color:#fff;
+  }
+
+  h1{
+    font-size:clamp(26px,6.5vw,34px);
+    font-weight:800;
+    letter-spacing:-.02em;
+    line-height:1.1;
+    margin-bottom:10px;
+    background:linear-gradient(135deg,#1d2033,#3b4168 60%,#5b62a8);
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
+  }
+
+  .tagline{
+    font-size:14.5px;
+    color:var(--muted);
+    line-height:1.55;
+    max-width:340px;
+    margin:0 auto;
+    font-weight:500;
+  }
+
+  /* ---------- grid of cards ---------- */
+  .grid{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:14px;
+  }
+
+  .card{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    padding:18px 20px;
+    border-radius:24px;
+    background:rgba(255,255,255,.88);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    border:1px solid rgba(255,255,255,.95);
+    text-decoration:none;
+    color:var(--ink);
+    box-shadow:0 22px 44px -28px rgba(35,40,90,.55), 0 2px 6px rgba(35,40,90,.04);
+    transition:transform .22s cubic-bezier(.2,.8,.3,1), box-shadow .25s, border-color .25s;
+    position:relative;
+    overflow:hidden;
+    animation:slideIn .5s cubic-bezier(.2,.8,.3,1) both;
+  }
+
+  .card::before{
+    content:'';
+    position:absolute;
+    left:0;top:0;bottom:0;
+    width:5px;
+    background:var(--accent,#7b8098);
+    border-radius:5px 0 0 5px;
+  }
+
+  .card:hover{
+    transform:translateY(-3px);
+    box-shadow:0 30px 54px -30px rgba(35,40,90,.65), 0 4px 10px rgba(35,40,90,.06);
+  }
+
+  .card:active{transform:translateY(-1px) scale(.99)}
+
+  .flag{
+    flex:none;
+    width:56px;height:56px;
+    border-radius:16px;
+    display:grid;place-items:center;
+    font-size:24px;font-weight:700;color:#fff;
+    box-shadow:0 10px 22px -12px rgba(0,0,0,.55);
+    text-shadow:0 1px 3px rgba(0,0,0,.35);
+    letter-spacing:.02em;
+  }
+
+  .info{flex:1;min-width:0}
+
+  .name{
+    font-size:17.5px;
+    font-weight:750;
+    letter-spacing:-.01em;
+    margin-bottom:4px;
+    display:flex;
+    align-items:baseline;
+    gap:8px;
+  }
+
+  .native{
+    font-size:13px;
+    color:var(--muted);
+    font-weight:500;
+  }
+
+  .meta{
+    font-size:12.5px;
+    color:var(--muted);
+    font-weight:500;
+    line-height:1.45;
+  }
+
+  .meta b{
+    color:var(--accent);
+    font-weight:700;
+    margin-right:2px;
+  }
+
+  .arrow{
+    flex:none;
+    width:34px;height:34px;
+    border-radius:12px;
+    background:#f2f4fa;
+    color:#6b7290;
+    display:grid;place-items:center;
+    font-size:15px;
+    font-weight:700;
+    transition:background .22s, color .22s, transform .22s;
+  }
+
+  .card:hover .arrow{
+    background:var(--accent,#3b4168);
+    color:#fff;
+    transform:translateX(3px);
+  }
+
+  /* ---------- animation delays ---------- */
+  .card:nth-child(1){animation-delay:0ms}
+  .card:nth-child(2){animation-delay:60ms}
+  .card:nth-child(3){animation-delay:120ms}
+  .card:nth-child(4){animation-delay:180ms}
+  .card:nth-child(5){animation-delay:240ms}
+  .card:nth-child(6){animation-delay:300ms}
+
+  @keyframes slideIn{
+    from{opacity:0;transform:translateY(18px)}
+    to{opacity:1;transform:none}
+  }
+
+  /* ---------- footer ---------- */
+  footer{
+    margin-top:38px;
+    text-align:center;
+    font-size:12.5px;
+    color:var(--muted);
+    line-height:1.7;
+    font-weight:500;
+  }
+
+  footer .hint{
+    display:inline-block;
+    padding:8px 15px;
+    border-radius:999px;
+    background:rgba(255,255,255,.7);
+    border:1px solid var(--line);
+    margin-top:10px;
+  }
+
+  footer kbd{
+    font-family:'Inter',sans-serif;
+    font-size:11px;
+    font-weight:700;
+    padding:2px 7px;
+    border-radius:6px;
+    background:#1d2033;
+    color:#fff;
+    margin:0 2px;
+    vertical-align:1px;
+  }
+
+  /* ---------- individual card colors ---------- */
+  .card.chinese    {--accent:#e05252}
+  .card.chinese .flag{
+    background:linear-gradient(135deg,#e05252,#ff8a5c);
+  }
+
+  .card.italian    {--accent:#009246}
+  .card.italian .flag{
+    background:linear-gradient(135deg,#009246 0%,#009246 33%,#f4f5f0 33%,#f4f5f0 66%,#ce2b37 66%,#ce2b37 100%);
+    color:#fff;
+    text-shadow:0 1px 4px rgba(0,0,0,.6);
+  }
+
+  .card.german     {--accent:#dd0000}
+  .card.german .flag{
+    background:linear-gradient(180deg,#000 0%,#000 33%,#dd0000 33%,#dd0000 66%,#ffce00 66%,#ffce00 100%);
+  }
+
+  .card.japanese   {--accent:#bc002d}
+  .card.japanese .flag{
+    background:linear-gradient(180deg,#fff 0%,#fff 100%);
+    color:#bc002d;
+    border:2px solid #bc002d;
+    text-shadow:none;
+  }
+  .card.japanese .flag::after{content:'日'; font-size:26px; font-weight:800;}
+
+  .card.spanish    {--accent:#c60b1e}
+  .card.spanish .flag{
+    background:linear-gradient(180deg,#c60b1e 0%,#c60b1e 25%,#ffc400 25%,#ffc400 75%,#c60b1e 75%,#c60b1e 100%);
+  }
+
+  .card.french     {--accent:#0055a4}
+  .card.french .flag{
+    background:linear-gradient(90deg,#0055a4 0%,#0055a4 33%,#fff 33%,#fff 66%,#ef4135 66%,#ef4135 100%);
+    color:#000;
+    text-shadow:none;
+  }
+
+  @media (max-width:400px){
+    body{padding:40px 14px 60px}
+    .logo{width:62px;height:62px;border-radius:20px;font-size:28px}
+    .card{padding:15px 16px;gap:13px;border-radius:22px}
+    .flag{width:50px;height:50px;font-size:20px}
+    .name{font-size:16px}
+    .native{font-size:12px}
+    .meta{font-size:11.5px}
+    .arrow{width:30px;height:30px;font-size:14px}
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header>
+    <div class="logo">語</div>
+    <h1>Language Flashcards</h1>
+    <p class="tagline">A2 vocabulary with audio, respelling, and a personal saved list. Pick a language to start.</p>
+  </header>
+
+  <div class="grid">
+
+    <a class="card chinese" href="Chinese.html">
+      <div class="flag">中</div>
+      <div class="info">
+        <div class="name">
+          Chinese
+          <span class="native">中文 · Mandarin</span>
+        </div>
+        <div class="meta"><b>450</b> words · <b>100</b> phrases · pinyin + Latin</div>
+      </div>
+      <div class="arrow">→</div>
+    </a>
+
+    <a class="card japanese" href="Japanese.html">
+      <div class="flag"></div>
+      <div class="info">
+        <div class="name">
+          Japanese
+          <span class="native">日本語</span>
+        </div>
+        <div class="meta"><b>450</b> words · <b>100</b> phrases · kana + romaji</div>
+      </div>
+      <div class="arrow">→</div>
+    </a>
+
+    <a class="card spanish" href="Spanish.html">
+      <div class="flag">ES</div>
+      <div class="info">
+        <div class="name">
+          Spanish
+          <span class="native">Español</span>
+        </div>
+        <div class="meta"><b>450</b> words · <b>100</b> phrases · Latin American + Spain</div>
+      </div>
+      <div class="arrow">→</div>
+    </a>
+
+    <a class="card italian" href="Italian.html">
+      <div class="flag">IT</div>
+      <div class="info">
+        <div class="name">
+          Italian
+          <span class="native">Italiano</span>
+        </div>
+        <div class="meta"><b>450</b> words · <b>100</b> phrases · standard Italian</div>
+      </div>
+      <div class="arrow">→</div>
+    </a>
+
+    <a class="card german" href="German.html">
+      <div class="flag">DE</div>
+      <div class="info">
+        <div class="name">
+          German
+          <span class="native">Deutsch</span>
+        </div>
+        <div class="meta"><b>420</b> words · <b>100</b> phrases · Hochdeutsch</div>
+      </div>
+      <div class="arrow">→</div>
+    </a>
+
+    <a class="card french" href="French.html">
+      <div class="flag">FR</div>
+      <div class="info">
+        <div class="name">
+          French
+          <span class="native">Français</span>
+        </div>
+        <div class="meta">Coming soon · Parisian French</div>
+      </div>
+      <div class="arrow">→</div>
+    </a>
+
+  </div>
+
+  <footer>
+    Tap a card to open the flashcards.
+    <div class="hint">
+      Press <kbd>Space</kbd> for audio · <kbd>L</kbd> to toggle respelling · <kbd>S</kbd> to save
+    </div>
+  </footer>
+
+</div>
+
+</body>
+</html>
