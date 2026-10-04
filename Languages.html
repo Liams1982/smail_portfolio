@@ -31,7 +31,6 @@
 
   .wrap{width:100%;max-width:560px}
 
-  /* ---------- header ---------- */
   header{text-align:center;margin-bottom:38px}
 
   .logo{
@@ -64,7 +63,6 @@
     font-weight:500;
   }
 
-  /* ---------- grid of cards ---------- */
   .grid{
     display:grid;
     grid-template-columns:1fr;
@@ -127,6 +125,7 @@
     display:flex;
     align-items:baseline;
     gap:8px;
+    flex-wrap:wrap;
   }
 
   .native{
@@ -166,19 +165,18 @@
     transform:translateX(3px);
   }
 
-  /* ---------- animation delays ---------- */
   .card:nth-child(1){animation-delay:0ms}
   .card:nth-child(2){animation-delay:60ms}
   .card:nth-child(3){animation-delay:120ms}
   .card:nth-child(4){animation-delay:180ms}
   .card:nth-child(5){animation-delay:240ms}
+  .card:nth-child(6){animation-delay:300ms}
 
   @keyframes slideIn{
     from{opacity:0;transform:translateY(18px)}
     to{opacity:1;transform:none}
   }
 
-  /* ---------- footer ---------- */
   footer{
     margin-top:38px;
     text-align:center;
@@ -209,25 +207,12 @@
     vertical-align:1px;
   }
 
-  /* ---------- individual card colors ---------- */
-  .card.chinese    {--accent:#e05252}
+  .card.chinese  {--accent:#e05252}
   .card.chinese .flag{
     background:linear-gradient(135deg,#e05252,#ff8a5c);
   }
 
-  .card.italian    {--accent:#009246}
-  .card.italian .flag{
-    background:linear-gradient(135deg,#009246 0%,#009246 33%,#f4f5f0 33%,#f4f5f0 66%,#ce2b37 66%,#ce2b37 100%);
-    color:#fff;
-    text-shadow:0 1px 4px rgba(0,0,0,.6);
-  }
-
-  .card.german     {--accent:#dd0000}
-  .card.german .flag{
-    background:linear-gradient(180deg,#000 0%,#000 33%,#dd0000 33%,#dd0000 66%,#ffce00 66%,#ffce00 100%);
-  }
-
-  .card.japanese   {--accent:#bc002d}
+  .card.japanese {--accent:#bc002d}
   .card.japanese .flag{
     background:linear-gradient(180deg,#fff 0%,#fff 100%);
     color:#bc002d;
@@ -236,9 +221,28 @@
   }
   .card.japanese .flag::after{content:'日'; font-size:26px; font-weight:800;}
 
-  .card.spanish    {--accent:#c60b1e}
+  .card.spanish  {--accent:#c60b1e}
   .card.spanish .flag{
     background:linear-gradient(180deg,#c60b1e 0%,#c60b1e 25%,#ffc400 25%,#ffc400 75%,#c60b1e 75%,#c60b1e 100%);
+  }
+
+  .card.italian  {--accent:#009246}
+  .card.italian .flag{
+    background:linear-gradient(90deg,#009246 0%,#009246 33%,#f4f5f0 33%,#f4f5f0 66%,#ce2b37 66%,#ce2b37 100%);
+    color:#fff;
+    text-shadow:0 1px 4px rgba(0,0,0,.6);
+  }
+
+  .card.german   {--accent:#dd0000}
+  .card.german .flag{
+    background:linear-gradient(180deg,#000 0%,#000 33%,#dd0000 33%,#dd0000 66%,#ffce00 66%,#ffce00 100%);
+  }
+
+  .card.english  {--accent:#0055a4}
+  .card.english .flag{
+    background:linear-gradient(90deg,#0055a4 0%,#0055a4 33%,#ffffff 33%,#ffffff 66%,#ef4135 66%,#ef4135 100%);
+    color:#fff;
+    text-shadow:0 1px 4px rgba(0,0,0,.7);
   }
 
   @media (max-width:400px){
@@ -325,12 +329,24 @@
       <div class="arrow">→</div>
     </a>
 
+    <a class="card english" href="English.html">
+      <div class="flag">EN</div>
+      <div class="info">
+        <div class="name">
+          English
+          <span class="native">Français → English</span>
+        </div>
+        <div class="meta"><b>400</b> mots · <b>100</b> phrases · sens en français</div>
+      </div>
+      <div class="arrow">→</div>
+    </a>
+
   </div>
 
   <footer>
     Tap a card to open the flashcards.
     <div class="hint">
-      Press <kbd>Space</kbd> for audio · <kbd>L</kbd> to toggle respelling · <kbd>S</kbd> to save
+      Press <kbd>Space</kbd> for audio · <kbd>P</kbd> or <kbd>L</kbd> to toggle pronunciation · <kbd>S</kbd> to save
     </div>
   </footer>
 
